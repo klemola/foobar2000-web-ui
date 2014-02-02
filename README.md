@@ -8,7 +8,7 @@ Foobar2000 web UI application consists of two parts:
 
 - A javascript-driven web application that allows the user to send basic Foobar2000 playback commands and adjust application volume level. Information about the track that is currently playing is also displayed and automatically updated when the track or playback status changes. Essentially the web UI mirrors Foobar2000's native UI.
 
-![][uiscreenshot]
+![ScreenShot](/doc/screenshot.png)
 
 Multiple devices can connect to the server using the local network, and it's up to the user to block unwanted connections. By default the foobar plugin and server allow any connection from the network.
 
@@ -56,5 +56,3 @@ I will add issues to the issue tracker for things that I'd like to improve or ar
 - track history
 - windows volume control
 - album art through a web service (Discogs, Last.fm)
-
-[uiscreenshot]: http://imgur.com/iAeQfna
