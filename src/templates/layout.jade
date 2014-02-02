@@ -1,0 +1,20 @@
+doctype 5
+html(lang="en")
+    head    
+        title= title
+        meta(name="viewport" content="width=device-width, user-scalable=no")
+        script(type="text/javascript", src="/js/jquery.min.js")
+        script(type="text/javascript", src="/js/jquery.timer.js")
+        script(type="text/javascript", src="/js/socket.io.min.js")
+        link(rel="stylesheet", type="text/css", href="/css/bootstrap.min.css")
+        link(rel="stylesheet", type="text/css", href="/css/bootstrap-theme.min.css")
+        link(rel="stylesheet", type="text/css", href="/css/main.css")
+        
+    body.container
+        block content
+
+    -var port = serverConfig.port; var address = serverConfig.serverAddress;
+    script.
+        var SERVER_ADDRESS = '#{address}';
+        var SERVER_PORT = '#{port}';
+    script(type="text/javascript", src="/js/main.js")     

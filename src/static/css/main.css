@@ -1,0 +1,19 @@
+.separator{
+	margin:0 5px;
+}
+
+.list-group-item .glyphicon{
+	margin-right:7px;
+}
+
+.track-number{
+	color:#999;
+}
+
+.top-buffer{
+	margin-top:20px;
+}
+
+#status{
+	display:none;
+}

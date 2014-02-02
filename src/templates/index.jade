@@ -1,0 +1,40 @@
+extends layout
+
+block content
+    header 
+        h1 Foobar2000 WebUI
+
+    section.btn-toolbar
+        section#controls.btn-group
+            each action in actions
+                button(id=action data-action=action class="btn btn-default btn-lg")
+                    span(class="glyphicon glyphicon-" + icons[action])
+        section#volume.btn-group
+            button(data-action="mute" class="btn btn-default btn-lg")
+                span(class="glyphicon glyphicon-volume-off")
+            button(data-action="voldown" class="btn btn-default btn-lg")
+                span(class="glyphicon glyphicon-volume-down")
+            button(data-action="volup" class="btn btn-default btn-lg")
+                span(class="glyphicon glyphicon-volume-up")
+            button#volumeLevel(class="btn btn-default btn-lg" disabled) 0.0db
+
+    section#trackInfo(class="panel panel-default top-buffer")
+        div.panel-heading
+            h3.panel-title Now playing
+        ul.list-group
+            li.list-group-item
+                span(class="glyphicon glyphicon-user")
+                span#artist.list-data
+            li.list-group-item
+                span(class="glyphicon glyphicon-record")
+                span#album.list-data
+            li.list-group-item
+                span(class="glyphicon glyphicon-music")
+                span#track.list-data
+            li.list-group-item
+                span(class="glyphicon glyphicon-time")
+                span#secondsPlayed
+                span.separator /
+                span#trackLength
+
+    section(id="status" class="alert")
