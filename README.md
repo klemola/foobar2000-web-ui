@@ -49,6 +49,8 @@ Websocket connection (track information, volume) doesn't work on Internet Explor
 
 ### Known issues
 
+Foo_controlserver doesn't update track status if it's playing a track it can't "follow". This happens if the user queues tracks from media library and not from a playlist, or "cursor follows playback" option is not enabled in Foobar2000. Since this is a bug / missing feature in the component, I can't fix the issue.
+
 I will add issues to the issue tracker for things that I'd like to improve or are not working yet.
 
 ### Planned features
