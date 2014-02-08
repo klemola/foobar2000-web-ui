@@ -44,15 +44,12 @@ function parseControlData(text){
 
     lines = text.split('\r\n');
 
+    //handle message type 1
+    if(lines.length === 4) return;
+
     //handle message type 1 + 2 combo
     if(lines.length === 6){
         trackInfo = lines.pop(4).split(config.CONTROL_SERVER_MESSAGE_SEPARATOR);
-    }
-    //handle message type 1
-    else if(lines.length > 2){
-        return {
-            info: 'Connected to Foobar control server.'
-        };
     }
     
     //handle message type 2
@@ -104,6 +101,11 @@ function startConnection(socket){
     socket.on('disconnect', function(){
         console.log('Web client disconnected', socket.id);
         client.end();
+    });
+
+    socket.on('updateStatus', function(){
+        console.log('updateStatus command received from client');
+        client.write('trackinfo' + '\r\n');
     });
 }
 

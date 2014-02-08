@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
     var API_PATH = '/command';
     var playPauseButton = $('#playpause');
     var trackInfo = {
@@ -62,11 +63,13 @@ $(document).ready(function(){
         statusElement.attr('class', 'alert alert-' + classSuffix);
         
         if (status === 'disconnect'){
+            timer.stop();
             statusElement.html(disconnectMessage);
             statusElement.fadeIn();
         }else if (status === 'reconnect'){
             statusElement.html(reconnectMessage);
-            window.setTimeout(function(){
+            socket.emit('updateStatus');
+            setTimeout(function(){
                 statusElement.fadeOut();
             }, 4000);
         }
@@ -95,7 +98,9 @@ $(document).ready(function(){
 
     function updateTrackInfo(trackData){
         for (var key in trackInfo){
-            trackInfo[key].html(trackData[key]);
+            if (trackInfo.hasOwnProperty(key)){
+                trackInfo[key].html(trackData[key]);
+            }
         }
         var trackNumberElement = $('<span>').html(trackData.trackNumber + ' ').addClass('track-number');
         $('#track').prepend(trackNumberElement);
@@ -130,6 +135,7 @@ $(document).ready(function(){
         if (date.getUTCHours()) time.unshift(date.getUTCHours());
         return time.join(':');
     }
+
 });
 
 function pad(number) {
