@@ -4,9 +4,9 @@
 
 Foobar2000 web UI application consists of two parts:
 
-- A Node.js server that controls Foobar2000 music player using [native cli commands](http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Commandline_Guide) and [foo_controlserver component](https://code.google.com/p/foo-controlserver/) (a tcp/ip server for Foobar2000)
+- A Node.js server that controls Foobar2000 music player using [native CLI commands](http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Commandline_Guide) and [foo_controlserver component](https://code.google.com/p/foo-controlserver/) (a tcp/ip server for Foobar2000)
 
-- A javascript-driven web application that allows the user to send basic Foobar2000 playback commands and adjust application volume level. Information about the track that is currently playing is also displayed and automatically updated when the track or playback status changes. Essentially the web UI mirrors Foobar2000's native UI.
+- A javascript-driven web application that allows the user to send basic Foobar2000 playback commands and adjust application volume level. Information about the track that is currently playing is also displayed and automatically updated when the track or playback status changes.
 
 ![ScreenShot](/doc/screenshot.png)
 
@@ -31,7 +31,7 @@ Since Foobar2000 is only available for Windows, other operating systems are not 
 
 ## Starting the server
 
-- run command `npm server` or `node app.js`
+- run command `npm start` or `node app.js`
 
 ## Extra information
 
