@@ -7,10 +7,12 @@ var PORT = require('./config.js').WEB_SERVER_PORT;
 var app = express();
 var server = require('http').createServer(app);
 
-app.configure(function(){
+app.configure(function() {
     app.set('views', __dirname + '/src/templates');
     app.set('view engine', 'jade');
-    app.set('view options', { pretty: true });
+    app.set('view options', {
+        pretty: true
+    });
 
     app.use(express.bodyParser());
     app.use(express.methodOverride());
@@ -21,14 +23,14 @@ app.configure(function(){
     app.locals.pretty = true;
 });
 
-app.configure('development', function(){
+app.configure('development', function() {
     app.use(express.errorHandler({
         dumpExceptions: true,
         showStack: true
     }));
 });
 
-app.configure('production', function(){
+app.configure('production', function() {
     app.use(express.errorHandler());
 });
 

@@ -2,23 +2,23 @@ var net = require('net');
 var config = require('../config.js');
 var client;
 var controlNumbers = {
-    status : {
-        'playing' : 111,
-        'stopped' : 112,
-        'paused' : 113,
-        'volume' : 222,
-        'info' : 999,
+    status: {
+        'playing': 111,
+        'stopped': 112,
+        'paused': 113,
+        'volume': 222,
+        'info': 999,
     },
-    getStatus : function(code){
-        for (var status in this.status){
-            if (this.status[status] === code){
+    getStatus: function(code) {
+        for (var status in this.status) {
+            if (this.status[status] === code) {
                 return status;
             }
         }
     }
 };
 
-function parseControlData(text){
+function parseControlData(text) {
     var lines;
     var messageData = {};
     var statusFields = config.controlServerStatusFields;
@@ -45,29 +45,29 @@ function parseControlData(text){
     lines = text.split('\r\n');
 
     //handle message type 1
-    if(lines.length === 4) return;
+    if (lines.length === 4) return;
 
     //handle message type 1 + 2 combo
-    if(lines.length === 6){
+    if (lines.length === 6) {
         trackInfo = lines.pop(4).split(config.CONTROL_SERVER_MESSAGE_SEPARATOR);
     }
-    
+
     //handle message type 2
     trackInfo = trackInfo || lines[0].split(config.CONTROL_SERVER_MESSAGE_SEPARATOR);
     statusNumber = parseInt(trackInfo[0]);
 
-    if(statusNumber ===  controlNumbers.status.volume){
+    if (statusNumber === controlNumbers.status.volume) {
         return {
-            status : 'volume',
-            value : trackInfo[1]
+            status: 'volume',
+            value: trackInfo[1]
         };
     }
-    
+
     var status = controlNumbers.getStatus(statusNumber);
     messageData[statusFields[0]] = status;
 
-    for(var i=1;i<statusFields.length;i++){
-        if (statusFields[i]){
+    for (var i = 1; i < statusFields.length; i++) {
+        if (statusFields[i]) {
             messageData[statusFields[i]] = trackInfo[i];
         }
     }
@@ -75,21 +75,22 @@ function parseControlData(text){
     return messageData;
 }
 
-function startConnection(socket){
-    client = net.connect(
-        { port: config.CONTROL_SERVER_PORT },
-        function(){
+function startConnection(socket) {
+    client = net.connect({
+            port: config.CONTROL_SERVER_PORT
+        },
+        function() {
             console.log('Web client connected', socket.id);
             socket.emit('info', 'Foobar web server connection established.');
         }
     );
 
-    client.on('data', function(data){
+    client.on('data', function(data) {
         var message = parseControlData(data.toString('utf-8'));
-        if(message.status){
+        if (message.status) {
             socket.emit('foobarStatus', message);
         }
-        if(message.info){
+        if (message.info) {
             socket.emit('info', message.info);
         }
     });
@@ -98,30 +99,30 @@ function startConnection(socket){
         socket.emit('info', 'Connection to Foobar control server ended.');
     });
 
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function() {
         console.log('Web client disconnected', socket.id);
         client.end();
     });
 
-    socket.on('updateStatus', function(){
+    socket.on('updateStatus', function() {
         console.log('updateStatus command received from client');
         client.write('trackinfo' + '\r\n');
     });
 }
 
-exports.sendCommand = function(command){
-    if (command.indexOf('vol') !== -1){
+exports.sendCommand = function(command) {
+    if (command.indexOf('vol') !== -1) {
         command = 'vol ' + command.substring(3);
-    }else if(command === 'mute'){
+    } else if (command === 'mute') {
         command = 'vol ' + 'mute';
     }
     console.log('Control server command sent for action', command);
     client.write(command + '\r\n');
 };
 
-exports.initialize = function(server){
+exports.initialize = function(server) {
     var io = require('socket.io').listen(server, {
-        'log level' : 2
+        'log level': 2
     });
     io.sockets.on('connection', startConnection);
 };
