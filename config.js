@@ -10,7 +10,7 @@ module.exports = {
     WEB_SERVER_PORT: 3000,
 
     //Change this IP tp DHCP or static IP if you want to be able to access the UI from your network (ex. 192.168.0.1).
-    SERVER_EXTERNAL_IP: '192.168.100.16',
+    SERVER_EXTERNAL_IP: '127.0.0.1',
 
     //By default foo_controlserver uses '|' as a separator, change if needed.
     CONTROL_SERVER_MESSAGE_SEPARATOR: '|',
