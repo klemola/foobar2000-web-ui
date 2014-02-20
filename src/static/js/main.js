@@ -48,8 +48,8 @@ $(document).ready(function() {
 
     function routeSocketMessage(message) {
         console.log('Received STATUS message', message);
-        if (message.status === 'volume') {
-            updateVolumeLevel(message.value);
+        if (message.volume) {
+            updateVolumeLevel(message.volume);
         } else {
             updatePlaybackStatus(message);
         }
@@ -77,7 +77,7 @@ $(document).ready(function() {
     }
 
     function updatePlaybackStatus(message) {
-        var status = message.status;
+        var status = message.state;
 
         if (currentTrack !== message.track) {
             currentTrack = message.track;
@@ -86,7 +86,6 @@ $(document).ready(function() {
 
         setTrackTimer(status, message);
         updatePlayBackControls(status);
-
     }
 
     function updatePlayBackControls(status) {
