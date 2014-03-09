@@ -1,7 +1,5 @@
 # Foobar2000 web UI
 
-## What's this?
-
 Foobar2000 web UI application consists of two parts:
 
 - A Node.js server that controls Foobar2000 music player using [native CLI commands](http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Commandline_Guide) and [foo_controlserver component](https://code.google.com/p/foo-controlserver/) (a tcp/ip server for Foobar2000)
@@ -31,13 +29,13 @@ Since Foobar2000 is only available for Windows, other operating systems are not 
 
 ## Starting the server
 
+- start Foobar2000
+- navigate to this project's folder in terminal
 - run command `npm start` or `node app.js`
 
-## Extra information
+## Web application browser support
 
-### Web application browser support
-
-Web UI was tested on newest stable version of 
+Web UI was tested on newest stable version of
 - Google Chrome
 - Firefox
 - Internet Explorer
@@ -47,13 +45,13 @@ Generally speaking only modern browsers (less than two years old) are supported.
 
 Websocket connection (track information, volume) doesn't work on Internet Explorer 9 or older.
 
-### Known issues
+## Known issues
 
 Foo_controlserver doesn't update track status if it's playing a track it can't "follow". This happens if the user queues tracks from media library and not from a playlist, or "cursor follows playback" option is not enabled in Foobar2000. Since this is a bug / missing feature in the component, I can't fix the issue.
 
 I will add issues to the issue tracker for things that I'd like to improve or are not working yet.
 
-### Planned features
+## Planned features
 
 - track history
 - windows volume control
