@@ -2,6 +2,7 @@ var net = require('net');
 var config = require('../config.js');
 
 var client;
+var io;
 var VOLUME_CODE = 222;
 var INFO_CODE = 999;
 var statusCodes = {
@@ -103,8 +104,9 @@ exports.sendCommand = function(command) {
 };
 
 exports.initialize = function(server) {
-    var io = require('socket.io').listen(server, {
+    io = require('socket.io').listen(server, {
         'log level': 2
     });
     io.sockets.on('connection', startConnection);
+    return io;
 };

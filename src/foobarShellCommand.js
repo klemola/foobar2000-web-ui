@@ -4,7 +4,7 @@ var config = require('../config.js');
 var foobarPath = (config.FOOBAR_PATH.indexOf(config.FOOBAR_PATH.length - 1) === '/') ? config.FOOBAR_PATH : config.FOOBAR_PATH + '/';
 
 if (fs.readdirSync(foobarPath).indexOf('foobar2000.exe') === -1) {
-	throw new Error('Foobar2000.exe was not found in the path specified in config.js');
+	throw 'Foobar2000.exe was not found in the path specified in config.js';
 }
 
 console.log('Found foobar2000 executable. Ready to send commands.');
