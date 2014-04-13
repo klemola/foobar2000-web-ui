@@ -1,3 +1,8 @@
+var IPList = require('./src/localIPList').IPList;
+
+//defines whether local IP is parsed from network interfaces or set manually
+var guessIP = true;
+
 module.exports = {
 
     //foobar2000.exe location in your filesystem. Slash after last folder name optional.
@@ -9,8 +14,9 @@ module.exports = {
     //Web UI port.
     WEB_SERVER_PORT: 3000,
 
-    //Change this IP tp DHCP or static IP if you want to be able to access the UI from your network (ex. 192.168.0.1).
-    SERVER_EXTERNAL_IP: '127.0.0.1',
+    //Defines the IP that is used to access the UI from your network (ex. 192.168.0.1).
+    //By default the IP is parsed from network interfaces (see above), but it can also be set up manually.
+    SERVER_EXTERNAL_IP: (guessIP) ? IPList[0] : '127.0.0.1',
 
     //By default foo_controlserver uses '|' as a separator, change if needed.
     CONTROL_SERVER_MESSAGE_SEPARATOR: '|',
