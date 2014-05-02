@@ -19,19 +19,16 @@ Since Foobar2000 is only available for Windows, other operating systems are not 
 
 ## Installation
 
-- install [Foobar2000](http://www.foobar2000.org/) player (though if you've read this far I think you might not need to)
-- install [Node.js](http://nodejs.org/) (I recommend the Windows auto-installer)
-- download [foo_controlserver](https://code.google.com/p/foo-controlserver/downloads/list) component and copy the .dll to "components" folder in Foobar2000 installation directory (restart foobar2000 if needed)
-- download this repository and extract it somewhere
-- open config.js in an editor and make necessary changes (if needed)
-- navigate to the directory of this project using CMD or PowerShell (command line utility)
+- download [foo_controlserver](https://code.google.com/p/foo-controlserver/downloads/list) component and copy the .dll to "components" directory in Foobar2000 installation directory (restart foobar2000 if needed)
+- clone this repository
+- (optional) open config.js in an editor and make necessary changes
+- navigate to the directory of this project using terminal (cmd.exe) or PowerShell
 - run command `nmp install`
 
 ## Starting the server
 
 - start Foobar2000
-- navigate to this project's folder in terminal
-- run command `npm start` or `node app.js`
+- run command `npm start` in terminal
 
 ## Web application browser support
 
