@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-    var API_PATH = '/command';
     var playPauseButton = $('#playpause');
     var trackInfo = {
         artist: $('#artist'),
@@ -12,6 +11,7 @@ $(document).ready(function() {
         secondsPlayed: $('#secondsPlayed'),
         trackLength: $('#trackLength')
     };
+    var launchFoobarButton = $('#launchFoobar');
     var currentTrack;
     var timer = $.timer(updateTrackTime, 1000, false);
     var secondsPlayed = 0;
@@ -21,6 +21,10 @@ $(document).ready(function() {
         .on('info', function(data) {
             console.log('Received INFO message\n' + data);
         })
+        .on('error', function(data) {
+            console.log('ERROR: ' + data);
+            updateConnectionStatus('disconnect', true);
+        })
         .on('disconnect', function() {
             updateConnectionStatus('disconnect');
         })
@@ -28,23 +32,13 @@ $(document).ready(function() {
             updateConnectionStatus('reconnect');
         });
 
-    $('button').on('click touchend', function(event) {
+    $('#controls button').on('click touchend', function(event) {
         event.preventDefault();
-        var action = $(this).data().action;
+        var command = $(this).data().action;
 
-        $.post(
-            API_PATH, {
-                'action': action
-            },
-            handleCommandResponse
-        );
-
-        $(this).blur(); //fixes persisting focus after a click
+        socket.emit('foobarCommand', command);
+        $(this).blur();
     });
-
-    function handleCommandResponse(data) {
-        console.log(data);
-    }
 
     function routeSocketMessage(message) {
         console.log('Received STATUS message', message);
@@ -55,20 +49,26 @@ $(document).ready(function() {
         }
     }
 
-    function updateConnectionStatus(status) {
+    function updateConnectionStatus(status, userAction) {
         var disconnectMessage = 'Disconnected from server. Attempting to reconnect.';
         var reconnectMessage = 'Reconnected to the server.';
         var statusElement = $('#status');
+        var statusTextElement = $('#statusText');
         var classSuffix = (status === 'disconnect') ? 'danger' : 'success';
 
         statusElement.attr('class', 'alert alert-' + classSuffix);
+        launchFoobarButton.attr('disabled', true);
+
+        if (userAction) {
+            launchFoobarButton.attr('disabled', false);
+        }
 
         if (status === 'disconnect') {
             timer.stop();
-            statusElement.html(disconnectMessage);
+            statusTextElement.html(disconnectMessage);
             statusElement.fadeIn();
         } else if (status === 'reconnect') {
-            statusElement.html(reconnectMessage);
+            statusTextElement.html(reconnectMessage);
             socket.emit('updateStatus');
             setTimeout(function() {
                 statusElement.fadeOut();

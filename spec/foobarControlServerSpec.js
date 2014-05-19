@@ -4,12 +4,12 @@ describe('Foobar web UI server', function() {
 	var express = require('express');
 	var app = express();
 	var server = require('http').createServer(app);
-	var controlServer = require('../src/foobarControlServer');
+	var websocketServer = require('../src/websocketServer');
 
 	server.listen(9999);
 
 	it('should initialize a websocket server', function(done) {
-		var foobarServer = controlServer.initialize(server);
+		var foobarServer = websocketServer(server);
 		expect(foobarServer).toBeDefined();
 		server.close();
 		done();

@@ -8,6 +8,9 @@ module.exports = {
     //foobar2000.exe location in your filesystem. Slash after last folder name optional.
     FOOBAR_PATH: 'C:/Program Files (x86)/foobar2000',
 
+    //If set to true, server start Foobar2000 if it's not started yet.
+    startFoobar2000Automatically: true,
+
     //foo_controlserver port (default is '3333' in component configuration).
     CONTROL_SERVER_PORT: 3333,
 
