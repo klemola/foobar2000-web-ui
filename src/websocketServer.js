@@ -12,7 +12,7 @@ module.exports = function(server) {
 };
 
 function newConnection(socket) {
-    controlServer.startConnection(socket);
+    controlServer.connect(socket);
 
     socket.on('disconnect', function() {
         console.log('Web client disconnected', socket.id);
@@ -24,10 +24,16 @@ function newConnection(socket) {
         controlServer.write('trackinfo' + '\r\n');
     });
 
-    socket.on('foobarCommand', processCommand);
+    socket.on('foobarCommand', function(command) {
+        processCommand(command, socket);
+    });
+
+    socket.on('resetControlServer', function() {
+        controlServer.connect(socket);
+    });
 }
 
-function processCommand(command) {
+function processCommand(command, socket) {
     var vol = volumeCommand(command);
 
     console.log('COMMAND RECEIVED, command: %s', command);
@@ -35,13 +41,16 @@ function processCommand(command) {
         controlServer.sendCommand(vol);
     } else if (command === 'launchFoobar') {
         foobarCommand.launchFoobar();
+        setTimeout(function() {
+            socket.emit('foobarStarted');
+            socket.broadcast.emit('foobarStarted');
+        }, 3000);
     } else {
         foobarCommand.sendCommand(command);
     }
 }
 
 function volumeCommand(command) {
-
     if (command.indexOf('vol') !== -1) {
         return 'vol ' + command.substring(3);
     } else if (command === 'mute') {

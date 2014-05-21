@@ -10,22 +10,20 @@ if (fs.readdirSync(foobarPath).indexOf('foobar2000.exe') === -1) {
 console.log('Found foobar2000 executable. Ready to send commands.');
 console.log('----------------------------------------------------');
 
-exports.sendCommand = function(command, callback) {
+exports.sendCommand = function(command) {
     var foobarCommand = 'foobar2000.exe /' + command;
 
     exec(
         foobarCommand, {
             cwd: foobarPath
-        },
-        callback
+        }
     );
 };
 
-exports.launchFoobar = function(callback) {
+exports.launchFoobar = function() {
     exec(
         'foobar2000.exe', {
             cwd: foobarPath
-        },
-        callback
+        }
     );
 };

@@ -15,26 +15,42 @@ $(document).ready(function() {
     var currentTrack;
     var timer = $.timer(updateTrackTime, 1000, false);
     var secondsPlayed = 0;
+    var foobarWasClosed = false;
 
     var socket = io.connect('http://' + SERVER_ADDRESS + ':' + SERVER_PORT);
     socket.on('foobarStatus', routeSocketMessage)
         .on('info', function(data) {
             console.log('Received INFO message\n' + data);
         })
-        .on('error', function(data) {
+        .on('controlServerError', function(data) {
             console.log('ERROR: ' + data);
+            foobarWasClosed = true;
             updateConnectionStatus('disconnect', true);
+            launchFoobarButton.attr('disabled', false);
+        })
+        .on('foobarStarted', function() {
+            launchFoobarButton.html('Launch Foobar2000');
+            socket.socket.reconnect();
         })
         .on('disconnect', function() {
             updateConnectionStatus('disconnect');
         })
         .on('reconnect', function() {
             updateConnectionStatus('reconnect');
+            if (foobarWasClosed) {
+                socket.emit('resetControlServer');
+                foobarWasClosed = false;
+            }
         });
 
     $('#controls button').on('click touchend', function(event) {
         event.preventDefault();
         var command = $(this).data().action;
+
+        if (command === 'launchFoobar') {
+            launchFoobarButton.html('Starting...');
+            launchFoobarButton.attr('disabled', true);
+        }
 
         socket.emit('foobarCommand', command);
         $(this).blur();
@@ -49,23 +65,19 @@ $(document).ready(function() {
         }
     }
 
-    function updateConnectionStatus(status, userAction) {
+    function updateConnectionStatus(status, foobarClosed) {
         var disconnectMessage = 'Disconnected from server. Attempting to reconnect.';
+        var foobarClosedMessage = 'Foobar2000 was closed.';
         var reconnectMessage = 'Reconnected to the server.';
         var statusElement = $('#status');
         var statusTextElement = $('#statusText');
         var classSuffix = (status === 'disconnect') ? 'danger' : 'success';
 
         statusElement.attr('class', 'alert alert-' + classSuffix);
-        launchFoobarButton.attr('disabled', true);
-
-        if (userAction) {
-            launchFoobarButton.attr('disabled', false);
-        }
 
         if (status === 'disconnect') {
             timer.stop();
-            statusTextElement.html(disconnectMessage);
+            statusTextElement.html(foobarClosed ? foobarClosedMessage : disconnectMessage);
             statusElement.fadeIn();
         } else if (status === 'reconnect') {
             statusTextElement.html(reconnectMessage);

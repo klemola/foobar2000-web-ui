@@ -3,7 +3,15 @@ var config = require('../config');
 var parseMessage = require('./parseMessage');
 var client;
 
-exports.startConnection = function(socket) {
+function write(message) {
+    try {
+        client.write(message);
+    } catch (error) {
+        console.log('Could not reach control server.', error);
+    }
+}
+
+exports.connect = function(socket) {
     client = net.connect({
             port: config.CONTROL_SERVER_PORT
         },
@@ -28,12 +36,12 @@ exports.startConnection = function(socket) {
     client.on('end', function(error) {
         if (error) console.log(error);
         console.log('Control server connection ended', socket.id);
-        socket.emit('error', 'Connection to Foobar control server ended.');
+        socket.emit('controlServerError', 'Connection to Foobar control server ended.');
     });
 };
 
 exports.sendCommand = function(command) {
-    client.write(command + '\r\n');
+    write(command + '\r\n');
     console.log('Control server command sent for action %s', command);
 };
 
@@ -41,6 +49,4 @@ exports.endConnection = function() {
     client.end();
 };
 
-exports.write = function(message) {
-    client.write(message);
-};
+exports.write = write;
