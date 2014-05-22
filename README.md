@@ -4,11 +4,27 @@ Foobar2000 web UI application consists of two parts:
 
 - A Node.js server that controls Foobar2000 music player using [native CLI commands](http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Commandline_Guide) and [foo_controlserver component](https://code.google.com/p/foo-controlserver/) (a tcp/ip server for Foobar2000)
 
-- A javascript-driven web application that allows the user to send basic Foobar2000 playback commands and adjust application volume level. Information about the track that is currently playing is also displayed and automatically updated when the track or playback status changes.
+- A web application that allows the user to send basic Foobar2000 playback commands and adjust application volume level. Information about the track that is currently playing is also displayed and automatically updated when the track or playback status changes.
 
 ![ScreenShot](/doc/screenshot.png)
 
 Multiple devices can connect to the server using the local network, and it's up to the user to block unwanted connections. By default the foobar plugin and server allow any connection from the network.
+
+
+## Features
+
+- supports all basic Foobar2000 controls
+    - playback (play/pause/stop, next/prev and random track)
+    - volume (mute, up/down)
+- current track is displayed (along with artist/album information)
+    - the track view is updated automatically when track changes
+- notifications about server and Foobar2000 status
+    - user is notified is the server disconnects
+    - user is notified when Foobar2000 application is closed
+        - user can start Foobar2000 from the UI
+- extremely fast and reactive UI
+    - no delay in controls
+    - volume and track status are updated real-time
 
 ## Requirements
 
@@ -30,6 +46,10 @@ Since Foobar2000 is only available for Windows, other operating systems are not 
 - start Foobar2000
 - run command `npm start` in terminal
 
+## Running tests
+
+- run command `npm test` in terminal
+
 ## Web application browser support
 
 Web UI was tested on newest stable version of
@@ -38,9 +58,7 @@ Web UI was tested on newest stable version of
 - Internet Explorer
 - Safari mobile (tested on iPad Mini Retina 2013)
 
-Generally speaking only modern browsers (less than two years old) are supported.
-
-Websocket connection (track information, volume) doesn't work on Internet Explorer 9 or older.
+Generally speaking only modern browsers are supported.
 
 ## Known issues
 
@@ -51,5 +69,5 @@ I will add issues to the issue tracker for things that I'd like to improve or ar
 ## Planned features
 
 - track history
-- windows volume control
 - album art through a web service (Discogs, Last.fm)
+- search music library and queue music / playlist
