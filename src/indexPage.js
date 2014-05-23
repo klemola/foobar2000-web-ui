@@ -7,13 +7,17 @@ var iconList = {
     'stop': 'stop',
     'prev': 'step-backward',
     'next': 'step-forward',
-    'rand': 'random'
+    'rand': 'random',
+    'mute': 'volume-off',
+    'voldown': 'volume-down',
+    'volup': 'volume-up'
 };
 
 module.exports = function(req, res) {
     res.render('index', {
         title: APP_TITLE,
-        actions: config.foobarActions,
+        playbackActions: config.playbackActions,
+        volumeActions: config.volumeActions,
         icons: iconList,
         serverConfig: {
             'serverAddress': config.SERVER_EXTERNAL_IP,

@@ -25,12 +25,18 @@ module.exports = {
     CONTROL_SERVER_MESSAGE_SEPARATOR: '|',
 
     //These actions correspond to buttons in UI. Defaults are what foobar supports and includes in it's native UI.
-    foobarActions: [
+    playbackActions: [
         'playpause',
         'stop',
         'prev',
         'next',
         'rand'
+    ],
+
+    volumeActions: [
+        'mute',
+        'voldown',
+        'volup'
     ],
 
     //These are human readable names for information that foo_controlserver sends with track data.
