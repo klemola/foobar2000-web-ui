@@ -4,18 +4,21 @@ block content
     header
         h1 Foobar2000 WebUI
 
-    section#controls.btn-toolbar
-        section.btn-group
-            each action in playbackActions
-                button(id=action data-action=action class="btn btn-default btn-lg")
-                    span(class="glyphicon glyphicon-" + icons[action])
-        section.btn-group
-            each action in volumeActions
-                button(id=action data-action=action class="btn btn-default btn-lg")
-                    span(class="glyphicon glyphicon-" + icons[action])
-            button#volumeLevel(class="btn btn-default btn-lg" disabled) 0.0db
+    section#controls(class="btn-toolbar row")
+        div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
+            section(class="btn-group")
+                each action in playbackActions
+                    button(id=action data-action=action class="btn btn-default btn-lg")
+                        span(class="glyphicon glyphicon-" + icons[action])
+        div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
+            section(class="btn-group")
+                each action in volumeActions
+                    button(id=action data-action=action class="btn btn-default btn-lg")
+                        span(class="glyphicon glyphicon-" + icons[action])
+                button#volumeLevel(class="btn btn-default btn-lg btn-double" disabled) 0.0db
 
-        button#launchFoobar(data-action="launchFoobar" class="btn btn-primary pull-right" disabled) Launch Foobar2000
+        div(class="col-xs-12 col-sm-2 col-md-4 col-lg-6")
+            button#launchFoobar(data-action="launchFoobar" class="btn btn-primary pull-right" disabled) Launch Foobar2000
 
     section#trackInfo(class="panel panel-default top-buffer")
         div.panel-heading

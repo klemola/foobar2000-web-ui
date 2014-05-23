@@ -17,3 +17,29 @@
 #status{
 	display:none;
 }
+
+@media (max-width: 768px) {
+    .btn-group{
+        margin-top:10px;
+        width:100%;
+    }
+
+    .btn-group .btn{
+        width:20%;
+    }
+
+    .btn-group .btn-double{
+        width:40%;
+    }
+
+    .btn.pull-right{
+        margin-top:10px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 350px){
+    h1{
+        font-size:28px;
+    }
+}
