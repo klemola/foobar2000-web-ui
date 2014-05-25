@@ -11,7 +11,9 @@ gulp.task('serverTests', function() {
 
 gulp.task('clientTests', function() {
     gulp.src('spec/client/runner.html')
-        .pipe(mochaPhantomJS());
+        .pipe(mochaPhantomJS({
+            reporter: 'spec'
+        }));
 });
 
 gulp.task('test', ['serverTests', 'clientTests']);
