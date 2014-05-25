@@ -1,3 +1,5 @@
+var expect = require('expect.js');
+
 /* global describe, it, expect */
 describe('Foobar web UI server', function() {
 
@@ -10,7 +12,7 @@ describe('Foobar web UI server', function() {
 
 	it('should initialize a websocket server', function(done) {
 		var foobarServer = websocketServer(server);
-		expect(foobarServer).toBeDefined();
+		expect(foobarServer).to.be.ok();
 		server.close();
 		done();
 	});
@@ -31,7 +33,7 @@ describe('parseMessage', function() {
 		var expectedMessage = lines.join('\n') + '\n';
 		var parsedMessage = parseMessage.parseControlData(message);
 
-		expect(parsedMessage.info).toEqual(expectedMessage);
+		expect(parsedMessage.info).to.be(expectedMessage);
 	});
 
 	it('should parse a playback status message', function() {
@@ -52,28 +54,28 @@ describe('parseMessage', function() {
 		};
 		var parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status).toEqual(expectedTrackData);
+		expect(parsedObject.status).to.eql(expectedTrackData);
 	});
 
 	it('should set state "playing" for code "111"', function() {
 		var message = '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
 		var parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status.state).toEqual('playing');
+		expect(parsedObject.status.state).to.be('playing');
 	});
 
 	it('should set state "stopped" for code "112"', function() {
 		var message = '112|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
 		var parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status.state).toEqual('stopped');
+		expect(parsedObject.status.state).to.be('stopped');
 	});
 
 	it('should set state "paused" for code "113"', function() {
 		var message = '113|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
 		var parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status.state).toEqual('paused');
+		expect(parsedObject.status.state).to.be('paused');
 	});
 
 	it('should parse volume change message', function() {
@@ -85,6 +87,6 @@ describe('parseMessage', function() {
 			}
 		};
 
-		expect(parsedObject).toEqual(mockVolumeResponse);
+		expect(parsedObject).to.eql(mockVolumeResponse);
 	});
 });
