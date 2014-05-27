@@ -11,9 +11,9 @@
     "trailing": true,
     "smarttabs": true,
     "globals": {
-        "$": false,
-        "jQuery": false,
+        "angular": false,
         "io": false,
+        "FBUI": false,
         "SERVER_ADDRESS": false,
         "SERVER_PORT": false
     }

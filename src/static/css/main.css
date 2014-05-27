@@ -14,8 +14,13 @@
 	margin-top:20px;
 }
 
-#status{
-	display:none;
+.debug{
+    background:#FFFFB7;
+}
+
+.debug span{
+    padding:3px;
+    margin:0 3px;
 }
 
 @media (max-width: 768px) {
