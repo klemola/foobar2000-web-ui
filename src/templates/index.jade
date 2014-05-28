@@ -14,7 +14,7 @@ block content
             section(class="btn-group")
                 each action in playbackActions
                     button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="disconnected")
-                        span(class="glyphicon glyphicon-" + icons[action])
+                        span(id="#{action}" class="glyphicon glyphicon-" + icons[action])
         div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
             section(class="btn-group")
                 each action in volumeActions

@@ -4,3 +4,7 @@ var FBUI = angular.module('FBUI', [
     'FBUIServices',
     'FBUIFilters'
 ]);
+
+angular.element(document.getElementById('playpause'))
+    .removeClass('glyphicon-play')
+    .addClass('{{(playBackStatus === "playing") && "glyphicon-pause" || "glyphicon-play"}}');
