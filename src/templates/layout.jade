@@ -10,7 +10,7 @@ html(lang="en" ng-app="FBUI")
         link(rel="stylesheet", type="text/css", href="/css/bootstrap-theme.min.css")
         link(rel="stylesheet", type="text/css", href="/css/main.css")
 
-    body.container(ng-controller="UIController")
+    body.container(ng-controller='ConnectivityController')
         block content
 
     -var port = serverConfig.port; var address = serverConfig.serverAddress;

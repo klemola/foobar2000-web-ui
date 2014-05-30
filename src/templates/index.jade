@@ -4,12 +4,7 @@ block content
     header
         h1 Foobar2000 WebUI
 
-    section.debug
-        span status: {{playBackStatus}}
-        span disconnected: {{disconnected}}
-        span foobarIsClosed: {{foobarIsClosed}}
-
-    section(class="btn-toolbar row")
+    section(class="btn-toolbar row" ng-controller="PlayBackController")
         div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
             section(class="btn-group")
                 each action in playbackActions
@@ -26,7 +21,7 @@ block content
             button#launchFoobar(ng-click!="sendCommand('launchFoobar')" class="btn btn-primary pull-right" ng-disabled="!foobarIsClosed")
                 | Launch Foobar2000
 
-    section(class="panel panel-default top-buffer")
+    section(class="panel panel-default top-buffer" ng-controller="TrackInfoController")
         div.panel-heading
             h3.panel-title Now playing
         ul.list-group

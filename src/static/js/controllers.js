@@ -1,59 +1,85 @@
 var FBUIControllers = angular.module('FBUIControllers', []);
 
-FBUIControllers.controller('UIController', [
-    '$scope', '$interval', 'ControlServerSocket',
-    function($scope, $interval, ControlServerSocket) {
-        $scope.disconnected = false;
-        $scope.foobarIsClosed = false;
-        $scope.millisecondsPlayed = 0;
+FBUIControllers.controller('PlayBackController', [
+    '$scope', 'PlayBackStatus',
+    function($scope, PlayBackStatus) {
         $scope.playBackStatus = 'stopped';
         $scope.volumeLevel = '0.0db';
-        $scope.currentTrack = {};
+
+        $scope.$on('volumeLevel:change', function() {
+            $scope.volumeLevel = PlayBackStatus.volumeLevel;
+        });
+
+        $scope.$on('playBackStatus:change', function() {
+            $scope.playBackStatus = PlayBackStatus.playBackStatus;
+        });
+    }
+]);
+
+FBUIControllers.controller('TrackInfoController', [
+    '$scope', '$interval', 'PlayBackStatus',
+    function($scope, $interval, PlayBackStatus) {
+        $scope.currentTrack = null;
+        $scope.millisecondsPlayed = 0;
         var timer;
 
-        $scope.$watch('playBackStatus', function(newValue, oldValue) {
-            if (newValue === 'playing') {
+        $scope.$on('currentTrack:change', function(event, args) {
+            if ($scope.currentTrack && $scope.currentTrack.track !== args.newTrack) {
+                $interval.cancel(timer);
+            }
+            $scope.currentTrack = PlayBackStatus.currentTrack;
+        });
+
+        $scope.$on('playBackStatus:change', function(event, args) {
+            $scope.millisecondsPlayed = $scope.currentTrack.secondsPlayed * 1000;
+
+            if (args.newStatus === 'playing') {
                 timer = $interval(function() {
                     $scope.millisecondsPlayed += 1000;
                 }, 1000);
-            } else if (oldValue === 'playing') {
+            } else if (args.oldStatus === 'playing') {
                 $interval.cancel(timer);
             }
         });
+    }
+]);
 
-        ControlServerSocket.on('foobarStatus', onFoobarStatusChange);
-        ControlServerSocket.on('info', onInfo);
-        ControlServerSocket.on('controlServerError', onError);
-        ControlServerSocket.on('foobarStarted', foobarWasStarted);
-        ControlServerSocket.on('disconnect', disconnectedFromServer);
-        ControlServerSocket.on('reconnect', reconnectedToServer);
+FBUIControllers.controller('ConnectivityController', [
+    '$scope', 'ControlServerSocket', 'ConnectionStatus', 'PlayBackStatus',
+    function($scope, ControlServerSocket, ConnectionStatus, PlayBackStatus) {
+        $scope.disconnected = false;
+        $scope.foobarIsClosed = false;
 
         $scope.sendCommand = function(action) {
             if (action === 'launchFoobar') {
-                $scope.foobarIsClosed = false;
+                ConnectionStatus.setFoobarStatus(true);
             }
 
             ControlServerSocket.emit('foobarCommand', action);
         };
 
+        $scope.$on('disconnected:change', function() {
+            $scope.disconnected = ConnectionStatus.disconnected;
+        });
+
+        $scope.$on('foobarIsClosed:change', function() {
+            $scope.foobarIsClosed = ConnectionStatus.foobarIsClosed;
+        });
+
+        ControlServerSocket.on('info', onInfo);
+        ControlServerSocket.on('disconnect', disconnectedFromServer);
+        ControlServerSocket.on('reconnect', reconnectedToServer);
+        ControlServerSocket.on('controlServerError', onError);
+        ControlServerSocket.on('foobarStarted', foobarWasStarted);
+        ControlServerSocket.on('foobarStatus', onFoobarStatusChange);
+
         function disconnectedFromServer() {
-            $scope.disconnected = true;
-            $scope.playBackStatus = 'stopped';
+            ConnectionStatus.setConnectionStatus(false);
+            PlayBackStatus.setPlayBackStatus('stopped');
         }
 
         function foobarWasStarted() {
-            $scope.disconnected = false;
-        }
-
-        function onFoobarStatusChange(message) {
-            console.log('Received STATUS message', message);
-
-            if (message.volume) {
-                var db = message.volume;
-                $scope.volumeLevel = (db === '-100.00') ? 'Muted' : db + 'db';
-            } else {
-                updatePlaybackStatus(message);
-            }
+            ConnectionStatus.setConnectionStatus(true);
         }
 
         function onInfo(data) {
@@ -62,29 +88,42 @@ FBUIControllers.controller('UIController', [
 
         function onError(data) {
             console.log('ERROR: ' + data);
-            $scope.disconnected = true;
-            $scope.foobarIsClosed = true;
-            $scope.playBackStatus = 'stopped';
+            ConnectionStatus.setConnectionStatus(false);
+            ConnectionStatus.setFoobarStatus(false);
+            PlayBackStatus.setPlayBackStatus('stopped');
+        }
+
+        function onFoobarStatusChange(message) {
+            console.log('Received STATUS message', message);
+
+            if (message.volume) {
+                var db = message.volume;
+                PlayBackStatus.setVolumeLevel(db);
+            } else {
+                updatePlayBackStatus(message);
+            }
+        }
+
+        function updatePlayBackStatus(newStatus) {
+            var oldStatus = PlayBackStatus.playBackStatus;
+            var currentTrack = oldStatus.currentTrack;
+
+            if (!currentTrack || currentTrack.track !== newStatus.track) {
+                var modifiedStatus = newStatus;
+                modifiedStatus.trackLength = parseInt(newStatus.trackLength, 10) * 1000;
+                PlayBackStatus.setCurrentTrack(modifiedStatus);
+            }
+
+            if (oldStatus.playBackStatus !== newStatus.state) {
+                PlayBackStatus.setPlayBackStatus(newStatus.state);
+            }
         }
 
         function reconnectedToServer() {
-            $scope.disconnected = false;
+            ConnectionStatus.setConnectionStatus(true);
 
             if ($scope.foobarIsClosed) {
                 ControlServerSocket.emit('resetControlServer');
-            }
-        }
-
-        function updatePlaybackStatus(message) {
-            $scope.millisecondsPlayed = parseInt(message.secondsPlayed, 10) * 1000;
-
-            if ($scope.currentTrack.track !== message.track) {
-                $scope.currentTrack = message;
-                $scope.currentTrack.trackLength = parseInt(message.trackLength, 10) * 1000;
-            }
-
-            if ($scope.playBackStatus !== message.state) {
-                $scope.playBackStatus = message.state;
             }
         }
     }
