@@ -3,16 +3,7 @@ var FBUIControllers = angular.module('FBUIControllers', []);
 FBUIControllers.controller('PlayBackController', [
     '$scope', 'PlayBackStatus',
     function($scope, PlayBackStatus) {
-        $scope.playBackStatus = 'stopped';
-        $scope.volumeLevel = '0.0db';
-
-        $scope.$on('volumeLevel:change', function() {
-            $scope.volumeLevel = PlayBackStatus.volumeLevel;
-        });
-
-        $scope.$on('playBackStatus:change', function() {
-            $scope.playBackStatus = PlayBackStatus.playBackStatus;
-        });
+        $scope.status = PlayBackStatus;
     }
 ]);
 
@@ -97,25 +88,9 @@ FBUIControllers.controller('ConnectivityController', [
             console.log('Received STATUS message', message);
 
             if (message.volume) {
-                var db = message.volume;
-                PlayBackStatus.setVolumeLevel(db);
+                PlayBackStatus.setVolumeLevel(message.volume);
             } else {
-                updatePlayBackStatus(message);
-            }
-        }
-
-        function updatePlayBackStatus(newStatus) {
-            var oldStatus = PlayBackStatus.playBackStatus;
-            var currentTrack = oldStatus.currentTrack;
-
-            if (!currentTrack || currentTrack.track !== newStatus.track) {
-                var modifiedStatus = newStatus;
-                modifiedStatus.trackLength = parseInt(newStatus.trackLength, 10) * 1000;
-                PlayBackStatus.setCurrentTrack(modifiedStatus);
-            }
-
-            if (oldStatus.playBackStatus !== newStatus.state) {
-                PlayBackStatus.setPlayBackStatus(newStatus.state);
+                PlayBackStatus.setPlayBackStatus(message);
             }
         }
 

@@ -42,11 +42,21 @@ FBUIServices.factory('PlayBackStatus', function($rootScope) {
 
         setPlayBackStatus: function(updatedStatus) {
             var oldStatus = this.playBackStatus;
-            this.playBackStatus = updatedStatus;
-            $rootScope.$broadcast('playBackStatus:change', {
-                newStatus: updatedStatus,
-                oldStatus: oldStatus
-            });
+            var currentTrack = this.currentTrack;
+
+            if (!currentTrack || currentTrack.track !== updatedStatus.track) {
+                var modifiedStatus = updatedStatus;
+                modifiedStatus.trackLength = parseInt(updatedStatus.trackLength, 10) * 1000;
+                this.setCurrentTrack(modifiedStatus);
+            }
+
+            if (oldStatus.playBackStatus !== updatedStatus.state) {
+                this.playBackStatus = updatedStatus.state;
+                $rootScope.$broadcast('playBackStatus:change', {
+                    newStatus: this.playBackStatus,
+                    oldStatus: oldStatus.playBackStatus
+                });
+            }
         },
 
         setVolumeLevel: function(db) {

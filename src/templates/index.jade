@@ -15,7 +15,7 @@ block content
                 each action in volumeActions
                     button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="disconnected")
                         span(class="glyphicon glyphicon-" + icons[action])
-                button(class="btn btn-default btn-lg btn-double" disabled) {{volumeLevel}}
+                button(class="btn btn-default btn-lg btn-double" disabled) {{status.volumeLevel}}
 
         div(class="col-xs-12 col-sm-2 col-md-4 col-lg-6")
             button#launchFoobar(ng-click!="sendCommand('launchFoobar')" class="btn btn-primary pull-right" ng-disabled="!foobarIsClosed")
