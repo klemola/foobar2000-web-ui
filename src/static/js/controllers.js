@@ -3,7 +3,7 @@ var FBUIControllers = angular.module('FBUIControllers', []);
 FBUIControllers.controller('PlayBackController', [
     '$scope', 'PlayBackStatus',
     function($scope, PlayBackStatus) {
-        $scope.status = PlayBackStatus;
+        $scope.foobarStatus = PlayBackStatus;
     }
 ]);
 
@@ -14,22 +14,21 @@ FBUIControllers.controller('TrackInfoController', [
         $scope.millisecondsPlayed = 0;
         var timer;
 
-        $scope.$on('currentTrack:change', function(event, args) {
-            if ($scope.currentTrack && $scope.currentTrack.track !== args.newTrack) {
+        $scope.$on('currentTrack:change', function() {
+            if ($scope.currentTrack) {
                 $interval.cancel(timer);
             }
             $scope.currentTrack = PlayBackStatus.currentTrack;
         });
 
-        $scope.$on('playBackStatus:change', function(event, args) {
-            $scope.millisecondsPlayed = $scope.currentTrack.secondsPlayed * 1000;
+        $scope.$on('playBackStatus:change', function(event, data) {
+            $scope.millisecondsPlayed = data.secondsPlayed * 1000;
+            $interval.cancel(timer);
 
-            if (args.newStatus === 'playing') {
+            if (data.newStatus === 'playing') {
                 timer = $interval(function() {
                     $scope.millisecondsPlayed += 1000;
                 }, 1000);
-            } else if (args.oldStatus === 'playing') {
-                $interval.cancel(timer);
             }
         });
     }
@@ -38,8 +37,7 @@ FBUIControllers.controller('TrackInfoController', [
 FBUIControllers.controller('ConnectivityController', [
     '$scope', 'ControlServerSocket', 'ConnectionStatus', 'PlayBackStatus',
     function($scope, ControlServerSocket, ConnectionStatus, PlayBackStatus) {
-        $scope.disconnected = false;
-        $scope.foobarIsClosed = false;
+        $scope.connectionStatus = ConnectionStatus;
 
         $scope.sendCommand = function(action) {
             if (action === 'launchFoobar') {
@@ -48,14 +46,6 @@ FBUIControllers.controller('ConnectivityController', [
 
             ControlServerSocket.emit('foobarCommand', action);
         };
-
-        $scope.$on('disconnected:change', function() {
-            $scope.disconnected = ConnectionStatus.disconnected;
-        });
-
-        $scope.$on('foobarIsClosed:change', function() {
-            $scope.foobarIsClosed = ConnectionStatus.foobarIsClosed;
-        });
 
         ControlServerSocket.on('info', onInfo);
         ControlServerSocket.on('disconnect', disconnectedFromServer);
@@ -97,7 +87,7 @@ FBUIControllers.controller('ConnectivityController', [
         function reconnectedToServer() {
             ConnectionStatus.setConnectionStatus(true);
 
-            if ($scope.foobarIsClosed) {
+            if (ConnectionStatus.foobarIsClosed) {
                 ControlServerSocket.emit('resetControlServer');
             }
         }

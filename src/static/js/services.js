@@ -35,9 +35,7 @@ FBUIServices.factory('PlayBackStatus', function($rootScope) {
 
         setCurrentTrack: function(track) {
             this.currentTrack = track;
-            $rootScope.$broadcast('currentTrack:change', {
-                newTrack: track.track
-            });
+            $rootScope.$broadcast('currentTrack:change');
         },
 
         setPlayBackStatus: function(updatedStatus) {
@@ -54,7 +52,7 @@ FBUIServices.factory('PlayBackStatus', function($rootScope) {
                 this.playBackStatus = updatedStatus.state;
                 $rootScope.$broadcast('playBackStatus:change', {
                     newStatus: this.playBackStatus,
-                    oldStatus: oldStatus.playBackStatus
+                    secondsPlayed: updatedStatus.secondsPlayed
                 });
             }
         },

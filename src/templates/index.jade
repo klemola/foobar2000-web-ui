@@ -8,17 +8,17 @@ block content
         div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
             section(class="btn-group")
                 each action in playbackActions
-                    button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="disconnected")
+                    button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="connectionStatus.disconnected")
                         span(id="#{action}" class="glyphicon glyphicon-" + icons[action])
         div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
             section(class="btn-group")
                 each action in volumeActions
-                    button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="disconnected")
+                    button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="connectionStatus.disconnected")
                         span(class="glyphicon glyphicon-" + icons[action])
-                button(class="btn btn-default btn-lg btn-double" disabled) {{status.volumeLevel}}
+                button(class="btn btn-default btn-lg btn-double" disabled) {{foobarStatus.volumeLevel}}
 
         div(class="col-xs-12 col-sm-2 col-md-4 col-lg-6")
-            button#launchFoobar(ng-click!="sendCommand('launchFoobar')" class="btn btn-primary pull-right" ng-disabled="!foobarIsClosed")
+            button#launchFoobar(ng-click!="sendCommand('launchFoobar')" class="btn btn-primary pull-right" ng-disabled="!connectionStatus.foobarIsClosed")
                 | Launch Foobar2000
 
     section(class="panel panel-default top-buffer" ng-controller="TrackInfoController")
@@ -42,7 +42,7 @@ block content
                 span.separator /
                 span {{currentTrack.trackLength | parseTime}}
 
-    section(class="alert alert-danger" ng-show="disconnected")
-        p {{foobarIsClosed ? 'Foobar2000 was closed.' : 'Disconnected from server. Attempting to reconnect.'}}
+    section(class="alert alert-danger" ng-show="connectionStatus.disconnected")
+        p {{connectionStatus.foobarIsClosed ? 'Foobar2000 was closed.' : 'Disconnected from server. Attempting to reconnect.'}}
 
     p {{currentTrack}}
