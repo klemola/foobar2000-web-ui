@@ -1,4 +1,5 @@
 var FBUI = angular.module('FBUI', [
+    'ngAnimate',
     'btford.socket-io',
     'FBUIControllers',
     'FBUIServices',

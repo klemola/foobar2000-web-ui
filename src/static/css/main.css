@@ -14,13 +14,22 @@
 	margin-top:20px;
 }
 
-.debug{
-    background:#FFFFB7;
+.alert.ng-hide-add, .alert.ng-hide-remove {
+  -webkit-transition:all linear 0.5s;
+  -moz-transition:all linear 0.5s;
+  -o-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+  display:block!important;
 }
 
-.debug span{
-    padding:3px;
-    margin:0 3px;
+.alert.ng-hide-add.ng-hide-add-active,
+.alert.ng-hide-remove {
+  opacity:0;
+}
+
+.alert.ng-hide-add,
+.alert.ng-hide-remove.ng-hide-remove-active {
+  opacity:1;
 }
 
 @media (max-width: 768px) {
