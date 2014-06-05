@@ -16,12 +16,12 @@ FBUIServices.factory('ConnectionStatus', function($rootScope) {
     var status = {
         disconnected: false,
         foobarIsClosed: false,
-        setFoobarStatus: function(isOpen) {
-            this.foobarIsClosed = !isOpen;
+        setFoobarIsClosed: function(isClosed) {
+            this.foobarIsClosed = isClosed;
             $rootScope.$broadcast('foobarIsClosed:change');
         },
-        setConnectionStatus: function(isConnected) {
-            this.disconnected = !isConnected;
+        setDisconnected: function(isDisconnected) {
+            this.disconnected = isDisconnected;
             $rootScope.$broadcast('disconnected:change');
         }
     };

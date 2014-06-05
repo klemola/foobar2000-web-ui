@@ -42,10 +42,6 @@ FBUIControllers.controller('ConnectivityController', [
         $scope.connectionStatus = ConnectionStatus;
 
         $scope.sendCommand = function(action) {
-            if (action === 'launchFoobar') {
-                ConnectionStatus.setFoobarStatus(true);
-            }
-
             ControlServerSocket.emit('foobarCommand', action);
         };
 
@@ -53,16 +49,12 @@ FBUIControllers.controller('ConnectivityController', [
         ControlServerSocket.on('disconnect', disconnectedFromServer);
         ControlServerSocket.on('reconnect', reconnectedToServer);
         ControlServerSocket.on('controlServerError', onError);
-        ControlServerSocket.on('foobarStarted', foobarWasStarted);
+        ControlServerSocket.on('foobarStarted', onFoobarStarted);
         ControlServerSocket.on('foobarStatus', onFoobarStatusChange);
 
         function disconnectedFromServer() {
-            ConnectionStatus.setConnectionStatus(false);
+            ConnectionStatus.setDisconnected(true);
             PlayBackStatus.setPlayBackStatus('stopped');
-        }
-
-        function foobarWasStarted() {
-            ConnectionStatus.setConnectionStatus(true);
         }
 
         function onInfo(data) {
@@ -71,8 +63,8 @@ FBUIControllers.controller('ConnectivityController', [
 
         function onError(data) {
             console.log('ERROR: ' + data);
-            ConnectionStatus.setConnectionStatus(false);
-            ConnectionStatus.setFoobarStatus(false);
+            ConnectionStatus.setDisconnected(true);
+            ConnectionStatus.setFoobarIsClosed(true);
             PlayBackStatus.setPlayBackStatus('stopped');
         }
 
@@ -86,12 +78,14 @@ FBUIControllers.controller('ConnectivityController', [
             }
         }
 
-        function reconnectedToServer() {
-            ConnectionStatus.setConnectionStatus(true);
+        function onFoobarStarted() {
+            reconnectedToServer();
+            ConnectionStatus.setFoobarIsClosed(false);
+            ControlServerSocket.emit('resetControlServer');
+        }
 
-            if (ConnectionStatus.foobarIsClosed) {
-                ControlServerSocket.emit('resetControlServer');
-            }
+        function reconnectedToServer() {
+            ConnectionStatus.setDisconnected(false);
         }
     }
 ]);
