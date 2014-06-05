@@ -8,6 +8,8 @@ FBUIFilters.filter('parseTime', function() {
         var hours;
         var timeUnits = [];
 
+        if (isNaN(ms)) return '00:00';
+
         remaining = ms / 1000;
         seconds = Math.floor(remaining % 60);
         remaining /= 60;
@@ -20,6 +22,7 @@ FBUIFilters.filter('parseTime', function() {
                 timeUnits.push(pad(item));
             }
         });
+
         return timeUnits.join(':');
     };
 });
