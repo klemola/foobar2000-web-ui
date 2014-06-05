@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(app, express) {
 
     app.configure(function() {

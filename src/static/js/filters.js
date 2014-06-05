@@ -1,3 +1,5 @@
+'use strict';
+
 var FBUIFilters = angular.module('FBUIFilters', []);
 
 FBUIFilters.filter('parseTime', function() {

@@ -1,3 +1,5 @@
+'use strict';
+
 var config = require('../config.js');
 var VOLUME_CODE = 222;
 var INFO_CODE = 999;

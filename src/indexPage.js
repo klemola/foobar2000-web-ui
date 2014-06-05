@@ -1,3 +1,5 @@
+'use strict';
+
 var APP_TITLE = 'Foobar2000 Webui';
 var config = require('../config');
 

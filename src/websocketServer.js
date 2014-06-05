@@ -1,3 +1,5 @@
+'use strict';
+
 var controlServer = require('./foobarControlServer');
 var foobarCommand = require('./foobarShellCommand');
 var io = require('socket.io');

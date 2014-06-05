@@ -13,8 +13,10 @@
     "globals": {
         "angular": false,
         "io": false,
-        "FBUI": false,
+        "FBUI": true,
         "SERVER_ADDRESS": false,
         "SERVER_PORT": false
-    }
+    },
+    "strict": true,
+    "globalstrict": true
 }

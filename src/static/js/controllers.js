@@ -1,3 +1,5 @@
+'use strict';
+
 var FBUIControllers = angular.module('FBUIControllers', []);
 
 FBUIControllers.controller('PlayBackController', [

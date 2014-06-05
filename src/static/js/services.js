@@ -1,3 +1,5 @@
+'use strict';
+
 var FBUIServices = angular.module('FBUIServices', []);
 
 FBUIServices.factory('ControlServerSocket', function(socketFactory) {
