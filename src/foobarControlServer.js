@@ -35,11 +35,13 @@ exports.connect = function(socket) {
         }
     });
 
-    client.on('end', function(error) {
-        if (error) console.log(error);
-        console.log('Control server connection ended', socket.id);
+    client.on('end', emitErrorToClient);
+    client.on('error', emitErrorToClient);
+
+    function emitErrorToClient(error) {
+        console.log('Connection to control server was closed. Foobar2000 was possibly closed.', socket.id, error);
         socket.emit('controlServerError', 'Connection to Foobar control server ended.');
-    });
+    }
 };
 
 exports.sendCommand = function(command) {
