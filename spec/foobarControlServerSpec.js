@@ -1,6 +1,9 @@
+/* global describe, it */
+'use strict';
+
 var expect = require('expect.js');
 
-/* global describe, it, expect */
+
 describe('Foobar web UI server', function() {
 
 	var express = require('express');
