@@ -2,16 +2,22 @@
 'use strict';
 
 describe('FBUI Controllers', function() {
+    var scope;
 
-    beforeEach(module('FBUIServices'));
-    beforeEach(module('FBUIControllers'));
+    beforeEach(function() {
+        module('FBUIServices');
+        module('FBUIControllers');
+        inject(function($rootScope) {
+            scope = $rootScope.$new();
+        });
+    });
 
     describe('PlayBackController', function() {
 
         it('should have default values from PlayBackStatus service in $scope',
-            inject(function($rootScope, $controller) {
-                var scope = $rootScope.$new();
-                var ctrl = $controller('PlayBackController', {
+            inject(function($controller) {
+
+                $controller('PlayBackController', {
                     $scope: scope
                 });
 
@@ -21,5 +27,22 @@ describe('FBUI Controllers', function() {
             })
         );
     });
+
+    describe('TrackInfoController', function() {
+
+        it('should start the timer when playback status is "playing"', function(){
+
+        });
+
+        it('should pause the timer when playback status is "paused"', function(){
+
+        });
+
+        it('should stop the timer when playback status is "stopped"', function(){
+
+        });
+
+    });
+
 
 });
