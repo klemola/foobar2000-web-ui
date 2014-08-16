@@ -13,7 +13,7 @@ FBUIServices.factory('ControlServerSocket', function(socketFactory) {
 });
 
 FBUIServices.factory('ConnectionStatus', function($rootScope) {
-    var status = {
+    return {
         disconnected: false,
         foobarIsClosed: false,
         setFoobarIsClosed: function(isClosed) {
@@ -25,12 +25,10 @@ FBUIServices.factory('ConnectionStatus', function($rootScope) {
             $rootScope.$broadcast('disconnected:change');
         }
     };
-
-    return status;
 });
 
 FBUIServices.factory('PlayBackStatus', function($rootScope) {
-    var status = {
+    return {
         currentTrack: null,
         playBackStatus: 'stopped',
         volumeLevel: '0.0db',
@@ -64,6 +62,4 @@ FBUIServices.factory('PlayBackStatus', function($rootScope) {
             $rootScope.$broadcast('volumeLevel:change');
         }
     };
-
-    return status;
 });
