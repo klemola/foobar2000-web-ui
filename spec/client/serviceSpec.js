@@ -1,18 +1,31 @@
 /* global describe, it, expect, beforeEach, inject */
 'use strict';
 
-describe('ConnectionStatus service', function() {
-    var ConnectionStatus;
+describe('ConnectionManager service', function() {
+    var connectionManager;
+    var socketFactoryMock = function(){
+        return {
+            on: function(){},
+            emit:function(){}
+        };
+    };
 
     beforeEach(function() {
         module('FBUIServices');
-        inject(function(_ConnectionStatus_) {
-            ConnectionStatus = _ConnectionStatus_;
+        module(function($provide){
+            $provide.value('socketFactory', socketFactoryMock);
+            $provide.value('serverInfo', {
+                address: '127.0.0.1',
+                port: 3000
+            });
+        })
+        inject(function(_ConnectionManager_) {
+            connectionManager = _ConnectionManager_;
         });
     });
 
     it('should initialize connection status as connected', function(){
-       expect(ConnectionStatus.disconnected).to.be(false);
-       expect(ConnectionStatus.foobarIsClosed).to.be(false);
+       expect(connectionManager.disconnected).to.be(false);
+       expect(connectionManager.foobarIsClosed).to.be(false);
     });
 });

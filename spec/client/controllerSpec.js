@@ -1,44 +1,51 @@
 /* global describe, it, expect, beforeEach, inject */
 'use strict';
 
-describe('FBUI Controllers', function() {
+describe('FBUI Controllers', function () {
     var scope;
+    var connectionManagerMock = {
+        status: {
+            'status': '111',
+            'secondsPlayed': '0',
+            'codec': 'MP3',
+            'bitrate': '320',
+            'artist': 'The Range',
+            'album': 'Nonfiction',
+            'date': '2013',
+            'genre': '?',
+            'trackNumber': '07',
+            'track': 'Hamiltonian',
+            'trackLength': 225000,
+            'state': 'stopped'
+        },
+        volumeLevel: '0.0db',
+        setVolumeLevel: function() {
+        }
+    }
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('FBUIServices');
         module('FBUIControllers');
-        inject(function($rootScope) {
+        inject(function ($rootScope, $controller) {
             scope = $rootScope.$new();
+            $controller('PlayBackController', {
+                $scope: scope,
+                ConnectionManager: connectionManagerMock
+            });
         });
     });
 
-    describe('PlayBackController', function() {
+    describe('PlayBackController', function () {
 
-        it('should have default values from PlayBackStatus service in $scope',
-            inject(function($controller) {
-
-                $controller('PlayBackController', {
-                    $scope: scope
-                });
-
-                expect(scope.foobarStatus.currentTrack).to.be(null);
-                expect(scope.foobarStatus.playBackStatus).to.be('stopped');
-                expect(scope.foobarStatus.volumeLevel).to.be('0.0db');
-            })
-        );
-    });
-
-    describe('TrackInfoController', function() {
-
-        it('should start the timer when playback status is "playing"', function(){
+        it('should start the timer when playback status is "playing"', function () {
 
         });
 
-        it('should pause the timer when playback status is "paused"', function(){
+        it('should pause the timer when playback status is "paused"', function () {
 
         });
 
-        it('should stop the timer when playback status is "stopped"', function(){
+        it('should stop the timer when playback status is "stopped"', function () {
 
         });
 

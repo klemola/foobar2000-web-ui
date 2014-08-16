@@ -4,45 +4,45 @@ block content
     header
         h1 Foobar2000 WebUI
 
-    section(class="btn-toolbar row" ng-controller="PlayBackController")
-        div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
-            section(class="btn-group")
-                each action in playbackActions
-                    button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="connectionStatus.disconnected")
-                        span(id="#{action}" class="glyphicon glyphicon-" + icons[action])
-        div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
-            section(class="btn-group")
-                each action in volumeActions
-                    button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="connectionStatus.disconnected")
-                        span(class="glyphicon glyphicon-" + icons[action])
-                button(class="btn btn-default btn-lg btn-double" disabled) {{foobarStatus.volumeLevel}}
+    section(ng-controller="PlayBackController")
 
-        div(class="col-xs-12 col-sm-2 col-md-4 col-lg-6")
-            button#launchFoobar(ng-click!="sendCommand('launchFoobar')" class="btn btn-primary pull-right" ng-disabled="!connectionStatus.foobarIsClosed || disconnected")
-                | Launch Foobar2000
+        section(class="btn-toolbar row")
+            div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
+                section(class="btn-group")
+                    each action in playbackActions
+                        button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="connectionStatus.disconnected")
+                            span(id="#{action}" class="glyphicon glyphicon-" + icons[action])
+            div(class="col-xs-12 col-sm-5 col-md-4 col-lg-3")
+                section(class="btn-group")
+                    each action in volumeActions
+                        button(ng-click!="sendCommand('#{action}')" class="btn btn-default btn-lg" ng-disabled="connectionStatus.disconnected")
+                            span(class="glyphicon glyphicon-" + icons[action])
+                    button(class="btn btn-default btn-lg btn-double" disabled) {{playBackStatus.volumeLevel}}
 
-    section(class="panel panel-default top-buffer" ng-controller="TrackInfoController")
-        div.panel-heading
-            h3.panel-title Now playing
-        ul.list-group
-            li.list-group-item
-                span(class="glyphicon glyphicon-user")
-                span.list-data {{currentTrack.artist}}
-            li.list-group-item
-                span(class="glyphicon glyphicon-record")
-                span.list-data {{currentTrack.album}}
-            li.list-group-item
-                span(class="glyphicon glyphicon-music")
-                span.list-data
-                    span.track-number {{currentTrack.trackNumber}}&nbsp;
-                    span {{currentTrack.track}}
-            li.list-group-item
-                span(class="glyphicon glyphicon-time")
-                span {{millisecondsPlayed | parseTime}}
-                span.separator /
-                span {{currentTrack.trackLength | parseTime}}
+            div(class="col-xs-12 col-sm-2 col-md-4 col-lg-6")
+                button#launchFoobar(ng-click!="sendCommand('launchFoobar')" class="btn btn-primary pull-right" ng-disabled="!connectionStatus.foobarIsClosed || disconnected")
+                    | Launch Foobar2000
 
-    section(class="alert alert-danger" ng-show="connectionStatus.disconnected")
-        p {{connectionStatus.foobarIsClosed ? 'Foobar2000 was closed.' : 'Disconnected from server. Attempting to reconnect.'}}
+        section(class="panel panel-default top-buffer")
+            div.panel-heading
+                h3.panel-title Now playing
+            ul.list-group
+                li.list-group-item
+                    span(class="glyphicon glyphicon-user")
+                    span.list-data {{playBackStatus.status.artist}}
+                li.list-group-item
+                    span(class="glyphicon glyphicon-record")
+                    span.list-data {{playBackStatus.status.album}}
+                li.list-group-item
+                    span(class="glyphicon glyphicon-music")
+                    span.list-data
+                        span.track-number {{playBackStatus.status.trackNumber}}&nbsp;
+                        span {{playBackStatus.status.track}}
+                li.list-group-item
+                    span(class="glyphicon glyphicon-time")
+                    span {{millisecondsPlayed | parseTime}}
+                    span.separator /
+                    span {{playBackStatus.status.trackLength | parseTime}}
 
-    p {{currentTrack}}
+        section(class="alert alert-danger" ng-show="connectionStatus.disconnected")
+            p {{connectionStatus.foobarIsClosed ? 'Foobar2000 was closed.' : 'Disconnected from server. Attempting to reconnect.'}}
