@@ -3,9 +3,12 @@
 
 describe('ConnectionManager service', function() {
     var connectionManager;
+    var socketEventWatchers = {}
     var socketFactoryMock = function(){
         return {
-            on: function(){},
+            on: function(event, func){
+                socketEventWatchers[event] = func;
+            },
             emit:function(){}
         };
     };
@@ -27,5 +30,9 @@ describe('ConnectionManager service', function() {
     it('should initialize connection status as connected', function(){
        expect(connectionManager.disconnected).to.be(false);
        expect(connectionManager.foobarIsClosed).to.be(false);
+    });
+
+    it('should register socket events', function(){
+        expect(Object.keys(socketEventWatchers).length).to.be(6);
     });
 });

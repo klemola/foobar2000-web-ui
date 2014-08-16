@@ -23,6 +23,8 @@ gulp.task('test', ['serverTests', 'clientTests']);
 gulp.task('dev', function() {
     gulp.watch('src/*.js', ['serverTests']);
     gulp.watch('src/static/js/*.js', ['clientTests']);
+    gulp.watch('spec/*.js', ['serverTests']);
+    gulp.watch('spec/client/*.js', ['clientTests']);
 });
 
 gulp.task('default', ['dev']);

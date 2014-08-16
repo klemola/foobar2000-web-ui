@@ -9,7 +9,7 @@ FBUIControllers.controller('PlayBackController', [
         $scope.playBackStatus = playBackStatus;
         $scope.millisecondsPlayed = 0;
 
-        $scope.$watch('playBackStatus.status', function(updatedStatus, oldStatus) {
+        $scope.$watch('playBackStatus.status', function(updatedStatus) {
             if(updatedStatus !== null){
                 $scope.millisecondsPlayed = updatedStatus.secondsPlayed * 1000;
                 $interval.cancel(timer);
