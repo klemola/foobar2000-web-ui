@@ -2,17 +2,61 @@
 
 var FBUIServices = angular.module('FBUIServices', []);
 
-FBUIServices.factory('ControlServerSocket', function(socketFactory) {
+FBUIServices.factory('ControlServerSocket', [
+    'socketFactory', 'ConnectionStatus', 'PlayBackStatus',
+    function(socketFactory, connectionStatus, playBackStatus) {
     var IOSocket = io.connect('http://' + SERVER_ADDRESS + ':' + SERVER_PORT);
 
     var appSocket = socketFactory({
         ioSocket: IOSocket
     });
 
-    return appSocket;
-});
+    appSocket.on('info', onInfo);
+    appSocket.on('disconnect', disconnectedFromServer);
+    appSocket.on('reconnect', reconnectedToServer);
+    appSocket.on('controlServerError', onError);
+    appSocket.on('foobarStarted', onFoobarStarted);
+    appSocket.on('foobarStatus', onFoobarStatusChange);
 
-FBUIServices.factory('ConnectionStatus', function($rootScope) {
+    function disconnectedFromServer() {
+        connectionStatus.setDisconnected(true);
+        playBackStatus.setPlayBackStatus('stopped');
+    }
+
+    function onInfo(data) {
+        console.log('Received INFO message\n' + data);
+    }
+
+    function onError(data) {
+        console.log('ERROR: ' + data);
+        connectionStatus.setDisconnected(true);
+        connectionStatus.setFoobarIsClosed(true);
+        playBackStatus.setPlayBackStatus('stopped');
+    }
+
+    function onFoobarStatusChange(message) {
+        console.log('Received STATUS message', message);
+        if (message.volume) {
+            playBackStatus.setVolumeLevel(message.volume);
+        } else {
+            playBackStatus.setPlayBackStatus(message);
+        }
+    }
+
+    function onFoobarStarted() {
+        reconnectedToServer();
+        connectionStatus.setFoobarIsClosed(false);
+        appSocket.emit('resetControlServer');
+    }
+
+    function reconnectedToServer() {
+        connectionStatus.setDisconnected(false);
+    }
+
+    return appSocket;
+}]);
+
+FBUIServices.factory('ConnectionStatus', ['$rootScope', function($rootScope) {
     return {
         disconnected: false,
         foobarIsClosed: false,
@@ -25,9 +69,9 @@ FBUIServices.factory('ConnectionStatus', function($rootScope) {
             $rootScope.$broadcast('disconnected:change');
         }
     };
-});
+}]);
 
-FBUIServices.factory('PlayBackStatus', function($rootScope) {
+FBUIServices.factory('PlayBackStatus', ['$rootScope', function($rootScope) {
     return {
         currentTrack: null,
         playBackStatus: 'stopped',
@@ -62,4 +106,4 @@ FBUIServices.factory('PlayBackStatus', function($rootScope) {
             $rootScope.$broadcast('volumeLevel:change');
         }
     };
-});
+}]);

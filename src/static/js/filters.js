@@ -3,6 +3,10 @@
 var FBUIFilters = angular.module('FBUIFilters', []);
 
 FBUIFilters.filter('parseTime', function() {
+    function pad(number) {
+        return (number < 10 ? '0' : '') + number;
+    }
+
     return function(ms) {
         var remaining;
         var seconds;
@@ -28,7 +32,3 @@ FBUIFilters.filter('parseTime', function() {
         return timeUnits.join(':');
     };
 });
-
-function pad(number) {
-    return (number < 10 ? '0' : '') + number;
-}
