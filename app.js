@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var indexPage = require('./src/indexPage');
 var foobarCommand = require('./src/foobarShellCommand');

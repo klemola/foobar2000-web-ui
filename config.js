@@ -1,3 +1,5 @@
+'use strict';
+
 var IPList = require('./src/localIPList').IPList;
 
 //defines whether local IP is parsed from network interfaces or set manually
