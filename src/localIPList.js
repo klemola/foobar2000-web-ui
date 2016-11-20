@@ -1,5 +1,3 @@
-'use strict';
-
 /*
     Based on answer from http://stackoverflow.com/questions/3653065/get-local-ip-address-in-node-js
 */

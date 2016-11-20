@@ -1,32 +1,19 @@
-'use strict';
+const express = require('express');
+const bodyParser = require('body-parser')
+const indexPage = require('./indexPage');
 
-module.exports = function(app, express) {
+function configure(app) {
+    app.use(bodyParser.json())
+    app.use(express.static(__dirname + '/static'));
 
-    app.configure(function() {
-        app.set('views', __dirname + '/templates');
-        app.set('view engine', 'jade');
-        app.set('view options', {
-            pretty: true
-        });
-
-        app.use(express.bodyParser());
-        app.use(express.methodOverride());
-        app.use(express.compress());
-        app.use(express.static(__dirname + '/static'));
-        app.use(app.router);
-
-        app.locals.pretty = true;
+    app.set('views', __dirname + '/templates');
+    app.set('view engine', 'jade');
+    app.set('view options', {
+        pretty: true
     });
+    app.locals.pretty = true;
 
-    app.configure('development', function() {
-        app.use(express.errorHandler({
-            dumpExceptions: true,
-            showStack: true
-        }));
-    });
-
-    app.configure('production', function() {
-        app.use(express.errorHandler());
-    });
-
+    app.get('/', indexPage);
 };
+
+exports.configure = configure;

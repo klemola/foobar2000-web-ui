@@ -1,5 +1,3 @@
-'use strict';
-
 var net = require('net');
 var config = require('../config');
 var parseMessage = require('./parseMessage');
