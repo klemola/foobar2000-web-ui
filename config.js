@@ -1,62 +1,71 @@
-'use strict';
+const IP = require('./src/IP');
 
-var IPList = require('./src/localIPList').IPList;
+const appTitle = 'Foobar2000 Webui';
+const localIPGuess = IP.getIPv4AddressList[0];
 
-//defines whether local IP is parsed from network interfaces or set manually
-var guessIP = true;
+// defines whether local IP is parsed from network interfaces or set manually
+const guessIP = true;
+
+// foobar2000.exe location in your filesystem. Slash after last folder name optional.
+const foobarPath = 'C:/Program Files (x86)/foobar2000';
+
+// If set to true, server start Foobar2000 if it's not started yet.
+const startFoobar2000Automatically = true;
+
+// foo_controlserver port (default is '3333' in component configuration).
+const controlServerPort = 3333;
+
+// Web UI port.
+const webServerPort = 3000;
+
+// Defines the IP that is used to access the UI from your network (ex. 192.168.0.1).
+// By default the IP is parsed from network interfaces (see above), but it can also be set up manually.
+const serverExternalIP = (guessIP && localIPGuess) ? localIPGuess : '127.0.0.1';
+
+// By default foo_controlserver uses '|' as a separator, change if needed.
+const controlServerMessageSeparator = '|';
+
+// These actions correspond to buttons in UI. Defaults are what foobar supports and includes in it's native UI.
+const playbackActions = [
+    'playpause',
+    'stop',
+    'prev',
+    'next',
+    'rand',
+];
+
+const volumeActions = [
+    'mute',
+    'voldown',
+    'volup',
+];
+
+// These are human readable names for information that foo_controlserver sends with track data.
+// Order of this array is very important, do not change if you are using default foo_controlserver configuration.
+const controlServerStatusFields = [
+    'status',
+    null,
+    null,
+    'secondsPlayed',
+    'codec',
+    'bitrate',
+    'artist',
+    'album',
+    'date',
+    'genre',
+    'trackNumber',
+    'track',
+    'trackLength',
+];
 
 module.exports = {
-
-    //foobar2000.exe location in your filesystem. Slash after last folder name optional.
-    FOOBAR_PATH: 'C:/Program Files (x86)/foobar2000',
-
-    //If set to true, server start Foobar2000 if it's not started yet.
-    startFoobar2000Automatically: true,
-
-    //foo_controlserver port (default is '3333' in component configuration).
-    CONTROL_SERVER_PORT: 3333,
-
-    //Web UI port.
-    WEB_SERVER_PORT: 3000,
-
-    //Defines the IP that is used to access the UI from your network (ex. 192.168.0.1).
-    //By default the IP is parsed from network interfaces (see above), but it can also be set up manually.
-    SERVER_EXTERNAL_IP: (guessIP) ? IPList[0] : '127.0.0.1',
-
-    //By default foo_controlserver uses '|' as a separator, change if needed.
-    CONTROL_SERVER_MESSAGE_SEPARATOR: '|',
-
-    //These actions correspond to buttons in UI. Defaults are what foobar supports and includes in it's native UI.
-    playbackActions: [
-        'playpause',
-        'stop',
-        'prev',
-        'next',
-        'rand'
-    ],
-
-    volumeActions: [
-        'mute',
-        'voldown',
-        'volup'
-    ],
-
-    //These are human readable names for information that foo_controlserver sends with track data.
-    //Order of this array is very important, do not change if you are using default foo_controlserver configuration.
-    controlServerStatusFields: [
-        'status',
-        null,
-        null,
-        'secondsPlayed',
-        'codec',
-        'bitrate',
-        'artist',
-        'album',
-        'date',
-        'genre',
-        'trackNumber',
-        'track',
-        'trackLength'
-    ]
-
+    appTitle,
+    foobarPath,
+    controlServerPort,
+    webServerPort,
+    serverExternalIP,
+    controlServerMessageSeparator,
+    playbackActions,
+    volumeActions,
+    controlServerStatusFields,
 };

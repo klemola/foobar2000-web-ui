@@ -1,7 +1,29 @@
-var net = require('net');
-var config = require('../config');
-var parseMessage = require('./parseMessage');
-var client;
+const net = require('net');
+const config = require('../config');
+const parseMessage = require('./parseMessage');
+
+let client;
+
+function emitErrorToClient(socket) {
+    return (error) => {
+        console.log('Connection to control server was closed. Foobar2000 was possibly closed.', socket.id, error);
+        socket.emit('controlServerError', 'Connection to Foobar control server ended.');
+    };
+}
+
+function onData(socket) {
+    return (data) => {
+        const message = parseMessage.parseControlData(data.toString('utf-8'));
+    
+        if (message.status) {
+            socket.emit('foobarStatus', message.status);
+        }
+
+        if (message.info) {
+            socket.emit('info', message.info);
+        }
+    };
+}
 
 function write(message) {
     try {
@@ -11,11 +33,11 @@ function write(message) {
     }
 }
 
-exports.connect = function(socket) {
+function connect(socket) {
     client = net.connect({
-            port: config.CONTROL_SERVER_PORT
+            port: config.controlServerPort
         },
-        function() {
+        () => {
             console.log('Control server connected', socket.id);
             socket.emit('info', 'Foobar web server connection established.');
         }
@@ -23,32 +45,21 @@ exports.connect = function(socket) {
 
     client.setKeepAlive(true, 10000);
 
-    client.on('data', function(data) {
-        var message = parseMessage.parseControlData(data.toString('utf-8'));
-        if (message.status) {
-            socket.emit('foobarStatus', message.status);
-        }
-        if (message.info) {
-            socket.emit('info', message.info);
-        }
-    });
-
-    client.on('end', emitErrorToClient);
-    client.on('error', emitErrorToClient);
-
-    function emitErrorToClient(error) {
-        console.log('Connection to control server was closed. Foobar2000 was possibly closed.', socket.id, error);
-        socket.emit('controlServerError', 'Connection to Foobar control server ended.');
-    }
+    client.on('data', onData(socket));
+    client.on('end', emitErrorToClient(socket));
+    client.on('error', emitErrorToClient(socket));
 };
 
-exports.sendCommand = function(command) {
+function sendCommand(command) {
     write(command + '\r\n');
     console.log('Control server command sent for action %s', command);
 };
 
-exports.endConnection = function() {
+function endConnection() {
     client.end();
 };
 
+exports.connect = connect;
+exports.sendCommand = sendCommand;
 exports.write = write;
+exports.endConnection = endConnection;

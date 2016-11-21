@@ -13,7 +13,7 @@ function configure(app) {
     });
     app.locals.pretty = true;
 
-    app.get('/', indexPage);
+    app.get('/', indexPage.renderIndex);
 };
 
 exports.configure = configure;

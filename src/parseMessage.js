@@ -1,14 +1,15 @@
-var config = require('../config.js');
-var VOLUME_CODE = 222;
-var INFO_CODE = 999;
-var statusCodes = {
+const config = require('../config.js');
+
+const VOLUME_CODE = 222;
+const INFO_CODE = 999;
+const statusCodes = {
     'playing': 111,
     'stopped': 112,
     'paused': 113
 };
 
 function getStatusNameByCode(code) {
-    for (var status in statusCodes) {
+    for (let status in statusCodes) {
         if (statusCodes[status] === code) {
             return status;
         }
@@ -16,12 +17,12 @@ function getStatusNameByCode(code) {
 }
 
 function parseTrackData(text) {
-    var attributes = text.split('|');
-    var statusFields = config.controlServerStatusFields;
-    var trackData = {};
+    const attributes = text.split('|');
+    const statusFields = config.controlServerStatusFields;
+    const trackData = {};
 
     attributes.forEach(function(item, iter) {
-        var attribute = statusFields[iter];
+        const attribute = statusFields[iter];
         if (attribute) {
             trackData[attribute] = item;
         }
@@ -30,14 +31,13 @@ function parseTrackData(text) {
     return trackData;
 }
 
-exports.parseControlData = function(text) {
-    var lines;
-    var parsedData = {};
+function parseControlData(text) {
+    const lines = text.split('\r\n');
+    const parsedData = {};
 
-    lines = text.split('\r\n');
     lines.forEach(function(item) {
-        var messageCode = parseInt(item.substring(0, 3), 10);
-        var status = getStatusNameByCode(messageCode);
+        const messageCode = parseInt(item.substring(0, 3), 10);
+        const status = getStatusNameByCode(messageCode);
         if (status) {
             parsedData.status = parseTrackData(item);
             parsedData.status.state = status;
@@ -55,3 +55,5 @@ exports.parseControlData = function(text) {
 
     return parsedData;
 };
+
+exports.parseControlData = parseControlData;

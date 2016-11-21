@@ -1,8 +1,6 @@
-var APP_TITLE = 'Foobar2000 Webui';
-var config = require('../config');
+const config = require('../config');
 
-//temporary
-var iconList = {
+const iconList = {
     'playpause': 'play',
     'stop': 'stop',
     'prev': 'step-backward',
@@ -13,15 +11,17 @@ var iconList = {
     'volup': 'volume-up'
 };
 
-module.exports = function(req, res) {
+function renderIndex(req, res) {
     res.render('index', {
-        title: APP_TITLE,
+        title: config.appTitle,
         playbackActions: config.playbackActions,
         volumeActions: config.volumeActions,
         icons: iconList,
         serverConfig: {
-            'serverAddress': config.SERVER_EXTERNAL_IP,
-            'port': config.WEB_SERVER_PORT
+            'serverAddress': config.serverExternalIP,
+            'port': config.webServerPort
         }
     });
 };
+
+exports.renderIndex = renderIndex;

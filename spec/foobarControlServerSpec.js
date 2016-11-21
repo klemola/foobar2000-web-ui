@@ -11,8 +11,8 @@ describe('Foobar web UI server', () => {
 	server.listen(9999);
 
 	it('should initialize a websocket server', (done) => {
-		const foobarServer = websocketServer(server);
-		assert.isOk(foobarServer);
+		const foobarServer = websocketServer.configure(server);
+		assert.deepEqual(foobarServer.engine.transports, ['websocket', 'polling']);
 		server.close();
 		done();
 	});
