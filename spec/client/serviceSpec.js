@@ -1,5 +1,4 @@
 /* global describe, it, expect, beforeEach, inject */
-'use strict';
 
 describe('ConnectionManager service', function() {
     var connectionManager;

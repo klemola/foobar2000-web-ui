@@ -4,7 +4,6 @@
   "author": "Matias Klemola <matias.klemola@gmail.com>",
   "description": "Foobar2000 webui. Control foobar2000 from web.",
   "license": "MIT",
-  "private": "true",
   "repository": {
     "type": "git",
     "url": "https://github.com/klemola/foobar2000-web-ui.git"
@@ -15,18 +14,19 @@
     "server"
   ],
   "scripts": {
-    "start": "node app.js",
+    "start": "node src/app.js",
     "test": "gulp test"
   },
   "dependencies": {
-    "express": "~3.4.7",
-    "jade": "~0.35.0",
-    "socket.io": "~0.9.16"
+    "body-parser": "^1.15.2",
+    "express": "4.14.0",
+    "jade": "1.11.0",
+    "socket.io": "1.6.0"
   },
   "devDependencies": {
-    "gulp": "~3.6.0",
-    "gulp-mocha": "~0.4.1",
-    "expect.js": "~0.3.1",
-    "gulp-mocha-phantomjs": "~0.2.1"
+    "chai": "3.5.0",
+    "gulp": "3.9.1",
+    "gulp-mocha": "3.0.1",
+    "gulp-mocha-phantomjs": "0.12.0"
   }
 }

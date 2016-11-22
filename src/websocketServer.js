@@ -1,17 +1,33 @@
-'use strict';
+const io = require('socket.io');
+const controlServer = require('./foobarControlServer');
+const foobarCommand = require('./foobarShellCommand');
 
-var controlServer = require('./foobarControlServer');
-var foobarCommand = require('./foobarShellCommand');
-var io = require('socket.io');
+function volumeCommand(command) {
+    if (command.indexOf('vol') !== -1) {
+        return 'vol ' + command.substring(3);
+    } else if (command === 'mute') {
+        return 'vol ' + 'mute';
+    }
 
-module.exports = function(server) {
-    var sio = io.listen(server, {
-        'log level': 2
-    });
+    return false;
+}
 
-    sio.sockets.on('connection', newConnection);
-    return sio;
-};
+function processCommand(command, socket) {
+    const vol = volumeCommand(command);
+
+    console.log('COMMAND RECEIVED, command: %s', command);
+    if (vol) {
+        controlServer.sendCommand(vol);
+    } else if (command === 'launchFoobar') {
+        foobarCommand.launchFoobar();
+        setTimeout(function() {
+            socket.emit('foobarStarted');
+            socket.broadcast.emit('foobarStarted');
+        }, 3000);
+    } else {
+        foobarCommand.sendCommand(command);
+    }
+}
 
 function newConnection(socket) {
     controlServer.connect(socket);
@@ -35,29 +51,13 @@ function newConnection(socket) {
     });
 }
 
-function processCommand(command, socket) {
-    var vol = volumeCommand(command);
+function configure(server) {
+    const sio = io.listen(server, {
+        'log level': 2,
+    });
 
-    console.log('COMMAND RECEIVED, command: %s', command);
-    if (vol) {
-        controlServer.sendCommand(vol);
-    } else if (command === 'launchFoobar') {
-        foobarCommand.launchFoobar();
-        setTimeout(function() {
-            socket.emit('foobarStarted');
-            socket.broadcast.emit('foobarStarted');
-        }, 3000);
-    } else {
-        foobarCommand.sendCommand(command);
-    }
-}
+    sio.sockets.on('connection', newConnection);
+    return sio;
+};
 
-function volumeCommand(command) {
-    if (command.indexOf('vol') !== -1) {
-        return 'vol ' + command.substring(3);
-    } else if (command === 'mute') {
-        return 'vol ' + 'mute';
-    }
-
-    return false;
-}
+exports.configure = configure;

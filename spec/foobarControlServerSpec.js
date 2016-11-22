@@ -1,47 +1,44 @@
 /* global describe, it */
-'use strict';
+const assert = require('chai').assert;
 
-var expect = require('expect.js');
+describe('Foobar web UI server', () => {
 
-
-describe('Foobar web UI server', function() {
-
-	var express = require('express');
-	var app = express();
-	var server = require('http').createServer(app);
-	var websocketServer = require('../src/websocketServer');
+	const express = require('express');
+	const app = express();
+	const server = require('http').createServer(app);
+	const websocketServer = require('../src/websocketServer');
 
 	server.listen(9999);
 
-	it('should initialize a websocket server', function(done) {
-		var foobarServer = websocketServer(server);
-		expect(foobarServer).to.be.ok();
+	it('should initialize a websocket server', (done) => {
+		const foobarServer = websocketServer.configure(server);
+		assert.deepEqual(foobarServer.engine.transports, ['websocket', 'polling']);
 		server.close();
 		done();
 	});
 });
 
-describe('parseMessage', function() {
+describe('parseMessage', () => {
 
-	var parseMessage = require('../src/parseMessage');
+	const parseMessage = require('../src/parseMessage');
 
-	it('should parse an information block', function() {
-		var lines = [
+	it('should parse an information block', () => {
+		const lines = [
 			'999|Connected to foobar2000 Control Server v1.0.1|',
 			'999|Accepted client from 127.0.0.1|',
 			'999|There are currently 2/10 clients connected|',
 			'999|Type \'?\' or \'help\' for command information|'
 		];
-		var message = lines.join('\r\n');
-		var expectedMessage = lines.join('\n') + '\n';
-		var parsedMessage = parseMessage.parseControlData(message);
+		const message = lines.join('\r\n');
+		const expectedMessage = lines.join('\n') + '\n';
+		const parsedMessage = parseMessage.parseControlData(message);
 
-		expect(parsedMessage.info).to.be(expectedMessage);
+		assert.equal(parsedMessage.info, expectedMessage);
 	});
 
-	it('should parse a playback status message', function() {
-		var message = '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
-		var expectedTrackData = {
+	it('should parse a playback status message', () => {
+		const message = '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
+		const expectedTrackData = {
 			status: '111',
 			secondsPlayed: '2.73',
 			codec: 'FLAC',
@@ -55,41 +52,41 @@ describe('parseMessage', function() {
 			trackLength: '745',
 			state: 'playing'
 		};
-		var parsedObject = parseMessage.parseControlData(message);
+		const parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status).to.eql(expectedTrackData);
+		assert.deepEqual(parsedObject.status, expectedTrackData);
 	});
 
-	it('should set state "playing" for code "111"', function() {
-		var message = '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
-		var parsedObject = parseMessage.parseControlData(message);
+	it('should set state "playing" for code "111"', () => {
+		const message = '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
+		const parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status.state).to.be('playing');
+		assert.equal(parsedObject.status.state, 'playing');
 	});
 
-	it('should set state "stopped" for code "112"', function() {
-		var message = '112|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
-		var parsedObject = parseMessage.parseControlData(message);
+	it('should set state "stopped" for code "112"', () => {
+		const message = '112|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
+		const parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status.state).to.be('stopped');
+		assert.equal(parsedObject.status.state, 'stopped');
 	});
 
-	it('should set state "paused" for code "113"', function() {
-		var message = '113|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
-		var parsedObject = parseMessage.parseControlData(message);
+	it('should set state "paused" for code "113"', () => {
+		const message = '113|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
+		const parsedObject = parseMessage.parseControlData(message);
 
-		expect(parsedObject.status.state).to.be('paused');
+		assert.equal(parsedObject.status.state, 'paused');
 	});
 
-	it('should parse volume change message', function() {
-		var message = '222|-1.58|';
-		var parsedObject = parseMessage.parseControlData(message);
-		var mockVolumeResponse = {
+	it('should parse volume change message', () => {
+		const message = '222|-1.58|';
+		const parsedObject = parseMessage.parseControlData(message);
+		const mockVolumeResponse = {
 			status: {
 				volume: '-1.58'
 			}
 		};
 
-		expect(parsedObject).to.eql(mockVolumeResponse);
+		assert.deepEqual(parsedObject, mockVolumeResponse);
 	});
 });
