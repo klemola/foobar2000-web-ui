@@ -28,7 +28,7 @@ Multiple devices can connect to the server using the local network, and it's up 
 
 ## Requirements
 
-Requires Node.js version 0.10.23+ and Foobar2000 v1+.
+Requires Node.js version 6+ and Foobar2000 v1+. For older versions of Node (down to 0.10.23), see [this tag] (https://github.com/klemola/foobar2000-web-ui/tree/legacy_nodejs).
 Foobar2000 component foo_controlserver is also required. Download the component [from Google code](https://code.google.com/p/foo-controlserver/downloads/list).
 
 Since Foobar2000 is only available for Windows, other operating systems are not supported for the server. User is assumed to run the server on the machine that Foobar2000 runs on.
@@ -56,9 +56,9 @@ Web UI was tested on newest stable version of
 - Google Chrome
 - Firefox
 - Internet Explorer
-- Safari mobile (tested on iPad Mini Retina 2013)
+- Safari mobile
 
-Generally speaking only modern browsers are supported.
+Generally speaking only recent versions of modern browsers are supported.
 
 ## Known issues
 
