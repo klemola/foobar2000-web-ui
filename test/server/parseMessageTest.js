@@ -1,22 +1,5 @@
 const assert = require('chai').assert;
 
-describe('Foobar web UI server', () => {
-
-	const express = require('express');
-	const app = express();
-	const server = require('http').createServer(app);
-	const websocketServer = require('../../src/websocketServer');
-
-	server.listen(9999);
-
-	it('should initialize a websocket server', (done) => {
-		const foobarServer = websocketServer.configure(server);
-		assert.deepEqual(foobarServer.engine.transports.sort(), ['polling', 'websocket']);
-		server.close();
-		done();
-	});
-});
-
 describe('parseMessage', () => {
 
 	const parseMessage = require('../../src/parseMessage');
