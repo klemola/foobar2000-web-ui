@@ -1,4 +1,3 @@
-/* global describe, it */
 const assert = require('chai').assert;
 
 describe('Foobar web UI server', () => {
@@ -6,13 +5,13 @@ describe('Foobar web UI server', () => {
 	const express = require('express');
 	const app = express();
 	const server = require('http').createServer(app);
-	const websocketServer = require('../src/websocketServer');
+	const websocketServer = require('../../src/websocketServer');
 
 	server.listen(9999);
 
 	it('should initialize a websocket server', (done) => {
 		const foobarServer = websocketServer.configure(server);
-		assert.deepEqual(foobarServer.engine.transports, ['websocket', 'polling']);
+		assert.deepEqual(foobarServer.engine.transports.sort(), ['polling', 'websocket']);
 		server.close();
 		done();
 	});
@@ -20,7 +19,7 @@ describe('Foobar web UI server', () => {
 
 describe('parseMessage', () => {
 
-	const parseMessage = require('../src/parseMessage');
+	const parseMessage = require('../../src/parseMessage');
 
 	it('should parse an information block', () => {
 		const lines = [

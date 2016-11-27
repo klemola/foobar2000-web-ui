@@ -14,8 +14,10 @@
     "server"
   ],
   "scripts": {
+    "test-server": "mocha test/server",
+    "test-client": "mocha-phantomjs test/client/runner.html",
     "start": "node src/app.js",
-    "test": "gulp test"
+    "test": "npm run test-server && npm run test-client"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -25,8 +27,7 @@
   },
   "devDependencies": {
     "chai": "3.5.0",
-    "gulp": "3.9.1",
-    "gulp-mocha": "3.0.1",
-    "gulp-mocha-phantomjs": "0.12.0"
+    "mocha": "3.2.0",
+    "mocha-phantomjs": "4.1.0"
   }
 }
