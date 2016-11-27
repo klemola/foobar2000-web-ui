@@ -1,20 +1,13 @@
+const _ = require('lodash/fp');
 const config = require('../config.js');
 
-const VOLUME_CODE = 222;
-const INFO_CODE = 999;
 const statusCodes = {
-    'playing': 111,
-    'stopped': 112,
-    'paused': 113
+    playing: 111,
+    stopped: 112,
+    paused: 113,
+    volumeChange: 222,
+    info: 999,
 };
-
-function getStatusNameByCode(code) {
-    for (let status in statusCodes) {
-        if (statusCodes[status] === code) {
-            return status;
-        }
-    }
-}
 
 function parseTrackData(text) {
     const attributes = text.split('|');
@@ -31,29 +24,56 @@ function parseTrackData(text) {
     return trackData;
 }
 
+function parseMetaData(line) {
+    const messageCode = parseInt(line.substring(0, 3), 10);
+
+    return {
+        code: messageCode,
+        raw: line,
+    }
+}
+
+function parseMessage(data) {
+    const code = _.head(data).code;
+    const lastItem = _.last(data);
+
+    switch (code) {
+        case statusCodes.info:
+            return {
+                type: 'info',
+                content: _(data)
+                    .map('raw')
+                    .join('\n'),
+            };
+
+        case statusCodes.volumeChange: 
+            return {
+                type: 'statusChange',
+                status: {
+                    volume:  lastItem.raw.split('|')[1],
+                }
+            }
+
+        default:
+            return {
+                type: 'statusChange',
+                status: _.merge(
+                    { state: _.findKey(v => v === code, statusCodes) },
+                    parseTrackData(lastItem.raw)
+                ),
+            };
+    }
+}
+
 function parseControlData(text) {
     const lines = text.split('\r\n');
-    const parsedData = {};
 
-    lines.forEach(function(item) {
-        const messageCode = parseInt(item.substring(0, 3), 10);
-        const status = getStatusNameByCode(messageCode);
-        if (status) {
-            parsedData.status = parseTrackData(item);
-            parsedData.status.state = status;
-        } else if (messageCode === VOLUME_CODE) {
-            parsedData.status = {
-                volume: item.split('|')[1]
-            };
-        } else if (messageCode === INFO_CODE) {
-            if (!parsedData.info) {
-                parsedData.info = '';
-            }
-            parsedData.info += item + '\n';
-        }
-    });
-
-    return parsedData;
+    return _(lines)
+        .reject(l => l === '')
+        .map(parseMetaData)
+        .groupBy(lineMeta => lineMeta.code)
+        .map(parseMessage)
+        .value();
 };
 
 exports.parseControlData = parseControlData;

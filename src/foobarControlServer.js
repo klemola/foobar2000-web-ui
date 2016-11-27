@@ -13,15 +13,17 @@ function emitErrorToClient(socket) {
 
 function onData(socket) {
     return (data) => {
-        const message = parseMessage.parseControlData(data.toString('utf-8'));
-    
-        if (message.status) {
-            socket.emit('foobarStatus', message.status);
-        }
+        const messages = parseMessage.parseControlData(data.toString('utf-8'));
+        
+        messages.forEach(message => {
+            if (message.type === 'statusChange') {
+                socket.emit('foobarStatus', message.status);
+            }
 
-        if (message.info) {
-            socket.emit('info', message.info);
-        }
+            if (message.type === 'info') {
+                socket.emit('info', message.content);
+            }
+        });
     };
 }
 
