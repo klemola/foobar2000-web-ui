@@ -1,27 +1,7 @@
-/* global describe, it */
 const assert = require('chai').assert;
+const Message = require('../../src/Message');
 
-describe('Foobar web UI server', () => {
-
-	const express = require('express');
-	const app = express();
-	const server = require('http').createServer(app);
-	const websocketServer = require('../src/websocketServer');
-
-	server.listen(9999);
-
-	it('should initialize a websocket server', (done) => {
-		const foobarServer = websocketServer.configure(server);
-		assert.deepEqual(foobarServer.engine.transports, ['websocket', 'polling']);
-		server.close();
-		done();
-	});
-});
-
-describe('parseMessage', () => {
-
-	const parseMessage = require('../src/parseMessage');
-
+describe('Message', () => {
 	it('should parse an information block', () => {
 		const lines = [
 			'999|Connected to foobar2000 Control Server v1.0.1|',
@@ -30,10 +10,10 @@ describe('parseMessage', () => {
 			'999|Type \'?\' or \'help\' for command information|'
 		];
 		const message = lines.join('\r\n');
-		const expectedMessage = lines.join('\n') + '\n';
-		const parsedMessage = parseMessage.parseControlData(message);
+		const expectedMessage = lines.join('\n');
+		const parsedMessage = Message.parseControlData(message);
 
-		assert.equal(parsedMessage.info, expectedMessage);
+		assert.equal(parsedMessage[0].content, expectedMessage);
 	});
 
 	it('should parse a playback status message', () => {
@@ -52,41 +32,39 @@ describe('parseMessage', () => {
 			trackLength: '745',
 			state: 'playing'
 		};
-		const parsedObject = parseMessage.parseControlData(message);
+		const parsedObject = Message.parseControlData(message);
 
-		assert.deepEqual(parsedObject.status, expectedTrackData);
+		assert.deepEqual(parsedObject[0].status, expectedTrackData);
 	});
 
 	it('should set state "playing" for code "111"', () => {
 		const message = '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
-		const parsedObject = parseMessage.parseControlData(message);
+		const parsedObject = Message.parseControlData(message);
 
-		assert.equal(parsedObject.status.state, 'playing');
+		assert.equal(parsedObject[0].status.state, 'playing');
 	});
 
 	it('should set state "stopped" for code "112"', () => {
 		const message = '112|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
-		const parsedObject = parseMessage.parseControlData(message);
+		const parsedObject = Message.parseControlData(message);
 
-		assert.equal(parsedObject.status.state, 'stopped');
+		assert.equal(parsedObject[0].status.state, 'stopped');
 	});
 
 	it('should set state "paused" for code "113"', () => {
 		const message = '113|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|';
-		const parsedObject = parseMessage.parseControlData(message);
+		const parsedObject = Message.parseControlData(message);
 
-		assert.equal(parsedObject.status.state, 'paused');
+		assert.equal(parsedObject[0].status.state, 'paused');
 	});
 
 	it('should parse volume change message', () => {
 		const message = '222|-1.58|';
-		const parsedObject = parseMessage.parseControlData(message);
-		const mockVolumeResponse = {
-			status: {
-				volume: '-1.58'
-			}
+		const parsedObject = Message.parseControlData(message);
+		const mockStatus = {
+			volume: '-1.58'
 		};
 
-		assert.deepEqual(parsedObject, mockVolumeResponse);
+		assert.deepEqual(parsedObject[0].status, mockStatus);
 	});
 });
