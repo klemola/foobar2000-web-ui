@@ -4,18 +4,17 @@ const Path = require('path');
 const Message = require('./Message');
 const ControlServer = require('./ControlServer');
 
-function launch(foobarPath) {
-    const normalizedPath = Path.normalize(foobarPath) + "/";
+function launch(config) {
+    const normalizedPath = Path.normalize(config.foobarPath) + "/";
     
     if (Fs.readdirSync(normalizedPath).indexOf('foobar2000.exe') === -1) {
         throw 'Foobar2000.exe was not found in the path specified in configuration';
     }
 
-    return new Promise((resolve, reject) => {
-        ChildProcess.exec('foobar2000.exe', { cwd: foobarPath });
-        setTimeout(() => resolve(true), 2000);
-    })
-};
+    // TODO: handle process termination gracefully
+    ChildProcess.exec('foobar2000.exe', { cwd: config.foobarPath });
+    return ControlServer.probe(config.controlServerPort);
+}
 
 function queryTrackInfo(ctx) {
     return ControlServer.sendCommand(ctx, 'trackinfo'); 
@@ -25,9 +24,13 @@ function sendCommand(ctx, io, command) {
     ctx.logger.info({ command }, 'Command received');
 
     if (command === 'launchFoobar') {
-        return launch(ctx.config.foobarPath)
+        return launch(ctx.config)
             .then(() => {
                 io.sockets.emit('foobarStarted');
+            })
+            .catch(() => {
+                ctx.logger.warn('Could not launch Foobar');
+                io.sockets.emit('controlServerError', 'Could not launch Foobar');
             });
     }
 
@@ -37,7 +40,7 @@ function sendCommand(ctx, io, command) {
 
     if (command.indexOf('vol') !== -1) {
         return ControlServer.sendCommand(ctx, `vol ${command.substring(3)}`);
-    }  
+    }
 
     return ChildProcess.exec(`foobar2000.exe /${command}`, {cwd: ctx.config.foobarPath});
 }

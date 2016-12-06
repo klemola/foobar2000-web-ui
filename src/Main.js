@@ -14,12 +14,15 @@ const logger = Bunyan.createLogger({
     streams: [{
         path: `${Path.resolve(__dirname, '..')}/foobar2000-web-ui.log`,
     }],
+    level: Bunyan.DEBUG,
     serializers: Bunyan.stdSerializers,
 });
 
-Foobar.launch(config.foobarPath)
+logger.debug(config, 'Initializing');
+
+Foobar.launch(config)
     .then(() => {
-        logger.info('Foobar launched');
+        logger.debug('Foobar launched');
         return ControlServer.connect(config.controlServerPort, logger);
     })
     .then(client => {
@@ -31,13 +34,20 @@ Foobar.launch(config.foobarPath)
         const app = Express();
         const {server, io} = Server.createServer(app);
 
-        logger.info('Control server connected');
-
         Server.configureStatic(context, app);
         Server.configureWebsockets(context, io);
 
         server.listen(config.webServerPort);
+        logger.debug('Initialization complete');
         logger.info(`Server listening on port ${config.webServerPort}`);
+    })
+    .catch(err => {
+        if (err) {
+            logger.error(err);
+        }
+
+        console.error('Could not initialize server and/or connect to control server. Make sure configuration is correct.');
+        process.exit(1);
     });
 
 
