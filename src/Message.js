@@ -1,5 +1,4 @@
 const _ = require('lodash/fp');
-const config = require('../config.js');
 
 const statusCodes = {
     playing: 111,
@@ -9,9 +8,24 @@ const statusCodes = {
     info: 999,
 };
 
+const statusFields = [
+    'status',
+    null,
+    null,
+    'secondsPlayed',
+    'codec',
+    'bitrate',
+    'artist',
+    'album',
+    'date',
+    'genre',
+    'trackNumber',
+    'track',
+    'trackLength',
+];
+
 function parseTrackData(text) {
     const attributes = text.split('|');
-    const statusFields = config.controlServerStatusFields;
     const trackData = {};
 
     attributes.forEach(function(item, iter) {
