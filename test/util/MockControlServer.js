@@ -18,7 +18,7 @@ function onConnection(socket) {
     socket.on('data', (data) => {
         const stringData = data.toString();
 
-        if (stringData == 'trackinfo') {
+        if (_.startsWith('trackinfo', stringData)) {
             return socket.write(mockTrackInfoResponse);
         }
 

@@ -41,6 +41,8 @@ function configureWebsockets(ctx, io) {
     const handleErr = createErrorHandler(ctx, io);
 
     io.sockets.on('connection', socket => {
+        ctx.logger.info({ socketId: socket.id }, 'Web client connected');
+
         socket.on('disconnect', () => {
             ctx.logger.info({ socketId: socket.id }, 'Web client disconnected');
         });
