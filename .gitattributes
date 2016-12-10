@@ -1,1 +1,16 @@
-* text eol=lf
+# By default disable end-of-line normalization
+*		!text
+
+# Explicitly declare text files to always use UNIX newlines
+*.txt		eol=lf
+*.js		eol=lf
+*.css		eol=lf
+*.scss      eol=lf
+*.html		eol=lf
+*.json		eol=lf
+*.sh		eol=lf
+
+# Declare all files that are truly binary and should not be modified.
+*.png		binary
+*.jpg		binary
+*.gif		binary
