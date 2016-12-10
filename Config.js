@@ -15,14 +15,18 @@ const controlServerPort = 3333;
 // Web UI port.
 const webServerPort = 3000;
 
-// Defines the IP that is used to access the UI from your network (ex. 192.168.0.1).
-// By default the IP is parsed from network interfaces (see above), but it can also be set up manually.
+/* Defines the IP that is used to access the UI from your network (ex. 192.168.0.1).
+ * By default the IP is parsed from network interfaces (see above), but it can also
+ * be set up manually.
+ */
 const serverExternalIP = (guessIP && localIPGuess) ? localIPGuess : '127.0.0.1';
 
 // By default foo_controlserver uses '|' as a separator, change if needed.
 const controlServerMessageSeparator = '|';
 
-// These actions correspond to buttons in UI. Defaults are what foobar supports and includes in it's native UI.
+/* These actions correspond to buttons in UI. Defaults are what Foobar2000 supports
+ * and includes in it's native UI.
+ */
 const playbackActions = [
     'playpause',
     'stop',

@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true}],
+    "promise/catch-or-return": 0,
+    "promise/always-return": 0,
+    "global-require": 0
+  }
+}

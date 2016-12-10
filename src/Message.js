@@ -28,7 +28,7 @@ function parseTrackData(text) {
     const attributes = text.split('|');
     const trackData = {};
 
-    attributes.forEach(function(item, iter) {
+    attributes.forEach((item, iter) => {
         const attribute = statusFields[iter];
         if (attribute) {
             trackData[attribute] = item;
@@ -44,7 +44,7 @@ function parseMetaData(line) {
     return {
         code: messageCode,
         raw: line,
-    }
+    };
 }
 
 function parseMessage(data) {
@@ -52,30 +52,30 @@ function parseMessage(data) {
     const lastItem = _.last(data);
 
     switch (code) {
-        case statusCodes.info:
-            return {
-                type: 'info',
-                content: _(data)
+    case statusCodes.info:
+        return {
+            type: 'info',
+            content: _(data)
                     .map('raw')
                     .join('\n'),
-            };
+        };
 
-        case statusCodes.volumeChange: 
-            return {
-                type: 'statusChange',
-                status: {
-                    volume:  lastItem.raw.split('|')[1],
-                }
-            }
+    case statusCodes.volumeChange:
+        return {
+            type: 'statusChange',
+            status: {
+                volume: lastItem.raw.split('|')[1],
+            },
+        };
 
-        default:
-            return {
-                type: 'statusChange',
-                status: _.merge(
+    default:
+        return {
+            type: 'statusChange',
+            status: _.merge(
                     { state: _.findKey(v => v === code, statusCodes) },
                     parseTrackData(lastItem.raw)
                 ),
-            };
+        };
     }
 }
 
@@ -88,6 +88,6 @@ function parseControlData(text) {
         .groupBy(lineMeta => lineMeta.code)
         .map(parseMessage)
         .value();
-};
+}
 
 exports.parseControlData = parseControlData;

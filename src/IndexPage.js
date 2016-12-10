@@ -1,12 +1,12 @@
 const iconList = {
-    'playpause': 'play',
-    'stop': 'stop',
-    'prev': 'step-backward',
-    'next': 'step-forward',
-    'rand': 'random',
-    'mute': 'volume-off',
-    'voldown': 'volume-down',
-    'volup': 'volume-up'
+    playpause: 'play',
+    stop: 'stop',
+    prev: 'step-backward',
+    next: 'step-forward',
+    rand: 'random',
+    mute: 'volume-off',
+    voldown: 'volume-down',
+    volup: 'volume-up',
 };
 
 function renderIndex(ctx) {
@@ -20,6 +20,6 @@ function renderIndex(ctx) {
             port: ctx.webServerPort,
         },
     });
-};
+}
 
 exports.renderIndex = renderIndex;
