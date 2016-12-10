@@ -8,25 +8,21 @@ function probe(port) {
 
         sock.setTimeout(10000);
 
-        sock.on('connect', function() {
+        sock.on('connect', () => {
             sock.destroy();
             return resolve();
-        })
+        });
 
-        sock.on('error', function(e) {
-            return reject(connectionError);
-        })
+        sock.on('error', () => reject(connectionError));
 
-        sock.on('timeout', function(e) {
-            return reject(connectionError);
-        })
+        sock.on('timeout', () => reject(connectionError));
 
         sock.connect(port, '127.0.0.1');
     });
 }
 
 function connect(port, logger) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         const client = Net.connect({ port }, () => {
             client.setKeepAlive(true, 10000);
 
@@ -35,7 +31,7 @@ function connect(port, logger) {
                 logger.info('Control server closed connection');
             });
 
-            client.on('error', (e) => {
+            client.on('error', e => {
                 logger.warn('Error in control server connection');
                 logger.error(e);
             });
@@ -43,7 +39,7 @@ function connect(port, logger) {
             return resolve(client);
         });
     });
-};
+}
 
 function sendCommand(ctx, command) {
     try {
@@ -51,14 +47,13 @@ function sendCommand(ctx, command) {
         ctx.logger.info(`Control server command sent for action ${command}`);
     } catch (error) {
         ctx.logger.warn('Could not reach control server');
-        
+
         if (error) {
             ctx.logger.error(error);
         }
     }
-};
+}
 
 exports.probe = probe;
 exports.connect = connect;
 exports.sendCommand = sendCommand;
-

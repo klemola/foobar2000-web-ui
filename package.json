@@ -18,6 +18,7 @@
     "test-client": "mocha-phantomjs test/client/runner.html",
     "start": "node src/Main.js",
     "test": "npm run test-server && npm run test-client",
+    "lint": "./node_modules/.bin/eslint src/*.js",
     "logs": "./node_modules/.bin/bunyan foobar2000-web-ui.log"
   },
   "dependencies": {
@@ -27,10 +28,15 @@
     "jade": "1.11.0",
     "lodash": "4.17.2",
     "minimist": "1.2.0",
-    "socket.io": "1.6.0"
+    "socket.io": "1.6.0",
+    "socket.io-client": "1.7.1"
   },
   "devDependencies": {
     "chai": "3.5.0",
+    "eslint": "3.12.0",
+    "eslint-config-airbnb": "13.0.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-promise": "3.4.0",
     "mocha": "3.2.0",
     "mocha-phantomjs": "4.1.0"
   }

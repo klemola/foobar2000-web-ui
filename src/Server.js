@@ -1,14 +1,14 @@
+/* eslint no-param-reassign: off */
+
 const Http = require('http');
 const Express = require('express');
-const BodyParser = require('body-parser')
+const BodyParser = require('body-parser');
 const SocketIo = require('socket.io');
 const IndexPage = require('./IndexPage');
 const Foobar = require('./Foobar');
 
 function createErrorHandler(ctx, io) {
-    return function errorHandler(error) {
-        io.sockets.emit('controlServerError', 'Connection to Foobar control server ended.');
-    };
+    return () => io.sockets.emit('controlServerError', 'Connection to Foobar control server ended.');
 }
 
 function createServer(app) {
@@ -24,13 +24,13 @@ function createServer(app) {
 }
 
 function configureStatic(ctx, app) {
-    app.use(BodyParser.json())
-    app.use(Express.static(__dirname + '/static'));
+    app.use(BodyParser.json());
+    app.use(Express.static(`${__dirname}/static`));
 
-    app.set('views', __dirname + '/templates');
+    app.set('views', `${__dirname}/templates`);
     app.set('view engine', 'jade');
     app.set('view options', {
-        pretty: true
+        pretty: true,
     });
     app.locals.pretty = true;
 
