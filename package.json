@@ -17,7 +17,8 @@
         "test-server": "mocha test/server",
         "start": "node src/Main.js",
         "test": "yarn test-server",
-        "lint": "eslint src/*.js",
+        "lint": "eslint src/*.js src/static/js/*.js",
+        "format": "prettier --write src/**/*.js",
         "logs": "bunyan foobar2000-web-ui.log"
     },
     "dependencies": {
