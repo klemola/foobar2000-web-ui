@@ -6,20 +6,21 @@ const iconList = {
     rand: 'random',
     mute: 'volume-off',
     voldown: 'volume-down',
-    volup: 'volume-up',
-};
-
-function renderIndex(ctx) {
-    return (reg, res) => res.render('index', {
-        title: ctx.config.appTitle,
-        playbackActions: ctx.config.playbackActions,
-        volumeActions: ctx.config.volumeActions,
-        icons: iconList,
-        serverConfig: {
-            serverAddress: ctx.serverExternalIP,
-            port: ctx.webServerPort,
-        },
-    });
+    volup: 'volume-up'
 }
 
-exports.renderIndex = renderIndex;
+function renderIndex(ctx) {
+    return (reg, res) =>
+        res.render('index', {
+            title: ctx.config.appTitle,
+            playbackActions: ctx.config.playbackActions,
+            volumeActions: ctx.config.volumeActions,
+            icons: iconList,
+            serverConfig: {
+                serverAddress: ctx.serverExternalIP,
+                port: ctx.webServerPort
+            }
+        })
+}
+
+exports.renderIndex = renderIndex
