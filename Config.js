@@ -1,6 +1,6 @@
 const IP = require('./src/IP')
 
-const appTitle = 'Foobar2000 Webui'
+const appTitle = 'Foobar2000 Web UI'
 const localIPGuess = IP.getIPv4AddressList[0]
 
 // defines whether local IP is parsed from network interfaces or set manually
@@ -24,7 +24,7 @@ const serverExternalIP = guessIP && localIPGuess ? localIPGuess : '127.0.0.1'
 // By default foo_controlserver uses '|' as a separator, change if needed.
 const controlServerMessageSeparator = '|'
 
-/* These actions correspond to buttons in UI. Defaults are what Foobar2000 supports
+/* These actions correspond to buttons in UI. Defaults are what foobar2000 supports
  * and includes in it's native UI.
  */
 const playbackActions = ['playpause', 'stop', 'prev', 'next', 'rand']

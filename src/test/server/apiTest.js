@@ -70,7 +70,7 @@ describe('API', () => {
         done()
     })
 
-    it('should send Foobar2000 status info upon connecting ', done => {
+    it('should send foobar2000 status info upon connecting ', done => {
         const ioClient = SocketIoClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
@@ -85,7 +85,7 @@ describe('API', () => {
         })
     })
 
-    it('should send Foobar2000 status info when volume is changed', done => {
+    it('should send foobar2000 status info when volume is changed', done => {
         const ioClient = SocketIoClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
