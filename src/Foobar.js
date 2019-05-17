@@ -1,10 +1,23 @@
 const ChildProcess = require('child_process')
 const Fs = require('fs')
 const Path = require('path')
+const OS = require('os')
 const Message = require('./Message')
 const ControlServer = require('./ControlServer')
 
 function launch(config) {
+    if (OS.platform !== 'win32') {
+        const MockControlServer = require('./test/util/MockControlServer')
+        return new Promise(resolve =>
+            resolve(
+                MockControlServer.createServer(
+                    '127.0.0.1',
+                    config.controlServerPort
+                )
+            )
+        )
+    }
+
     const normalizedPath = `${Path.normalize(config.foobarPath)}/`
 
     if (Fs.readdirSync(normalizedPath).indexOf('foobar2000.exe') === -1) {

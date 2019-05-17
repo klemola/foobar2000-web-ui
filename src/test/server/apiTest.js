@@ -7,6 +7,7 @@ const _ = require('lodash/fp')
 const MockControlServer = require('../util/MockControlServer')
 const Server = require('../../Server')
 const ControlServer = require('../../ControlServer')
+const { mockTrack1 } = require('../fixtures')
 
 const ioOptions = {
     transports: ['websocket'],
@@ -76,8 +77,8 @@ describe('API', () => {
         )
 
         ioClient.on('foobarStatus', data => {
-            assert.ok(data.state === 'paused')
-            assert.ok(data.track === 'Bronchitis (entire)')
+            assert.ok(data.state === mockTrack1.state)
+            assert.ok(data.track === mockTrack1.track)
 
             ioClient.disconnect()
             done()
