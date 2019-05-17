@@ -14,7 +14,7 @@
         "server"
     ],
     "scripts": {
-        "test-server": "mocha test/server",
+        "test-server": "mocha src/test/server",
         "start": "node src/Main.js",
         "test": "yarn test-server",
         "lint": "eslint src/*.js src/static/js/*.js",
