@@ -6,7 +6,7 @@ const Message = require('./Message')
 const ControlServer = require('./ControlServer')
 
 function launch(config) {
-    if (OS.platform !== 'win32') {
+    if (OS.platform() !== 'win32') {
         const MockControlServer = require('./test/util/MockControlServer')
         return new Promise(resolve =>
             resolve(
