@@ -7,7 +7,7 @@ const ControlServer = require('./ControlServer')
 
 function launch(config) {
     if (OS.platform() !== 'win32') {
-        const MockControlServer = require('./test/util/MockControlServer')
+        const MockControlServer = require('./test/MockControlServer')
         return new Promise(resolve =>
             resolve(
                 MockControlServer.createServer(

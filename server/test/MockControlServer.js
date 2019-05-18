@@ -4,7 +4,7 @@
 const Net = require('net')
 const assert = require('assert')
 const _ = require('lodash/fp')
-const { mockTrack1, mockTrack2 } = require('../fixtures')
+const { mockTrack1, mockTrack2 } = require('./fixtures')
 
 const initialMsg = `
 999|Connected to foobar2000 Control Server v1.0.1|\r\n

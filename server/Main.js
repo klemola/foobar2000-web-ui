@@ -9,7 +9,7 @@ const Server = require('./Server')
 const ControlServer = require('./ControlServer')
 
 const args = Minimist(process.argv.slice(2))
-const configPath = args.configPath || '../Config'
+const configPath = args.configPath || './Config'
 const config = require(configPath)
 const logger = Bunyan.createLogger({
     name: 'foobar2000-web-ui',

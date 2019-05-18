@@ -4,10 +4,10 @@ const Path = require('path')
 const Bunyan = require('bunyan')
 const SocketIoClient = require('socket.io-client')
 const _ = require('lodash/fp')
-const MockControlServer = require('../util/MockControlServer')
-const Server = require('../../Server')
-const ControlServer = require('../../ControlServer')
-const { mockTrack1 } = require('../fixtures')
+const MockControlServer = require('./MockControlServer')
+const Server = require('../Server')
+const ControlServer = require('../ControlServer')
+const { mockTrack1 } = require('./fixtures')
 
 const ioOptions = {
     transports: ['websocket'],
@@ -23,7 +23,7 @@ describe('API', () => {
     let ioInstance
 
     before(done => {
-        const config = _.merge(require('../../../Config'), {
+        const config = _.merge(require('../Config'), {
             controlServerPort: testControlServerPort
         })
         const logger = Bunyan.createLogger({

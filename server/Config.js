@@ -1,4 +1,4 @@
-const IP = require('./src/IP')
+const IP = require('./IP')
 
 const appTitle = 'Foobar2000 Web UI'
 const localIPGuess = IP.getIPv4AddressList[0]

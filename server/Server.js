@@ -29,7 +29,7 @@ function createServer(app) {
 
 function configureStatic(ctx, app) {
     app.use(BodyParser.json())
-    app.use(Express.static(`${__dirname}/static`))
+    app.use(Express.static(`${__dirname}/../ui`))
 
     app.set('views', `${__dirname}/templates`)
     app.set('view engine', 'jade')

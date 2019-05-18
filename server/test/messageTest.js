@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { assert } = require('chai')
-const Message = require('../../Message')
+const Message = require('../Message')
 
 describe('Message', () => {
     it('should parse an information block', () => {
