@@ -1,6 +1,6 @@
-const os = require('os')
+import * as os from 'os'
 
-function getIPv4AddressList() {
+export function getIPv4AddressList() {
     const eligibleInterfaces = os.networkInterfaces()['Local Area Connection']
 
     if (!eligibleInterfaces) {
@@ -11,5 +11,3 @@ function getIPv4AddressList() {
         .filter(i => i.family === 'IPv4')
         .map(i => i.address)
 }
-
-exports.getIPv4AddressList = getIPv4AddressList

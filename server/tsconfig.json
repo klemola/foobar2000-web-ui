@@ -1,0 +1,11 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": "./",
+        "outDir": "../build",
+        "target": "es5",
+        "module": "commonjs",
+        "resolveJsonModule": true
+    },
+    "include": ["./main.ts", "./test/*.test.ts"]
+}

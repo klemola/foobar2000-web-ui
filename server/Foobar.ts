@@ -1,12 +1,15 @@
-const ChildProcess = require('child_process')
-const Fs = require('fs')
-const Path = require('path')
-const OS = require('os')
-const Message = require('./Message')
-const ControlServer = require('./ControlServer')
+import * as child_process from 'child_process'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as os from 'os'
+import * as net from 'net'
 
-function launch(config) {
-    if (OS.platform() !== 'win32') {
+import * as Message from './Message'
+import * as ControlServer from './ControlServer'
+import { Context } from './Models'
+
+export function launch(config: any): Promise<net.Server | void> {
+    if (os.platform() !== 'win32') {
         const MockControlServer = require('./test/MockControlServer')
         return new Promise(resolve =>
             resolve(
@@ -18,24 +21,28 @@ function launch(config) {
         )
     }
 
-    const normalizedPath = `${Path.normalize(config.foobarPath)}/`
+    const normalizedPath = `${path.normalize(config.foobarPath)}/`
 
-    if (Fs.readdirSync(normalizedPath).indexOf('foobar2000.exe') === -1) {
+    if (fs.readdirSync(normalizedPath).indexOf('foobar2000.exe') === -1) {
         throw new Error(
             'Foobar2000.exe was not found in the path specified in configuration'
         )
     }
 
     // TODO: handle process termination gracefully
-    ChildProcess.exec('foobar2000.exe', { cwd: config.foobarPath })
+    child_process.exec('foobar2000.exe', { cwd: config.foobarPath })
     return ControlServer.probe(config.controlServerPort)
 }
 
-function queryTrackInfo(ctx) {
+export function queryTrackInfo(ctx: Context) {
     return ControlServer.sendCommand(ctx, 'trackinfo')
 }
 
-function sendCommand(ctx, io, command) {
+export function sendCommand(
+    ctx: Context,
+    io: SocketIO.Server,
+    command: string
+) {
     ctx.logger.info({ command }, 'Command received')
 
     if (command === 'launchFoobar') {
@@ -55,13 +62,13 @@ function sendCommand(ctx, io, command) {
         return ControlServer.sendCommand(ctx, `vol ${command.substring(3)}`)
     }
 
-    return ChildProcess.exec(`foobar2000.exe /${command}`, {
+    return child_process.exec(`foobar2000.exe /${command}`, {
         cwd: ctx.config.foobarPath
     })
 }
 
-function onData(ctx, io) {
-    return function controlDataHandler(data) {
+export function onData(ctx: Context, io: SocketIO.Server) {
+    return function controlDataHandler(data: Buffer) {
         const messages = Message.parseControlData(data.toString('utf-8'))
 
         ctx.logger.info(messages, 'Received data from control server')
@@ -77,8 +84,3 @@ function onData(ctx, io) {
         })
     }
 }
-
-exports.launch = launch
-exports.queryTrackInfo = queryTrackInfo
-exports.sendCommand = sendCommand
-exports.onData = onData

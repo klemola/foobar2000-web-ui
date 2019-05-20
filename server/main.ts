@@ -1,25 +1,22 @@
-/* eslint import/no-dynamic-require: off, promise/always-return: off */
+import * as path from 'path'
+import bunyan from 'bunyan'
+import * as net from 'net'
 
-const Path = require('path')
-const Express = require('express')
-const Bunyan = require('bunyan')
-const Minimist = require('minimist')
-const Foobar = require('./Foobar')
-const Server = require('./Server')
-const ControlServer = require('./ControlServer')
+import * as Foobar from './Foobar'
+import * as Server from './Server'
+import * as ControlServer from './ControlServer'
+import { Context } from './Models'
+import * as config from './config'
 
-const args = Minimist(process.argv.slice(2))
-const configPath = args.configPath || './Config'
-const config = require(configPath)
-const logger = Bunyan.createLogger({
+const logger = bunyan.createLogger({
     name: 'foobar2000-web-ui',
     streams: [
         {
-            path: `${Path.resolve(__dirname, '..')}/foobar2000-web-ui.log`
+            path: `${path.resolve(__dirname, '..')}/foobar2000-web-ui.log`
         }
     ],
-    level: Bunyan.DEBUG,
-    serializers: Bunyan.stdSerializers
+    level: bunyan.DEBUG,
+    serializers: bunyan.stdSerializers
 })
 
 logger.debug(config, 'Initializing')
@@ -29,14 +26,13 @@ Foobar.launch(config)
         logger.debug('Foobar launched')
         return ControlServer.connect(config.controlServerPort, logger)
     })
-    .then(client => {
-        const context = {
+    .then((client: net.Socket) => {
+        const context: Context = {
             config,
             logger,
             client
         }
-        const app = Express()
-        const { server, io } = Server.createServer(app)
+        const { server, app, io } = Server.create()
 
         Server.configureStatic(context, app)
         Server.configureWebsockets(context, io)
@@ -45,7 +41,7 @@ Foobar.launch(config)
         logger.debug('Initialization complete')
         logger.info(`Server listening on port ${config.webServerPort}`)
     })
-    .catch(err => {
+    .catch((err: Error) => {
         if (err) {
             logger.error(err)
         }
