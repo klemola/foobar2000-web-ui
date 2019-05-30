@@ -19,6 +19,7 @@ function onConnection(socket: net.Socket) {
     let currentTrack: any = _.clone(mockTrack1)
 
     socket.write(initialMsg)
+    socket.write(mockTrackInfoResponse(currentTrack))
 
     let interval = setInterval(() => {
         const nextSecondsPlayed = Number(currentTrack.secondsPlayed) + 1
@@ -36,11 +37,11 @@ function onConnection(socket: net.Socket) {
     socket.on('data', data => {
         const stringData = data.toString()
 
-        if (_.startsWith('trackinfo', stringData)) {
+        if (_.startsWith(stringData, 'trackinfo')) {
             return socket.write(mockTrackInfoResponse(currentTrack))
         }
 
-        if (_.startsWith('vol', stringData)) {
+        if (_.startsWith(stringData, 'vol')) {
             return socket.write(mockVolResponse)
         }
 

@@ -1,7 +1,12 @@
 import { assert } from 'chai'
 
 import * as Message from '../Message'
-import { isInfoMessage, TrackInfo, isPlaybackMessage } from '../Models'
+import {
+    isInfoMessage,
+    TrackInfo,
+    isPlaybackMessage,
+    isVolumeMessage
+} from '../Models'
 
 describe('Message', () => {
     it('should parse an information block', () => {
@@ -19,7 +24,7 @@ describe('Message', () => {
         assert.equal(messages.length, 1)
 
         if (isInfoMessage(infoMessage)) {
-            assert.equal(infoMessage.content, expectedMessage)
+            assert.equal(infoMessage.data, expectedMessage)
         } else {
             throw 'Incorrect message type!'
         }
@@ -48,43 +53,72 @@ describe('Message', () => {
         assert.equal(messages.length, 1)
 
         if (isPlaybackMessage(playbackMessage)) {
-            assert.deepEqual(playbackMessage.status, expectedTrackData)
+            assert.deepEqual(playbackMessage.data, expectedTrackData)
         } else {
             throw 'Incorrect message type!'
         }
     })
 
-    // it('should set state "playing" for code "111"', () => {
-    //     const message =
-    //         '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|'
-    //     const parsedObject = Message.parseControlData(message)
+    it('should set state "playing" for code "111"', () => {
+        const message =
+            '111|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|'
+        const messages = Message.parseControlData(message)
+        const playbackMessage = messages[0]
 
-    //     assert.equal(parsedObject[0].status.state, 'playing')
-    // })
+        assert.equal(messages.length, 1)
 
-    // it('should set state "stopped" for code "112"', () => {
-    //     const message =
-    //         '112|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|'
-    //     const parsedObject = Message.parseControlData(message)
+        if (isPlaybackMessage(playbackMessage)) {
+            assert.equal(playbackMessage.data.state, 'playing')
+        } else {
+            throw 'Incorrect message type!'
+        }
+    })
 
-    //     assert.equal(parsedObject[0].status.state, 'stopped')
-    // })
+    it('should set state "stopped" for code "112"', () => {
+        const message =
+            '112|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|'
+        const messages = Message.parseControlData(message)
+        const playbackMessage = messages[0]
 
-    // it('should set state "paused" for code "113"', () => {
-    //     const message =
-    //         '113|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|'
-    //     const parsedObject = Message.parseControlData(message)
+        assert.equal(messages.length, 1)
 
-    //     assert.equal(parsedObject[0].status.state, 'paused')
-    // })
+        if (isPlaybackMessage(playbackMessage)) {
+            assert.equal(playbackMessage.data.state, 'stopped')
+        } else {
+            throw 'Incorrect message type!'
+        }
+    })
 
-    // it('should parse volume change message', () => {
-    //     const message = '222|-1.58|'
-    //     const parsedObject = Message.parseControlData(message)
-    //     const mockStatus = {
-    //         volume: '-1.58'
-    //     }
+    it('should set state "paused" for code "113"', () => {
+        const message =
+            '113|3|282|2.73|FLAC|605|Imaginary Friends|Bronchitis|2013|Post-rock|01|Bronchitis (entire)|745|'
+        const messages = Message.parseControlData(message)
+        const playbackMessage = messages[0]
 
-    //     assert.deepEqual(parsedObject[0].status, mockStatus)
-    // })
+        assert.equal(messages.length, 1)
+
+        if (isPlaybackMessage(playbackMessage)) {
+            assert.equal(playbackMessage.data.state, 'paused')
+        } else {
+            throw 'Incorrect message type!'
+        }
+    })
+
+    it('should parse a volume message', () => {
+        const message = '222|-1.58|'
+        const mockStatus = {
+            volume: '-1.58'
+        }
+
+        const messages = Message.parseControlData(message)
+        const volumeMessage = messages[0]
+
+        assert.equal(messages.length, 1)
+
+        if (isVolumeMessage(volumeMessage)) {
+            assert.deepEqual(volumeMessage.data, mockStatus)
+        } else {
+            throw 'Incorrect message type!'
+        }
+    })
 })

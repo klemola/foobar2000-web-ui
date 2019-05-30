@@ -28,17 +28,17 @@ export interface VolumeInfo {
 
 export interface InfoMessage {
     type: 'info'
-    content: string
+    data: string
 }
 
 export interface PlaybackMessage {
-    type: 'statusChange'
-    status: TrackInfo
+    type: 'playback'
+    data: TrackInfo
 }
 
 export interface VolumeMessage {
-    type: 'statusChange'
-    status: VolumeInfo
+    type: 'volume'
+    data: VolumeInfo
 }
 
 export type Message = InfoMessage | PlaybackMessage | VolumeMessage
@@ -48,4 +48,7 @@ export const isInfoMessage = (message: Message): message is InfoMessage =>
 
 export const isPlaybackMessage = (
     message: Message
-): message is PlaybackMessage => message.type === 'statusChange'
+): message is PlaybackMessage => message.type === 'playback'
+
+export const isVolumeMessage = (message: Message): message is VolumeMessage =>
+    message.type === 'volume'

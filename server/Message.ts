@@ -30,9 +30,16 @@ function parseTrackData(text: string) {
     const trackData: any = {}
 
     attributes.forEach((item: string, iter: number) => {
-        const attribute = statusFields[iter]
+        const attribute: string | null = statusFields[iter]
         if (attribute) {
-            trackData[attribute] = item
+            trackData[attribute] = _.contains(attribute, [
+                'status',
+                'secondsPlayed',
+                'bitrate',
+                'trackLength'
+            ])
+                ? Number(item)
+                : item
         }
     })
 
@@ -56,23 +63,23 @@ function parseMessage(data: any[]): Message {
         case statusCodes.info:
             return {
                 type: 'info',
-                content: _(data)
+                data: _(data)
                     .map('raw')
                     .join('\n')
             }
 
         case statusCodes.volumeChange:
             return {
-                type: 'statusChange',
-                status: {
+                type: 'volume',
+                data: {
                     volume: lastItem.raw.split('|')[1]
                 }
             }
 
         default:
             return {
-                type: 'statusChange',
-                status: _.merge(
+                type: 'playback',
+                data: _.merge(
                     { state: _.findKey((v: any) => v === code, statusCodes) },
                     parseTrackData(lastItem.raw)
                 )

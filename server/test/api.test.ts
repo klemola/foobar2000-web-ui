@@ -3,15 +3,15 @@ import * as path from 'path'
 import bunyan from 'bunyan'
 import * as net from 'net'
 import { describe } from 'mocha'
+import SocketIOClient from 'socket.io-client'
 
-const socketioClient: any = require('socket.io-client')
 const _: any = require('lodash')
 
 import { createServer } from './MockControlServer'
 import * as Server from '../Server'
 import * as ControlServer from '../ControlServer'
 import { mockTrack1 } from './fixtures'
-import { TrackInfo, Context } from '../Models'
+import { TrackInfo, Context, Message } from '../Models'
 import * as config from '../config'
 
 const ioOptions = {
@@ -73,7 +73,7 @@ describe('API', () => {
     })
 
     it('should send foobar2000 status info upon connecting ', done => {
-        const ioClient = socketioClient(
+        const ioClient = SocketIOClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
         )
@@ -88,12 +88,12 @@ describe('API', () => {
     })
 
     it('should send foobar2000 status info when volume is changed', done => {
-        const ioClient = socketioClient(
+        const ioClient = SocketIOClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
         )
 
-        const receivedData = []
+        const receivedData: Message[] = []
 
         ioClient.on('foobarStatus', (data: any) => {
             receivedData.push(data)

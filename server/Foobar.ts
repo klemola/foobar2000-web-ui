@@ -74,12 +74,12 @@ export function onData(ctx: Context, io: SocketIO.Server) {
         ctx.logger.info(messages, 'Received data from control server')
 
         messages.forEach(message => {
-            if (message.type === 'statusChange') {
-                io.sockets.emit('foobarStatus', message.status)
+            if (message.type === 'playback' || message.type === 'volume') {
+                io.sockets.emit('foobarStatus', message.data)
             }
 
             if (message.type === 'info') {
-                io.sockets.emit('info', message.content)
+                io.sockets.emit('info', message.data)
             }
         })
     }
