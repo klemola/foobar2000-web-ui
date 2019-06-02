@@ -3,10 +3,10 @@ html(lang="en" ng-app="FBUI")
     head
         title= title
         meta(name="viewport" content="width=device-width, user-scalable=no")
-        script(type="text/javascript", src="/js/vendor/socket.io.min.js")
-        script(type="text/javascript", src="/js/vendor/angular.min.js")
-        script(type="text/javascript", src="/js/vendor/angular-animate.min.js")
-        script(type="text/javascript", src="/js/vendor/socket.min.js")
+        script(type="text/javascript", src="/vendor/socket.io.min.js")
+        script(type="text/javascript", src="/vendor/angular.min.js")
+        script(type="text/javascript", src="/vendor/angular-animate.min.js")
+        script(type="text/javascript", src="/vendor/socket.min.js")
         link(rel="stylesheet", type="text/css", href="/css/bootstrap.min.css")
         link(rel="stylesheet", type="text/css", href="/css/bootstrap-theme.min.css")
         link(rel="stylesheet", type="text/css", href="/css/main.css")
@@ -19,7 +19,4 @@ html(lang="en" ng-app="FBUI")
         var SERVER_ADDRESS = '#{address}';
         var SERVER_PORT = '#{port}';
 
-    script(type="text/javascript", src="/js/main.js")
-    script(type="text/javascript", src="/js/controllers.js")
-    script(type="text/javascript", src="/js/services.js")
-    script(type="text/javascript", src="/js/filters.js")
+    script(type="text/javascript", src="/ui.js")

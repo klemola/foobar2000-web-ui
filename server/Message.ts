@@ -1,4 +1,5 @@
-const _ = require('lodash/fp')
+import { Message } from './Models'
+const _: any = require('lodash/fp')
 
 const statusCodes = {
     playing: 111,
@@ -24,21 +25,28 @@ const statusFields = [
     'trackLength'
 ]
 
-function parseTrackData(text) {
+function parseTrackData(text: string) {
     const attributes = text.split('|')
-    const trackData = {}
+    const trackData: any = {}
 
-    attributes.forEach((item, iter) => {
-        const attribute = statusFields[iter]
+    attributes.forEach((item: string, iter: number) => {
+        const attribute: string | null = statusFields[iter]
         if (attribute) {
-            trackData[attribute] = item
+            trackData[attribute] = _.contains(attribute, [
+                'status',
+                'secondsPlayed',
+                'bitrate',
+                'trackLength'
+            ])
+                ? Number(item)
+                : item
         }
     })
 
     return trackData
 }
 
-function parseMetaData(line) {
+function parseMetaData(line: string) {
     const messageCode = parseInt(line.substring(0, 3), 10)
 
     return {
@@ -47,7 +55,7 @@ function parseMetaData(line) {
     }
 }
 
-function parseMessage(data) {
+function parseMessage(data: any[]): Message {
     const code = _.head(data).code
     const lastItem = _.last(data)
 
@@ -55,39 +63,37 @@ function parseMessage(data) {
         case statusCodes.info:
             return {
                 type: 'info',
-                content: _(data)
+                data: _(data)
                     .map('raw')
                     .join('\n')
             }
 
         case statusCodes.volumeChange:
             return {
-                type: 'statusChange',
-                status: {
+                type: 'volume',
+                data: {
                     volume: lastItem.raw.split('|')[1]
                 }
             }
 
         default:
             return {
-                type: 'statusChange',
-                status: _.merge(
-                    { state: _.findKey(v => v === code, statusCodes) },
+                type: 'playback',
+                data: _.merge(
+                    { state: _.findKey((v: any) => v === code, statusCodes) },
                     parseTrackData(lastItem.raw)
                 )
             }
     }
 }
 
-function parseControlData(text) {
-    const lines = text.split('\r\n')
+export function parseControlData(text: string): Message[] {
+    const lines: string[] = text.split('\r\n')
 
     return _(lines)
-        .reject(l => l === '')
+        .reject((l: string) => l === '')
         .map(parseMetaData)
-        .groupBy(lineMeta => lineMeta.code)
+        .groupBy((lineMeta: any) => lineMeta.code)
         .map(parseMessage)
         .value()
 }
-
-exports.parseControlData = parseControlData

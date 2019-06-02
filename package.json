@@ -14,11 +14,14 @@
         "server"
     ],
     "scripts": {
-        "test-server": "mocha src/test/server",
-        "start": "node src/Main.js",
+        "copy-files": "shx mkdir -p ./build/static && shx cp -r ./ui/{css,vendor,fonts} ./build/static/ && shx cp -r ./server/templates ./build/",
+        "build-ui": "tsc -p ui/tsconfig.json",
+        "build-server": "tsc -p server/tsconfig.json",
+        "build": "yarn copy-files && yarn build-server && yarn build-ui",
+        "test-server": "mocha --exit ./build/**/*.test.js",
+        "start": "node build/main.js",
         "test": "yarn test-server",
-        "lint": "eslint src/*.js src/static/js/*.js",
-        "format": "prettier --write src/**/*.js ./Config.js",
+        "format": "prettier --write server/**/*.ts ui/**/*.ts",
         "logs": "bunyan foobar2000-web-ui.log"
     },
     "dependencies": {
@@ -28,17 +31,25 @@
         "express": "4.16.4",
         "jade": "1.11.0",
         "lodash": "4.17.11",
-        "minimist": "1.2.0",
+        "runtypes": "3.2.0",
         "socket.io": "2.2.0",
-        "socket.io-client": "2.2.0"
+        "socket.io-client": "1.7.1"
     },
     "devDependencies": {
+        "@types/body-parser": "^1.17.0",
+        "@types/bunyan": "^1.8.6",
+        "@types/chai": "^4.1.7",
+        "@types/express": "^4.16.1",
+        "@types/lodash": "^4.14.129",
+        "@types/mocha": "^5.2.6",
+        "@types/node": "^12.0.2",
+        "@types/socket.io": "^2.1.2",
+        "@types/socket.io-client": "^1.4.32",
         "chai": "4.2.0",
-        "eslint": "5.16.0",
-        "eslint-config-prettier": "4.2.0",
-        "eslint-plugin-prettier": "^3.0.1",
         "mocha": "6.1.4",
-        "prettier": "^1.17.0"
+        "prettier": "1.17.0",
+        "shx": "0.3.2",
+        "typescript": "3.4.5"
     },
     "prettier": {
         "semi": false,

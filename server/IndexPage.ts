@@ -1,3 +1,7 @@
+import { Request, Response } from 'express'
+
+import { Context, playbackActions, volumeActions } from './Models'
+
 const iconList = {
     playpause: 'play',
     stop: 'stop',
@@ -9,18 +13,16 @@ const iconList = {
     volup: 'volume-up'
 }
 
-function renderIndex(ctx) {
-    return (reg, res) =>
+export function renderIndex(ctx: Context) {
+    return (_: Request, res: Response) =>
         res.render('index', {
             title: ctx.config.appTitle,
-            playbackActions: ctx.config.playbackActions,
-            volumeActions: ctx.config.volumeActions,
+            playbackActions,
+            volumeActions,
             icons: iconList,
             serverConfig: {
-                serverAddress: ctx.serverExternalIP,
-                port: ctx.webServerPort
+                serverAddress: ctx.config.serverExternalIP,
+                port: ctx.config.webServerPort
             }
         })
 }
-
-exports.renderIndex = renderIndex

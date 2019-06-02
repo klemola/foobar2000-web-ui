@@ -1,13 +1,13 @@
-/* eslint no-param-reassign: off */
+import http from 'http'
+import express from 'express'
+import * as bodyparser from 'body-parser'
+import socketio from 'socket.io'
 
-const Http = require('http')
-const Express = require('express')
-const BodyParser = require('body-parser')
-const SocketIo = require('socket.io')
-const IndexPage = require('./IndexPage')
-const Foobar = require('./Foobar')
+import { renderIndex } from './IndexPage'
+import * as Foobar from './Foobar'
+import { Context } from './Models'
 
-function createErrorHandler(ctx, io) {
+function createErrorHandler(ctx: Context, io: socketio.Server) {
     return () =>
         io.sockets.emit(
             'controlServerError',
@@ -15,21 +15,21 @@ function createErrorHandler(ctx, io) {
         )
 }
 
-function createServer(app) {
-    const server = Http.createServer(app)
-    const io = SocketIo.listen(server, {
-        'log level': 2
-    })
+export function create() {
+    const app = express()
+    const server = http.createServer(app)
+    const io = socketio(server)
 
     return {
         server,
+        app,
         io
     }
 }
 
-function configureStatic(ctx, app) {
-    app.use(BodyParser.json())
-    app.use(Express.static(`${__dirname}/static`))
+export function configureStatic(ctx: Context, app: express.Application) {
+    app.use(bodyparser.json())
+    app.use(express.static(`${__dirname}/static`))
 
     app.set('views', `${__dirname}/templates`)
     app.set('view engine', 'jade')
@@ -38,10 +38,10 @@ function configureStatic(ctx, app) {
     })
     app.locals.pretty = true
 
-    app.get('/', IndexPage.renderIndex(ctx))
+    app.get('/', renderIndex(ctx))
 }
 
-function configureWebsockets(ctx, io) {
+export function configureWebsockets(ctx: Context, io: socketio.Server) {
     const handleErr = createErrorHandler(ctx, io)
 
     io.sockets.on('connection', socket => {
@@ -62,7 +62,3 @@ function configureWebsockets(ctx, io) {
     ctx.client.on('end', handleErr)
     ctx.client.on('error', handleErr)
 }
-
-exports.createServer = createServer
-exports.configureStatic = configureStatic
-exports.configureWebsockets = configureWebsockets

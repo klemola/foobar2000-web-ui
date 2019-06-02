@@ -1,8 +1,10 @@
-const Net = require('net')
+import * as Net from 'net'
+import * as Bunyan from 'bunyan'
+import { Context } from './Models'
 
 const connectionError = new Error('Could not connect to control server')
 
-function probe(port) {
+export function probe(port: number): Promise<void> {
     return new Promise((resolve, reject) => {
         const sock = new Net.Socket()
 
@@ -21,9 +23,9 @@ function probe(port) {
     })
 }
 
-function connect(port, logger) {
+export function connect(port: number, logger: Bunyan): Promise<Net.Socket> {
     return new Promise(resolve => {
-        const client = Net.connect({ port }, () => {
+        const client: Net.Socket = Net.connect({ port }, () => {
             client.setKeepAlive(true, 10000)
 
             client.on('end', () => {
@@ -41,7 +43,7 @@ function connect(port, logger) {
     })
 }
 
-function sendCommand(ctx, command) {
+export function sendCommand(ctx: Context, command: string) {
     try {
         ctx.client.write(`${command}\r\n`)
         ctx.logger.info(`Control server command sent for action ${command}`)
@@ -53,7 +55,3 @@ function sendCommand(ctx, command) {
         }
     }
 }
-
-exports.probe = probe
-exports.connect = connect
-exports.sendCommand = sendCommand
