@@ -2,10 +2,10 @@ import { assert } from 'chai'
 
 import * as Message from '../Message'
 import {
-    isInfoMessage,
     TrackInfo,
-    isPlaybackMessage,
-    isVolumeMessage
+    InfoMessage,
+    PlaybackMessage,
+    VolumeMessage
 } from '../Models'
 
 describe('Message', () => {
@@ -23,7 +23,7 @@ describe('Message', () => {
 
         assert.equal(messages.length, 1)
 
-        if (isInfoMessage(infoMessage)) {
+        if (InfoMessage.guard(infoMessage)) {
             assert.equal(infoMessage.data, expectedMessage)
         } else {
             throw 'Incorrect message type!'
@@ -52,7 +52,7 @@ describe('Message', () => {
 
         assert.equal(messages.length, 1)
 
-        if (isPlaybackMessage(playbackMessage)) {
+        if (PlaybackMessage.guard(playbackMessage)) {
             assert.deepEqual(playbackMessage.data, expectedTrackData)
         } else {
             throw 'Incorrect message type!'
@@ -67,7 +67,7 @@ describe('Message', () => {
 
         assert.equal(messages.length, 1)
 
-        if (isPlaybackMessage(playbackMessage)) {
+        if (PlaybackMessage.guard(playbackMessage)) {
             assert.equal(playbackMessage.data.state, 'playing')
         } else {
             throw 'Incorrect message type!'
@@ -82,7 +82,7 @@ describe('Message', () => {
 
         assert.equal(messages.length, 1)
 
-        if (isPlaybackMessage(playbackMessage)) {
+        if (PlaybackMessage.guard(playbackMessage)) {
             assert.equal(playbackMessage.data.state, 'stopped')
         } else {
             throw 'Incorrect message type!'
@@ -97,7 +97,7 @@ describe('Message', () => {
 
         assert.equal(messages.length, 1)
 
-        if (isPlaybackMessage(playbackMessage)) {
+        if (PlaybackMessage.guard(playbackMessage)) {
             assert.equal(playbackMessage.data.state, 'paused')
         } else {
             throw 'Incorrect message type!'
@@ -115,7 +115,7 @@ describe('Message', () => {
 
         assert.equal(messages.length, 1)
 
-        if (isVolumeMessage(volumeMessage)) {
+        if (VolumeMessage.guard(volumeMessage)) {
             assert.deepEqual(volumeMessage.data, mockStatus)
         } else {
             throw 'Incorrect message type!'

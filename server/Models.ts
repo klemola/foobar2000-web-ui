@@ -1,54 +1,112 @@
-import * as Bunyan from 'bunyan'
-import * as Net from 'net'
+import {
+    Number,
+    String,
+    Boolean,
+    Literal,
+    Record,
+    Union,
+    Unknown,
+    Runtype,
+    Static
+} from 'runtypes'
+import Bunyan from 'bunyan'
+import { Socket } from 'net'
 
-export interface Context {
-    config: any
-    logger: Bunyan
-    client: Net.Socket
-}
+export const PlaybackAction = Union(
+    Literal('playpause'),
+    Literal('stop'),
+    Literal('prev'),
+    Literal('next'),
+    Literal('rand')
+)
 
-export interface TrackInfo {
-    status: number
-    secondsPlayed: number
-    codec: string
-    bitrate: number
-    artist: string
-    album: string
-    date: string
-    genre: string
-    trackNumber: string
-    track: string
-    trackLength: number
-    state: string
-}
+export type PlaybackAction = Static<typeof PlaybackAction>
+export const playbackActions: readonly PlaybackAction[] = [
+    'playpause',
+    'stop',
+    'prev',
+    'next',
+    'rand'
+]
 
-export interface VolumeInfo {
-    volume: 'string'
-}
+export const VolumeAction = Union(
+    Literal('mute'),
+    Literal('voldown'),
+    Literal('volup')
+)
 
-export interface InfoMessage {
-    type: 'info'
-    data: string
-}
+export type VolumeAction = Static<typeof VolumeAction>
+export const volumeActions: readonly VolumeAction[] = [
+    'mute',
+    'voldown',
+    'volup'
+]
 
-export interface PlaybackMessage {
-    type: 'playback'
+export const Config = Record({
+    appTitle: String,
+    localIPGuess: String,
+    guessIP: Boolean,
+    foobarPath: String,
+    controlServerPort: Number,
+    webServerPort: Number,
+    serverExternalIP: String,
+    controlServerMessageSeparator: String
+})
+
+export type Config = Static<typeof Config>
+
+const Context = Record({
+    config: Config,
+    logger: Unknown as Runtype<Bunyan>,
+    client: Unknown as Runtype<Socket>
+})
+
+export type Context = Static<typeof Context>
+
+export const TrackInfo = Record({
+    status: Number,
+    secondsPlayed: Number,
+    codec: String,
+    bitrate: Number,
+    artist: String,
+    album: String,
+    date: String,
+    genre: String,
+    trackNumber: String,
+    track: String,
+    trackLength: Number,
+    state: String
+})
+
+export type TrackInfo = Static<typeof TrackInfo>
+
+export const VolumeInfo = Record({
+    volume: String
+})
+
+export type VolumeInfo = Static<typeof VolumeInfo>
+
+export const InfoMessage = Record({
+    type: Literal('info'),
+    data: String
+})
+
+export type InfoMessage = Static<typeof InfoMessage>
+
+export const PlaybackMessage = Record({
+    type: Literal('playback'),
     data: TrackInfo
-}
+})
 
-export interface VolumeMessage {
-    type: 'volume'
+export type PlaybackMessage = Static<typeof PlaybackMessage>
+
+export const VolumeMessage = Record({
+    type: Literal('volume'),
     data: VolumeInfo
-}
+})
 
-export type Message = InfoMessage | PlaybackMessage | VolumeMessage
+export type VolumeMessage = Static<typeof VolumeMessage>
 
-export const isInfoMessage = (message: Message): message is InfoMessage =>
-    message.type === 'info'
+export const Message = Union(InfoMessage, PlaybackMessage, VolumeMessage)
 
-export const isPlaybackMessage = (
-    message: Message
-): message is PlaybackMessage => message.type === 'playback'
-
-export const isVolumeMessage = (message: Message): message is VolumeMessage =>
-    message.type === 'volume'
+export type Message = Static<typeof Message>

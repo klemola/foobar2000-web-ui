@@ -6,7 +6,7 @@ import * as Foobar from './Foobar'
 import * as Server from './Server'
 import * as ControlServer from './ControlServer'
 import { Context } from './Models'
-import * as config from './config'
+import config from './config'
 
 const logger = bunyan.createLogger({
     name: 'foobar2000-web-ui',

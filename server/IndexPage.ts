@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import { Context } from './Models'
+import { Context, playbackActions, volumeActions } from './Models'
 
 const iconList = {
     playpause: 'play',
@@ -14,11 +14,11 @@ const iconList = {
 }
 
 export function renderIndex(ctx: Context) {
-    return (reg: Request, res: Response) =>
+    return (_: Request, res: Response) =>
         res.render('index', {
             title: ctx.config.appTitle,
-            playbackActions: ctx.config.playbackActions,
-            volumeActions: ctx.config.volumeActions,
+            playbackActions,
+            volumeActions,
             icons: iconList,
             serverConfig: {
                 serverAddress: ctx.config.serverExternalIP,

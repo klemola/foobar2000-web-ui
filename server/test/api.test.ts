@@ -12,7 +12,7 @@ import * as Server from '../Server'
 import * as ControlServer from '../ControlServer'
 import { mockTrack1 } from './fixtures'
 import { TrackInfo, Context, Message } from '../Models'
-import * as config from '../config'
+import config from '../config'
 
 const ioOptions = {
     transports: ['websocket'],
