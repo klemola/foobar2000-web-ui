@@ -21,7 +21,7 @@ export const create = (env: Env = 'production'): Logger => {
     if (env === 'development') {
         logger.add(
             new winston.transports.Console({
-                format: winston.format.simple()
+                format: winston.format.cli()
             })
         )
     }

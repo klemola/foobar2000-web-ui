@@ -71,7 +71,7 @@ export function onData(ctx: Context, io: SocketIO.Server) {
     return function controlDataHandler(data: Buffer) {
         const messages = Message.parseControlData(data.toString('utf-8'))
 
-        ctx.logger.info('Received data from control server', messages)
+        ctx.logger.debug('Received data from control server', messages)
 
         messages.forEach(message => {
             if (message.type === 'playback' || message.type === 'volume') {
