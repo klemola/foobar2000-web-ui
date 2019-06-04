@@ -1,5 +1,5 @@
 import { getIPv4AddressList } from './IP'
-import { Config } from 'Models'
+import { Config, Env } from 'Models'
 
 const appTitle = 'Foobar2000 Web UI'
 const localIPGuess = getIPv4AddressList()[0]
@@ -25,6 +25,12 @@ const serverExternalIP = guessIP && localIPGuess ? localIPGuess : '127.0.0.1'
 // By default foo_controlserver uses '|' as a separator, change if needed.
 const controlServerMessageSeparator = '|'
 
+let environment: Env = 'development'
+
+if (process.env.NODE_ENV === 'production') {
+    environment = 'production'
+}
+
 const config: Config = {
     appTitle,
     localIPGuess,
@@ -33,7 +39,8 @@ const config: Config = {
     controlServerPort,
     webServerPort,
     serverExternalIP,
-    controlServerMessageSeparator
+    controlServerMessageSeparator,
+    environment
 }
 
 export default config

@@ -43,7 +43,7 @@ export function sendCommand(
     io: SocketIO.Server,
     command: string
 ) {
-    ctx.logger.info({ command }, 'Command received')
+    ctx.logger.info('Command received', { command })
 
     if (command === 'launchFoobar') {
         return launch(ctx.config)
@@ -71,7 +71,7 @@ export function onData(ctx: Context, io: SocketIO.Server) {
     return function controlDataHandler(data: Buffer) {
         const messages = Message.parseControlData(data.toString('utf-8'))
 
-        ctx.logger.info(messages, 'Received data from control server')
+        ctx.logger.debug('Received data from control server', messages)
 
         messages.forEach(message => {
             if (message.type === 'playback' || message.type === 'volume') {

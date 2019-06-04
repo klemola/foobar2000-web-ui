@@ -1,6 +1,4 @@
 import { assert } from 'chai'
-import * as path from 'path'
-import bunyan from 'bunyan'
 import * as net from 'net'
 import { describe } from 'mocha'
 import SocketIOClient from 'socket.io-client'
@@ -11,8 +9,9 @@ import { createServer } from './MockControlServer'
 import * as Server from '../Server'
 import * as ControlServer from '../ControlServer'
 import { mockTrack1 } from './fixtures'
-import { TrackInfo, Context, Message } from '../Models'
+import { TrackInfo, Context, Message, Env } from '../Models'
 import config from '../config'
+import * as Logger from '../Logger'
 
 const ioOptions = {
     transports: ['websocket'],
@@ -26,21 +25,15 @@ describe('API', () => {
     let mockControlServer: net.Server
     let testServer: any
     let ioInstance: SocketIO.Server
+    let environment: Env = 'test'
 
     before(done => {
         const _config = {
             ...config,
-            controlServerPort: testControlServerPort
+            controlServerPort: testControlServerPort,
+            environment
         }
-        const logger = bunyan.createLogger({
-            name: 'foobar2000-web-ui-test',
-            serializers: bunyan.stdSerializers,
-            streams: [
-                {
-                    path: `${path.resolve(__dirname, '..')}/test.log`
-                }
-            ]
-        })
+        const logger = Logger.create(_config.environment)
         mockControlServer = createServer('127.0.0.1', testControlServerPort)
 
         ControlServer.connect(_config.controlServerPort, logger).then(

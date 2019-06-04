@@ -1,6 +1,7 @@
 import * as Net from 'net'
-import * as Bunyan from 'bunyan'
+
 import { Context } from './Models'
+import { Logger } from 'Logger'
 
 const connectionError = new Error('Could not connect to control server')
 
@@ -23,7 +24,7 @@ export function probe(port: number): Promise<void> {
     })
 }
 
-export function connect(port: number, logger: Bunyan): Promise<Net.Socket> {
+export function connect(port: number, logger: Logger): Promise<Net.Socket> {
     return new Promise(resolve => {
         const client: Net.Socket = Net.connect({ port }, () => {
             client.setKeepAlive(true, 10000)

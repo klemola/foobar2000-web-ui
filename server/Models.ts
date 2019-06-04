@@ -9,8 +9,17 @@ import {
     Runtype,
     Static
 } from 'runtypes'
-import Bunyan from 'bunyan'
 import { Socket } from 'net'
+
+import { Logger } from 'Logger'
+
+export const Env = Union(
+    Literal('production'),
+    Literal('development'),
+    Literal('test')
+)
+
+export type Env = Static<typeof Env>
 
 export const PlaybackAction = Union(
     Literal('playpause'),
@@ -50,14 +59,15 @@ export const Config = Record({
     controlServerPort: Number,
     webServerPort: Number,
     serverExternalIP: String,
-    controlServerMessageSeparator: String
+    controlServerMessageSeparator: String,
+    environment: Env
 })
 
 export type Config = Static<typeof Config>
 
 const Context = Record({
     config: Config,
-    logger: Unknown as Runtype<Bunyan>,
+    logger: Unknown as Runtype<Logger>,
     client: Unknown as Runtype<Socket>
 })
 
