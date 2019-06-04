@@ -1,25 +1,15 @@
-import * as path from 'path'
-import bunyan from 'bunyan'
 import * as net from 'net'
 
+import * as Logger from './Logger'
 import * as Foobar from './Foobar'
 import * as Server from './Server'
 import * as ControlServer from './ControlServer'
 import { Context } from './Models'
 import config from './config'
 
-const logger = bunyan.createLogger({
-    name: 'foobar2000-web-ui',
-    streams: [
-        {
-            path: `${path.resolve(__dirname, '..')}/foobar2000-web-ui.log`
-        }
-    ],
-    level: bunyan.DEBUG,
-    serializers: bunyan.stdSerializers
-})
+const logger = Logger.create(config.environment)
 
-logger.debug(config, 'Initializing')
+logger.debug('Initializing', config)
 
 Foobar.launch(config)
     .then(() => {

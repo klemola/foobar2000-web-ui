@@ -45,10 +45,10 @@ export function configureWebsockets(ctx: Context, io: socketio.Server) {
     const handleErr = createErrorHandler(ctx, io)
 
     io.sockets.on('connection', socket => {
-        ctx.logger.info({ socketId: socket.id }, 'Web client connected')
+        ctx.logger.info('Web client connected', { socketId: socket.id })
 
         socket.on('disconnect', () => {
-            ctx.logger.info({ socketId: socket.id }, 'Web client disconnected')
+            ctx.logger.info('Web client disconnected', { socketId: socket.id })
         })
 
         socket.on('foobarCommand', command =>
