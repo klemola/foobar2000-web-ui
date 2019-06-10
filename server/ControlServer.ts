@@ -9,7 +9,7 @@ export function probe(port: number): Promise<void> {
     return new Promise((resolve, reject) => {
         const sock = new Net.Socket()
 
-        sock.setTimeout(10000)
+        sock.setTimeout(30 * 1000)
 
         sock.on('connect', () => {
             sock.destroy()

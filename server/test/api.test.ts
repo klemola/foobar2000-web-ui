@@ -41,7 +41,8 @@ describe('API', () => {
                 const context: Context = {
                     config: _config,
                     logger,
-                    client
+                    client,
+                    instance: null
                 }
 
                 const { server, io } = Server.create()

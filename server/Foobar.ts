@@ -2,23 +2,18 @@ import * as child_process from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
-import * as net from 'net'
 
 import * as Message from './Message'
 import * as ControlServer from './ControlServer'
-import { Context } from './Models'
+import { Context, Config, FB2KInstance } from './Models'
+import { Logger } from 'Logger'
 
-export function launch(config: any): Promise<net.Server | void> {
+export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
     if (os.platform() !== 'win32') {
         const MockControlServer = require('./test/MockControlServer')
-        return new Promise(resolve =>
-            resolve(
-                MockControlServer.createServer(
-                    '127.0.0.1',
-                    config.controlServerPort
-                )
-            )
-        )
+        MockControlServer.createServer('127.0.0.1', config.controlServerPort)
+
+        return new Promise(resolve => resolve(null))
     }
 
     const normalizedPath = `${path.normalize(config.foobarPath)}/`
@@ -29,9 +24,21 @@ export function launch(config: any): Promise<net.Server | void> {
         )
     }
 
-    // TODO: handle process termination gracefully
-    child_process.exec('foobar2000.exe', { cwd: config.foobarPath })
-    return ControlServer.probe(config.controlServerPort)
+    const fb2kInstance: FB2KInstance = child_process.spawn('foobar2000.exe', {
+        cwd: config.foobarPath,
+        detached: true
+    })
+
+    fb2kInstance.on('close', (code: number, signal: string) =>
+        logger.warn('Foobar2000 instance closed.', {
+            code,
+            signal
+        })
+    )
+
+    return ControlServer.probe(config.controlServerPort).then(
+        () => fb2kInstance
+    )
 }
 
 export function queryTrackInfo(ctx: Context) {
@@ -46,8 +53,11 @@ export function sendCommand(
     ctx.logger.info('Command received', { command })
 
     if (command === 'launchFoobar') {
-        return launch(ctx.config)
-            .then(() => io.sockets.emit('foobarStarted'))
+        return launch(ctx.config, ctx.logger)
+            .then(i => {
+                ctx.instance = i
+                io.sockets.emit('foobarStarted')
+            })
             .catch(() => {
                 ctx.logger.warn('Could not launch Foobar')
                 io.sockets.emit('controlServerError', 'Could not launch Foobar')

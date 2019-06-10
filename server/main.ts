@@ -11,16 +11,20 @@ const logger = Logger.create(config.environment)
 
 logger.debug('Initializing', config)
 
-Foobar.launch(config)
-    .then(() => {
+Foobar.launch(config, logger)
+    .then(instance => {
         logger.debug('Foobar launched')
-        return ControlServer.connect(config.controlServerPort, logger)
+        return Promise.all([
+            instance,
+            ControlServer.connect(config.controlServerPort, logger)
+        ])
     })
-    .then((client: net.Socket) => {
+    .then(([instance, client]) => {
         const context: Context = {
             config,
             logger,
-            client
+            client,
+            instance
         }
         const { server, app, io } = Server.create()
 

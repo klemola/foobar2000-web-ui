@@ -7,11 +7,13 @@ import {
     Union,
     Unknown,
     Runtype,
-    Static
+    Static,
+    Null
 } from 'runtypes'
 import { Socket } from 'net'
 
 import { Logger } from 'Logger'
+import { ChildProcessWithoutNullStreams } from 'child_process'
 
 export const Env = Union(
     Literal('production'),
@@ -65,10 +67,17 @@ export const Config = Record({
 
 export type Config = Static<typeof Config>
 
+export const FB2KInstance = (Unknown as Runtype<
+    ChildProcessWithoutNullStreams
+>).Or(Null)
+
+export type FB2KInstance = Static<typeof FB2KInstance>
+
 const Context = Record({
     config: Config,
     logger: Unknown as Runtype<Logger>,
-    client: Unknown as Runtype<Socket>
+    client: Unknown as Runtype<Socket>,
+    instance: FB2KInstance
 })
 
 export type Context = Static<typeof Context>
