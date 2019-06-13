@@ -3,8 +3,6 @@ import * as net from 'net'
 import { describe } from 'mocha'
 import SocketIOClient from 'socket.io-client'
 
-const _: any = require('lodash')
-
 import { createServer } from './MockControlServer'
 import * as Server from '../Server'
 import * as ControlServer from '../ControlServer'

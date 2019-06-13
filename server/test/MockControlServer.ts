@@ -3,12 +3,11 @@ import * as net from 'net'
 import { mockTrack1, mockTrack2 } from './fixtures'
 import { TrackInfo } from 'Models'
 
-const initialMsg = `
-999|Connected to foobar2000 Control Server v1.0.1|\r\n
-999|Accepted client from 127.0.0.1|\r\n
-999|There are currently 1/10 clients connected|\r\n
-999|Type '?' or 'help' for command information|\r\n
-`
+const initialMsg = `999|Connected to foobar2000 Control Server v1.0.1|\r
+999|Accepted client from 127.0.0.1|\r
+999|There are currently 1/10 clients connected|\r
+999|Type '?' or 'help' for command information|\r`
+
 const mockTrackInfoResponse = (trackInfo: any) =>
     `111|3|282|${trackInfo.secondsPlayed}|FLAC|605|${trackInfo.artist}|${
         trackInfo.album
