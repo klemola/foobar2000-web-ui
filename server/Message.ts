@@ -1,5 +1,11 @@
-import { Message } from './Models'
-const _: any = require('lodash/fp')
+import {
+    Message,
+    VolumeMessage,
+    TrackInfo,
+    PlaybackMessage,
+    InfoMessage
+} from './Models'
+import { Vector, Option, HashMap } from 'prelude-ts'
 
 const statusCodes = {
     playing: 111,
@@ -8,6 +14,8 @@ const statusCodes = {
     volumeChange: 222,
     info: 999
 }
+
+const statusCodesHM = HashMap.ofObjectDictionary(statusCodes)
 
 const statusFields = [
     'status',
@@ -25,19 +33,19 @@ const statusFields = [
     'trackLength'
 ]
 
-function parseTrackData(text: string) {
+function parseTrackData(text: string): TrackInfo {
     const attributes = text.split('|')
     const trackData: any = {}
 
     attributes.forEach((item: string, iter: number) => {
         const attribute: string | null = statusFields[iter]
         if (attribute) {
-            trackData[attribute] = _.contains(attribute, [
+            trackData[attribute] = [
                 'status',
                 'secondsPlayed',
                 'bitrate',
                 'trackLength'
-            ])
+            ].includes(attribute)
                 ? Number(item)
                 : item
         }
@@ -46,54 +54,62 @@ function parseTrackData(text: string) {
     return trackData
 }
 
-function parseMetaData(line: string) {
-    const messageCode = parseInt(line.substring(0, 3), 10)
+function parseMessage(raw: string): Option<Message> {
+    const messageCode = parseInt(raw.substring(0, 3), 10)
 
-    return {
-        code: messageCode,
-        raw: line
-    }
-}
-
-function parseMessage(data: any[]): Message {
-    const code = _.head(data).code
-    const lastItem = _.last(data)
-
-    switch (code) {
+    switch (messageCode) {
         case statusCodes.info:
-            return {
+            return Option.of({
                 type: 'info',
-                data: _(data)
-                    .map('raw')
-                    .join('\n')
-            }
+                data: raw
+            })
 
         case statusCodes.volumeChange:
-            return {
+            const vol = Vector.ofIterable(raw.split('|'))
+                .filter(v => v !== '')
+                .last()
+
+            return vol.map<VolumeMessage>(v => ({
                 type: 'volume',
                 data: {
-                    volume: lastItem.raw.split('|')[1]
+                    volume: v
                 }
-            }
+            }))
 
         default:
-            return {
+            const trackInfo = parseTrackData(raw)
+            const lookupResult = statusCodesHM.findAny(
+                (k, v) => v === messageCode
+            )
+
+            return lookupResult.map<PlaybackMessage>(([status, code]) => ({
                 type: 'playback',
-                data: _.merge(
-                    { state: _.findKey((v: any) => v === code, statusCodes) },
-                    parseTrackData(lastItem.raw)
-                )
-            }
+                data: {
+                    ...trackInfo,
+                    state: status
+                }
+            }))
     }
 }
 
 export function parseControlData(text: string): Message[] {
     const lines: string[] = text.split('\r\n')
+    const messageList = Vector.ofIterable(lines).mapOption<Message>(
+        parseMessage
+    )
 
-    return _(lines)
-        .reject((l: string) => l === '')
-        .map(parseMetaData)
-        .groupBy((lineMeta: any) => lineMeta.code)
-        .map(parseMessage)
-        .value()
+    if (messageList.allMatch(InfoMessage.guard)) {
+        return [
+            {
+                type: 'info',
+                data: messageList.foldLeft(
+                    '',
+                    (data, message) =>
+                        `${data}${data.length === 0 ? '' : '\n'}${message.data}`
+                )
+            }
+        ]
+    }
+
+    return messageList.toArray()
 }
