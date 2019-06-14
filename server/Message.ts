@@ -1,17 +1,10 @@
 import { Vector, HashMap, Option } from 'prelude-ts'
-
-import { Message, TrackInfo, InfoMessage } from './Models'
 import { Result, Failure } from 'runtypes'
 
-type StatusName =
-    | 'playing'
-    | 'stopped'
-    | 'paused'
-    | 'volumeChange'
-    | 'info'
-    | 'unknown'
+import { Message, TrackInfo, InfoMessage, StatusType } from './Models'
+import { failure, success, mapSuccess } from './Util'
 
-const statusCodes: HashMap<string, StatusName> = HashMap.of(
+const statusCodes: HashMap<string, StatusType> = HashMap.of(
     ['111', 'playing'],
     ['112', 'stopped'],
     ['113', 'paused'],
@@ -40,12 +33,7 @@ const trackInfoKeysWithNumberValue: (keyof TrackInfo)[] = [
     'trackLength'
 ]
 
-const parseMessageFailure: Failure = {
-    success: false,
-    message: 'Could not parse message'
-}
-
-function statusCodeToName(code: string): StatusName {
+function statusCodeToName(code: string): StatusType {
     const lookupResult = statusCodes.findAny((key, _) => code === key)
 
     if (lookupResult.isNone()) {
@@ -62,10 +50,7 @@ function parseTrackData(text: string): Result<TrackInfo> {
     const otherValues = items.drop(3)
 
     if (status.isNone() || otherValues.length() < trackInfoKeys.length - 1) {
-        return {
-            success: false,
-            message: 'Could not parse track data'
-        }
+        return failure('Could not parse track data')
     }
 
     const values = otherValues.prepend(status.get())
@@ -84,17 +69,15 @@ function mapTrackInfoValue(k: keyof TrackInfo, v: string): string | number {
 }
 
 function parseMessage(raw: string): Result<Message> {
+    const parseMessageFailure: Failure = failure('Could not parse message')
     const messageCode = raw.substring(0, 3)
 
     switch (statusCodeToName(messageCode)) {
         case 'info':
-            return {
-                success: true,
-                value: {
-                    type: 'info',
-                    data: raw
-                }
-            }
+            return success({
+                type: 'info',
+                data: raw
+            })
 
         case 'volumeChange':
             const vol = Vector.ofIterable(raw.split('|'))
@@ -102,15 +85,12 @@ function parseMessage(raw: string): Result<Message> {
                 .last()
 
             return vol.isSome()
-                ? {
-                      success: true,
-                      value: {
-                          type: 'volume',
-                          data: {
-                              volume: vol.get()
-                          }
+                ? success({
+                      type: 'volume',
+                      data: {
+                          volume: vol.get()
                       }
-                  }
+                  })
                 : parseMessageFailure
 
         case 'playing':
@@ -118,13 +98,10 @@ function parseMessage(raw: string): Result<Message> {
         case 'stopped':
             const trackInfo = parseTrackData(raw)
             return trackInfo.success
-                ? {
-                      ...trackInfo,
-                      value: {
-                          type: 'playback',
-                          data: trackInfo.value
-                      }
-                  }
+                ? mapSuccess(trackInfo, (value: TrackInfo) => ({
+                      type: 'playback',
+                      data: value
+                  }))
                 : trackInfo
         default:
             return parseMessageFailure

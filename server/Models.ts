@@ -23,6 +23,17 @@ export const Env = Union(
 
 export type Env = Static<typeof Env>
 
+export const StatusType = Union(
+    Literal('playing'),
+    Literal('stopped'),
+    Literal('paused'),
+    Literal('volumeChange'),
+    Literal('info'),
+    Literal('unknown')
+)
+
+export type StatusType = Static<typeof StatusType>
+
 export const PlaybackAction = Union(
     Literal('playpause'),
     Literal('stop'),
