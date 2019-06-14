@@ -1,18 +1,19 @@
-import { Message } from './Models'
-const _: any = require('lodash/fp')
+import { Vector, HashMap, Option } from 'prelude-ts'
+import { Result, Failure } from 'runtypes'
 
-const statusCodes = {
-    playing: 111,
-    stopped: 112,
-    paused: 113,
-    volumeChange: 222,
-    info: 999
-}
+import { Message, TrackInfo, InfoMessage, StatusType } from './Models'
+import { failure, success, mapSuccess } from './Util'
 
-const statusFields = [
+const statusCodes: HashMap<string, StatusType> = HashMap.of(
+    ['111', 'playing'],
+    ['112', 'stopped'],
+    ['113', 'paused'],
+    ['222', 'volumeChange'],
+    ['999', 'info']
+)
+
+const trackInfoKeys: (keyof TrackInfo)[] = [
     'status',
-    null,
-    null,
     'secondsPlayed',
     'codec',
     'bitrate',
@@ -25,75 +26,111 @@ const statusFields = [
     'trackLength'
 ]
 
-function parseTrackData(text: string) {
-    const attributes = text.split('|')
-    const trackData: any = {}
+const trackInfoKeysWithNumberValue: (keyof TrackInfo)[] = [
+    'status',
+    'secondsPlayed',
+    'bitrate',
+    'trackLength'
+]
 
-    attributes.forEach((item: string, iter: number) => {
-        const attribute: string | null = statusFields[iter]
-        if (attribute) {
-            trackData[attribute] = _.contains(attribute, [
-                'status',
-                'secondsPlayed',
-                'bitrate',
-                'trackLength'
-            ])
-                ? Number(item)
-                : item
-        }
-    })
+function statusCodeToName(code: string): StatusType {
+    const lookupResult = statusCodes.findAny((key, _) => code === key)
 
-    return trackData
-}
-
-function parseMetaData(line: string) {
-    const messageCode = parseInt(line.substring(0, 3), 10)
-
-    return {
-        code: messageCode,
-        raw: line
+    if (lookupResult.isNone()) {
+        return 'unknown'
     }
+
+    return lookupResult.get()[1]
 }
 
-function parseMessage(data: any[]): Message {
-    const code = _.head(data).code
-    const lastItem = _.last(data)
+function parseTrackData(text: string): Result<TrackInfo> {
+    const items = Vector.ofIterable(text.split('|'))
+    const status = items.head()
+    // Get rid of fields that we don't care about
+    const otherValues = items.drop(3)
 
-    switch (code) {
-        case statusCodes.info:
-            return {
+    if (status.isNone() || otherValues.length() < trackInfoKeys.length - 1) {
+        return failure('Could not parse track data')
+    }
+
+    const values = otherValues.prepend(status.get())
+    const trackInfoEntries = Vector.zip(trackInfoKeys, values)
+    const trackInfo = HashMap.ofIterable(trackInfoEntries)
+        .filterKeys(k => !k.startsWith('unknown'))
+        .map((k, v) => [k, mapTrackInfoValue(k, v)])
+        .put('state', statusCodeToName(status.get()))
+        .toObjectDictionary(x => x)
+
+    return TrackInfo.validate(trackInfo)
+}
+
+function mapTrackInfoValue(k: keyof TrackInfo, v: string): string | number {
+    return trackInfoKeysWithNumberValue.includes(k) ? Number(v) : v
+}
+
+function parseMessage(raw: string): Result<Message> {
+    const parseMessageFailure: Failure = failure('Could not parse message')
+    const messageCode = raw.substring(0, 3)
+
+    switch (statusCodeToName(messageCode)) {
+        case 'info':
+            return success({
                 type: 'info',
-                data: _(data)
-                    .map('raw')
-                    .join('\n')
-            }
+                data: raw
+            })
 
-        case statusCodes.volumeChange:
-            return {
-                type: 'volume',
-                data: {
-                    volume: lastItem.raw.split('|')[1]
-                }
-            }
+        case 'volumeChange':
+            const vol = Vector.ofIterable(raw.split('|'))
+                .filter(v => v !== '')
+                .last()
 
+            return vol.isSome()
+                ? success({
+                      type: 'volume',
+                      data: {
+                          volume: vol.get()
+                      }
+                  })
+                : parseMessageFailure
+
+        case 'playing':
+        case 'paused':
+        case 'stopped':
+            const trackInfo = parseTrackData(raw)
+            return trackInfo.success
+                ? mapSuccess(trackInfo, (value: TrackInfo) => ({
+                      type: 'playback',
+                      data: value
+                  }))
+                : trackInfo
         default:
-            return {
-                type: 'playback',
-                data: _.merge(
-                    { state: _.findKey((v: any) => v === code, statusCodes) },
-                    parseTrackData(lastItem.raw)
-                )
-            }
+            return parseMessageFailure
     }
 }
 
 export function parseControlData(text: string): Message[] {
     const lines: string[] = text.split('\r\n')
+    const messageList: Vector<Message> = Vector.ofIterable(lines).mapOption(
+        l => {
+            const messageResult = parseMessage(l)
+            return messageResult.success
+                ? Option.of(messageResult.value)
+                : Option.none()
+        }
+    )
 
-    return _(lines)
-        .reject((l: string) => l === '')
-        .map(parseMetaData)
-        .groupBy((lineMeta: any) => lineMeta.code)
-        .map(parseMessage)
-        .value()
+    if (messageList.allMatch(InfoMessage.guard)) {
+        return [
+            {
+                type: 'info',
+                data: messageList.foldLeft(
+                    '',
+                    (data, message) =>
+                        `${data}${data.length === 0 ? '' : '\n'}${message.data}`
+                )
+            }
+        ]
+    }
+
+    return messageList.toArray()
 }

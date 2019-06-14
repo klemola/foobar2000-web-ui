@@ -1,4 +1,4 @@
-import { getIPv4AddressList } from './IP'
+import { getIPv4AddressList } from './Util'
 import { Config, Env } from 'Models'
 
 const appTitle = 'Foobar2000 Web UI'
