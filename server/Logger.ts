@@ -4,11 +4,14 @@ import { Env } from 'Models'
 
 export type Logger = winston.Logger
 
-export const create = (env: Env = 'production'): Logger => {
+export const create = (
+    env: Env = 'production',
+    service: string = 'fb2k-web-ui'
+): Logger => {
     const logger = winston.createLogger({
         level: env === 'production' ? 'info' : 'debug',
         format: winston.format.json(),
-        defaultMeta: { service: 'fb2k-web-ui' },
+        defaultMeta: { service },
         transports: [
             new winston.transports.File({
                 filename: 'error.log',

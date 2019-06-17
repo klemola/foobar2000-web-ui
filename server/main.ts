@@ -1,5 +1,3 @@
-import * as net from 'net'
-
 import * as Logger from './Logger'
 import * as Foobar from './Foobar'
 import * as Server from './Server'

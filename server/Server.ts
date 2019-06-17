@@ -55,7 +55,7 @@ export function configureWebsockets(ctx: Context, io: socketio.Server) {
             Foobar.sendCommand(ctx, io, command)
         )
 
-        Foobar.queryTrackInfo(ctx)
+        Foobar.queryTrackInfo(ctx, io)
     })
 
     ctx.client.on('data', Foobar.onData(ctx, io))

@@ -3,14 +3,15 @@ import { Request, Response } from 'express'
 import { Context, playbackActions, volumeActions } from './Models'
 
 const iconList = {
-    playpause: 'play',
+    play: 'play',
+    pause: 'pause',
     stop: 'stop',
     prev: 'step-backward',
     next: 'step-forward',
     rand: 'random',
-    mute: 'volume-off',
-    voldown: 'volume-down',
-    volup: 'volume-up'
+    'vol mute': 'volume-off',
+    'vol down': 'volume-down',
+    'vol up': 'volume-up'
 }
 
 export function renderIndex(ctx: Context) {

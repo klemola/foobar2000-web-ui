@@ -35,7 +35,8 @@ export const StatusType = Union(
 export type StatusType = Static<typeof StatusType>
 
 export const PlaybackAction = Union(
-    Literal('playpause'),
+    Literal('play'),
+    Literal('pause'),
     Literal('stop'),
     Literal('prev'),
     Literal('next'),
@@ -44,7 +45,8 @@ export const PlaybackAction = Union(
 
 export type PlaybackAction = Static<typeof PlaybackAction>
 export const playbackActions: readonly PlaybackAction[] = [
-    'playpause',
+    'play',
+    'pause',
     'stop',
     'prev',
     'next',
@@ -52,17 +54,23 @@ export const playbackActions: readonly PlaybackAction[] = [
 ]
 
 export const VolumeAction = Union(
-    Literal('mute'),
-    Literal('voldown'),
-    Literal('volup')
+    Literal('vol mute'),
+    Literal('vol down'),
+    Literal('vol up')
 )
 
 export type VolumeAction = Static<typeof VolumeAction>
 export const volumeActions: readonly VolumeAction[] = [
-    'mute',
-    'voldown',
-    'volup'
+    'vol mute',
+    'vol down',
+    'vol up'
 ]
+
+export const MetaAction = Union(Literal('trackinfo'))
+export type MetaAction = Static<typeof MetaAction>
+
+export const Action = Union(PlaybackAction, VolumeAction, MetaAction)
+export type Action = Static<typeof Action>
 
 export const Config = Record({
     appTitle: String,

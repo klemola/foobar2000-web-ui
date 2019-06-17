@@ -5,7 +5,7 @@ import * as os from 'os'
 
 import * as Message from './Message'
 import * as ControlServer from './ControlServer'
-import { Context, Config, FB2KInstance } from './Models'
+import { Context, Config, FB2KInstance, Action } from './Models'
 import { Logger } from 'Logger'
 
 export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
@@ -41,14 +41,15 @@ export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
     )
 }
 
-export function queryTrackInfo(ctx: Context) {
-    return ControlServer.sendCommand(ctx, 'trackinfo')
+export function queryTrackInfo(ctx: Context, io: SocketIO.Server) {
+    return sendCommand(ctx, io, 'trackinfo')
 }
 
+// TODO move launchFoobar logic out of this module
 export function sendCommand(
     ctx: Context,
     io: SocketIO.Server,
-    command: string
+    command: Action | 'launchFoobar'
 ) {
     ctx.logger.info('Command received', { command })
 
@@ -64,17 +65,7 @@ export function sendCommand(
             })
     }
 
-    if (command === 'mute') {
-        return ControlServer.sendCommand(ctx, 'vol mute')
-    }
-
-    if (command.indexOf('vol') !== -1) {
-        return ControlServer.sendCommand(ctx, `vol ${command.substring(3)}`)
-    }
-
-    return child_process.exec(`foobar2000.exe /${command}`, {
-        cwd: ctx.config.foobarPath
-    })
+    return ControlServer.sendCommand(ctx, command)
 }
 
 export function onData(ctx: Context, io: SocketIO.Server) {

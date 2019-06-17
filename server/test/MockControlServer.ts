@@ -1,20 +1,24 @@
 import * as net from 'net'
 
 import { mockTrack1, mockTrack2 } from './fixtures'
-import { TrackInfo } from 'Models'
+import { TrackInfo, Action } from '../Models'
+import * as Logger from '../Logger'
+import { Vector } from 'prelude-ts'
 
 const initialMsg = `999|Connected to foobar2000 Control Server v1.0.1|\r
 999|Accepted client from 127.0.0.1|\r
 999|There are currently 1/10 clients connected|\r
 999|Type '?' or 'help' for command information|\r`
 
-const mockTrackInfoResponse = (trackInfo: any) =>
-    `111|3|282|${trackInfo.secondsPlayed}|FLAC|605|${trackInfo.artist}|${
-        trackInfo.album
-    }|2013|Post-rock|?|${trackInfo.track}|${trackInfo.trackLength}|`
+const mockTrackInfoResponse = (trackInfo: TrackInfo) =>
+    `${trackInfo.status}|3|282|${trackInfo.secondsPlayed}|FLAC|605|${
+        trackInfo.artist
+    }|${trackInfo.album}|2013|Post-rock|?|${trackInfo.track}|${
+        trackInfo.trackLength
+    }|`
 const mockVolResponse = '222|0.0|'
 
-function onConnection(socket: net.Socket) {
+const onConnection = (logger: Logger.Logger) => (socket: net.Socket) => {
     let currentTrack: TrackInfo = { ...mockTrack1 }
 
     socket.write(initialMsg)
@@ -35,24 +39,39 @@ function onConnection(socket: net.Socket) {
     }, 1000)
 
     socket.on('data', data => {
-        const stringData = data.toString()
+        const stringData = Vector.ofIterable(data.toString())
+            // get rid of CRLF
+            .dropRight(2)
+            .mkString('')
 
-        if (stringData.startsWith('trackinfo')) {
-            return socket.write(mockTrackInfoResponse(currentTrack))
+        if (Action.guard(stringData)) {
+            logger.debug('Received command', {
+                action: stringData
+            })
+
+            switch (stringData) {
+                case 'trackinfo':
+                    return socket.write(mockTrackInfoResponse(currentTrack))
+                case 'vol mute':
+                case 'vol up':
+                case 'vol down':
+                    return socket.write(mockVolResponse)
+                default:
+                    return false
+            }
+        } else {
+            return logger.warn('Unknown command', {
+                action: stringData
+            })
         }
-
-        if (stringData.startsWith('vol')) {
-            return socket.write(mockVolResponse)
-        }
-
-        return false
     })
 
     socket.on('close', () => clearInterval(interval))
 }
 
-export function createServer(host: string, port: number): net.Server {
-    const server = net.createServer(onConnection)
+export const createServer = (host: string, port: number): net.Server => {
+    const logger = Logger.create('test', 'mock-control-server')
+    const server = net.createServer(onConnection(logger))
 
     server.listen(port, host)
 
