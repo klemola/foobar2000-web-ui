@@ -46,8 +46,7 @@ FBUIServices.factory('ConnectionManager', [
                 playBackStatus.setVolumeLevel(message.volume)
             } else {
                 var modifiedStatus = message
-                modifiedStatus.trackLength =
-                    parseInt(message.trackLength, 10) * 1000
+                modifiedStatus.trackLength = message.trackLength * 1000
                 playBackStatus.status = modifiedStatus
             }
         }

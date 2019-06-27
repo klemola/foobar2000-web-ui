@@ -10,7 +10,7 @@ import { Logger } from 'Logger'
 
 export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
     if (os.platform() !== 'win32') {
-        const MockControlServer = require('./test/MockControlServer')
+        const MockControlServer = require('./MockControlServer')
         MockControlServer.createServer('127.0.0.1', config.controlServerPort)
 
         return new Promise(resolve => resolve(null))

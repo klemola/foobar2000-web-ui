@@ -3,11 +3,11 @@ import * as net from 'net'
 import { describe } from 'mocha'
 import SocketIOClient from 'socket.io-client'
 
-import { createServer } from './MockControlServer'
+import { createServer } from '../MockControlServer'
 import * as Server from '../Server'
 import * as ControlServer from '../ControlServer'
 import { mockTrack1 } from './fixtures'
-import { TrackInfo, Context, Message, Env } from '../Models'
+import { TrackInfo, Context, Env } from '../Models'
 import config from '../config'
 import * as Logger from '../Logger'
 
@@ -79,13 +79,40 @@ describe('API', () => {
         })
     })
 
+    // TODO improve test
+    it('should send foobar2000 playback info when a playback action is triggered', done => {
+        const ioClient = SocketIOClient(
+            `http://127.0.0.1:${testServerPort}/`,
+            ioOptions
+        )
+
+        const receivedData: any[] = []
+
+        ioClient.on('foobarStatus', (data: any) => {
+            receivedData.push(data)
+        })
+
+        ioClient.emit('foobarCommand', 'stop')
+
+        setTimeout(() => {
+            const playbackMessage = receivedData[2]
+
+            assert.ok(receivedData.length === 4)
+            assert.ok(playbackMessage.status && playbackMessage.status === 112)
+
+            ioClient.disconnect()
+            done()
+        }, 100)
+    })
+
+    // TODO improve test
     it('should send foobar2000 status info when volume is changed', done => {
         const ioClient = SocketIOClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
         )
 
-        const receivedData: Message[] = []
+        const receivedData: any[] = []
 
         ioClient.on('foobarStatus', (data: any) => {
             receivedData.push(data)
@@ -94,7 +121,11 @@ describe('API', () => {
         ioClient.emit('foobarCommand', 'vol mute')
 
         setTimeout(() => {
-            assert.ok(receivedData.length === 2)
+            const volMessage = receivedData[3]
+
+            assert.ok(receivedData.length === 4)
+            assert.ok(volMessage.volume && volMessage.volume === 'muted')
+
             ioClient.disconnect()
             done()
         }, 100)
