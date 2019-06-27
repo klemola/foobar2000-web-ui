@@ -148,3 +148,21 @@ export type VolumeMessage = Static<typeof VolumeMessage>
 export const Message = Union(InfoMessage, PlaybackMessage, VolumeMessage)
 
 export type Message = Static<typeof Message>
+
+export const Muted = Record({
+    type: Literal('muted'),
+    previousVolume: Number
+})
+
+export type Muted = Static<typeof Muted>
+
+export const Audible = Record({
+    type: Literal('audible'),
+    volume: Number
+})
+
+export type Audible = Static<typeof Audible>
+
+export const Volume = Union(Muted, Audible)
+
+export type Volume = Static<typeof Volume>

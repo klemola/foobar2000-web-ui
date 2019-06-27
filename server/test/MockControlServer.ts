@@ -1,25 +1,52 @@
 import * as net from 'net'
-
-import { mockTrack1, mockTrack2 } from './fixtures'
-import { TrackInfo, Action } from '../Models'
-import * as Logger from '../Logger'
 import { Vector } from 'prelude-ts'
 
-const initialMsg = `999|Connected to foobar2000 Control Server v1.0.1|\r
-999|Accepted client from 127.0.0.1|\r
-999|There are currently 1/10 clients connected|\r
-999|Type '?' or 'help' for command information|\r`
+import {
+    mockTrack1,
+    mockTrack2,
+    initialMsg,
+    mockTrackInfoResponse,
+    mockVolumeResponse
+} from './fixtures'
+import { TrackInfo, Action, VolumeAction, Volume } from '../Models'
+import * as Logger from '../Logger'
 
-const mockTrackInfoResponse = (trackInfo: TrackInfo) =>
-    `${trackInfo.status}|3|282|${trackInfo.secondsPlayed}|FLAC|605|${
-        trackInfo.artist
-    }|${trackInfo.album}|2013|Post-rock|?|${trackInfo.track}|${
-        trackInfo.trackLength
-    }|`
-const mockVolResponse = '222|0.0|'
+const updateVolume = (action: VolumeAction, currentVolume: Volume): Volume => {
+    const volumeLevel =
+        currentVolume.type === 'muted'
+            ? currentVolume.previousVolume
+            : currentVolume.volume
+
+    switch (action) {
+        case 'vol mute':
+            return currentVolume.type === 'muted'
+                ? {
+                      type: 'audible',
+                      volume: volumeLevel
+                  }
+                : {
+                      type: 'muted',
+                      previousVolume: volumeLevel
+                  }
+        case 'vol up':
+            return {
+                type: 'audible',
+                volume: volumeLevel < 0 ? volumeLevel + 1 : 0
+            }
+        case 'vol down':
+            return {
+                type: 'audible',
+                volume: volumeLevel - 1
+            }
+    }
+}
 
 const onConnection = (logger: Logger.Logger) => (socket: net.Socket) => {
     let currentTrack: TrackInfo = { ...mockTrack1 }
+    let currentVolume: Volume = {
+        type: 'audible',
+        volume: 0.0
+    }
 
     socket.write(initialMsg)
     socket.write(mockTrackInfoResponse(currentTrack))
@@ -55,7 +82,8 @@ const onConnection = (logger: Logger.Logger) => (socket: net.Socket) => {
                 case 'vol mute':
                 case 'vol up':
                 case 'vol down':
-                    return socket.write(mockVolResponse)
+                    currentVolume = updateVolume(stringData, currentVolume)
+                    return socket.write(mockVolumeResponse(currentVolume))
                 default:
                     return false
             }
