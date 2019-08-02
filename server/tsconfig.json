@@ -5,6 +5,7 @@
         "outDir": "../build",
         "target": "es5",
         "module": "commonjs",
+        "lib": ["esnext", "es2015.iterable"],
         "resolveJsonModule": true
     },
     "include": ["./main.ts", "./test/*.test.ts"]

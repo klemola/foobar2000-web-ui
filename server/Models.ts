@@ -11,9 +11,9 @@ import {
     Null
 } from 'runtypes'
 import { Socket } from 'net'
-
-import { Logger } from 'Logger'
 import { ChildProcessWithoutNullStreams } from 'child_process'
+
+import { Logger } from './Logger'
 
 export const Env = Union(
     Literal('production'),

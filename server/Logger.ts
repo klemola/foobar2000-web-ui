@@ -1,7 +1,6 @@
 import winston from 'winston'
 
-import { Env } from 'Models'
-
+import { Env } from './Models'
 export type Logger = winston.Logger
 
 export const create = (
