@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { assert } from 'chai'
 
 import * as Message from '../Message'

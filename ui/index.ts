@@ -1,5 +1,8 @@
 import { h, render } from 'preact'
+
 import { InfoMessage } from '../server/Models'
+
+require('./css/main.css')
 
 const el = document.createElement('div')
 const message: InfoMessage = {

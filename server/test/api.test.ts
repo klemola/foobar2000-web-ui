@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any */
+
 import { assert } from 'chai'
 import * as net from 'net'
 import { describe } from 'mocha'

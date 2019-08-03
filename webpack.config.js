@@ -4,17 +4,22 @@ const path = require('path')
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const INPUT_DIR = path.resolve(__dirname, 'ui')
 const OUTPUT_DIR = path.resolve(__dirname, 'build', 'static')
 
 const webpackConfig = {
-    mode: 'development',
     context: INPUT_DIR,
-    entry: './index.ts',
+    entry: {
+        main: './index.ts'
+    },
     output: {
         filename: 'ui.js',
         path: OUTPUT_DIR
+    },
+    resolve: {
+        extensions: ['.js', '.ts', '.css', '.json', '.html']
     },
     module: {
         rules: [
@@ -22,9 +27,24 @@ const webpackConfig = {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 options: {
-                    // disable type checker - we will use it in fork plugin
                     transpileOnly: true
                 }
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            modules: true,
+                            importLoaders: 1,
+                            localIdentName: '[name][hash:base64]',
+                            sourceMap: true,
+                            minimize: true
+                        }
+                    },
+                    'css-loader'
+                ]
             }
         ]
     },
@@ -33,6 +53,10 @@ const webpackConfig = {
         new HtmlWebpackPlugin({
             title: 'Foobar 2000 Web UI',
             meta: { viewport: 'width=device-width, initial-scale=1' }
+        }),
+        new MiniCssExtractPlugin({
+            filename: 'styles.css',
+            chunkFilename: 'styles.css'
         })
     ]
 }

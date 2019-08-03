@@ -9,11 +9,11 @@ import { TrackInfo, Volume, Action } from '../Models'
 class StateWrapper {
     state: State = init()
 
-    get() {
+    get(): State {
         return this.state
     }
 
-    set(next: State) {
+    set(next: State): State {
         this.state = next
         return this.state
     }
@@ -43,7 +43,7 @@ const mockVolumeResponse = Volume.match(
 
 const onConnection = (stateWrapper: StateWrapper, logger: Logger.Logger) => (
     socket: net.Socket
-) => {
+): void => {
     socket.write(
         [
             initialMsg,
