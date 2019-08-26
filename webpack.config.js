@@ -12,14 +12,14 @@ const OUTPUT_DIR = path.resolve(__dirname, 'build', 'static')
 const webpackConfig = {
     context: INPUT_DIR,
     entry: {
-        main: './index.ts'
+        main: './index.tsx'
     },
     output: {
         filename: 'ui.js',
         path: OUTPUT_DIR
     },
     resolve: {
-        extensions: ['.js', '.ts', '.css', '.json', '.html']
+        extensions: ['.js', '.ts', '.tsx', '.css', '.json', '.html']
     },
     module: {
         rules: [

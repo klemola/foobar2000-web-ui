@@ -5,8 +5,10 @@
         "target": "es5",
         "module": "es6",
         "lib": ["dom", "dom.iterable", "esnext", "es2015.iterable"],
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "jsx": "react",
+        "jsxFactory": "h"
     },
-    "include": ["index.ts"],
+    "include": ["./*.tsx"],
     "exclude": ["node_modules"]
 }
