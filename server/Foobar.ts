@@ -77,13 +77,7 @@ export function onData(ctx: Context, io: SocketIO.Server) {
         ctx.logger.debug('Received data from control server', messages)
 
         messages.forEach(message => {
-            if (message.type === 'playback' || message.type === 'volume') {
-                io.sockets.emit('foobarStatus', message.data)
-            }
-
-            if (message.type === 'info') {
-                io.sockets.emit('info', message.data)
-            }
+            io.sockets.emit('message', message)
         })
     }
 }

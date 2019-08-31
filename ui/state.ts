@@ -1,4 +1,5 @@
 import { Machine, MachineConfig, interpret, State } from 'xstate'
+import { Message } from '../server/Models'
 
 interface PlaybackStateSchema {
     states: {
@@ -10,21 +11,21 @@ interface PlaybackStateSchema {
 
 interface AppStateSchema {
     states: {
-        initializing: {}
+        connecting: {}
         ready: PlaybackStateSchema
     }
 }
 
 type PlaybackEvent = { type: 'PLAY' } | { type: 'PAUSE' } | { type: 'STOP' }
-type AppEvent = { type: 'READY' } | PlaybackEvent
+type AppEvent = { type: 'READY' } | { type: 'DISCONNECTED' } | PlaybackEvent
 
 interface AppContext {}
 
 const appMachineConfig: MachineConfig<AppContext, AppStateSchema, AppEvent> = {
     id: 'app',
-    initial: 'initializing',
+    initial: 'connecting',
     states: {
-        initializing: {
+        connecting: {
             on: {
                 get READY() {
                     return appMachine.states.ready
@@ -34,6 +35,11 @@ const appMachineConfig: MachineConfig<AppContext, AppStateSchema, AppEvent> = {
         ready: {
             id: 'playback',
             initial: 'stopped',
+            on: {
+                get DISCONNECTED() {
+                    return appMachine.states.connecting
+                }
+            },
             states: {
                 stopped: {
                     on: {
@@ -70,6 +76,12 @@ const appMachineConfig: MachineConfig<AppContext, AppStateSchema, AppEvent> = {
 export const appMachine = Machine<AppContext, AppStateSchema, AppEvent>(
     appMachineConfig
 )
+
+export const updateFromMessage = (service: AppService) => (
+    message: Message
+): AppService => {
+    return service
+}
 
 export const appService = interpret(appMachine)
 export type AppService = typeof appService
