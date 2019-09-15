@@ -1,3 +1,5 @@
+import { Socket } from 'net'
+
 import { mockTrack1, mockTrack2 } from '../test/fixtures'
 import {
     TrackInfo,
@@ -10,6 +12,7 @@ import {
 export interface State {
     currentTrack: TrackInfo
     currentVolume: Volume
+    sockets: Array<Socket>
 }
 
 const updatePlayback = (
@@ -80,7 +83,8 @@ export const init = (): State => ({
     currentVolume: {
         type: 'audible',
         volume: 0.0
-    }
+    },
+    sockets: []
 })
 
 export const update = (state: State, action: Action): State => {

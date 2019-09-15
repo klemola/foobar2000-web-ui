@@ -9,6 +9,6 @@
         "jsx": "react",
         "jsxFactory": "h"
     },
-    "include": ["./*.tsx"],
+    "include": ["./**/*.tsx", "./**/*.ts"],
     "exclude": ["node_modules"]
 }

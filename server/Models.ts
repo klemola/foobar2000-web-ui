@@ -101,6 +101,13 @@ const Context = Record({
 
 export type Context = Static<typeof Context>
 
+export const PlaybackState = Union(
+    Literal('playing'),
+    Literal('paused'),
+    Literal('stopped')
+)
+export type PlaybackState = Static<typeof PlaybackState>
+
 export const TrackInfo = Record({
     status: Number,
     secondsPlayed: Number,
@@ -113,41 +120,10 @@ export const TrackInfo = Record({
     trackNumber: String,
     track: String,
     trackLength: Number,
-    state: String
+    state: PlaybackState
 })
 
 export type TrackInfo = Static<typeof TrackInfo>
-
-export const VolumeInfo = Record({
-    volume: String
-})
-
-export type VolumeInfo = Static<typeof VolumeInfo>
-
-export const InfoMessage = Record({
-    type: Literal('info'),
-    data: String
-})
-
-export type InfoMessage = Static<typeof InfoMessage>
-
-export const PlaybackMessage = Record({
-    type: Literal('playback'),
-    data: TrackInfo
-})
-
-export type PlaybackMessage = Static<typeof PlaybackMessage>
-
-export const VolumeMessage = Record({
-    type: Literal('volume'),
-    data: VolumeInfo
-})
-
-export type VolumeMessage = Static<typeof VolumeMessage>
-
-export const Message = Union(InfoMessage, PlaybackMessage, VolumeMessage)
-
-export type Message = Static<typeof Message>
 
 export const Muted = Record({
     type: Literal('muted'),
@@ -166,3 +142,28 @@ export type Audible = Static<typeof Audible>
 export const Volume = Union(Muted, Audible)
 
 export type Volume = Static<typeof Volume>
+
+export const InfoMessage = Record({
+    type: Literal('info'),
+    data: String
+})
+
+export type InfoMessage = Static<typeof InfoMessage>
+
+export const PlaybackMessage = Record({
+    type: Literal('playback'),
+    data: TrackInfo
+})
+
+export type PlaybackMessage = Static<typeof PlaybackMessage>
+
+export const VolumeMessage = Record({
+    type: Literal('volume'),
+    data: Volume
+})
+
+export type VolumeMessage = Static<typeof VolumeMessage>
+
+export const Message = Union(InfoMessage, PlaybackMessage, VolumeMessage)
+
+export type Message = Static<typeof Message>

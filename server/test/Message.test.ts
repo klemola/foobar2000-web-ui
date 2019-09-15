@@ -7,7 +7,8 @@ import {
     TrackInfo,
     InfoMessage,
     PlaybackMessage,
-    VolumeMessage
+    VolumeMessage,
+    Volume
 } from '../Models'
 
 describe('Message', () => {
@@ -83,8 +84,9 @@ describe('Message', () => {
 
     it('should parse a volume message', () => {
         const message = '222|-1.58|'
-        const mockStatus = {
-            volume: '-1.58'
+        const mockStatus: Volume = {
+            type: 'audible',
+            volume: -1.58
         }
 
         const messages = Message.parseControlData(message)

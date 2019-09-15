@@ -1,54 +1,76 @@
 import { h, Component } from 'preact'
+import io from 'socket.io-client'
+import { Option } from 'prelude-ts'
 
 import * as Logger from './Logger'
-import * as SideEffects from './SideEffects'
-import {
-    appMachine,
-    appService,
-    AppState,
-    AppService,
-    updateFromMessage
-} from './state'
+import Playback from './Playback'
+import { Message, TrackInfo, Volume } from '../server/Models'
 
-const configureEvents = (
-    socket: SocketIOClient.Socket,
-    service: AppService
-) => {
-    socket.on('connect', () => service.send({ type: 'READY' }))
-    socket.on('reconnect', () => service.send({ type: 'READY' }))
-    socket.on('disconnect', () => service.send({ type: 'DISCONNECTED' }))
-    socket.on('message', updateFromMessage(service))
-
-    return service
+interface AppState {
+    currentTrack: Option<TrackInfo>
+    volume: Volume
+    infoMessages: Array<String>
 }
 
-const logger = Logger.create()
+const initialState: AppState = {
+    currentTrack: Option.none<TrackInfo>(),
+
+    volume: {
+        type: 'audible',
+        volume: 0
+    },
+    infoMessages: []
+}
 
 export default class App extends Component<{}, AppState> {
-    state = appMachine.initialState
-    service = appService.onTransition(current => {
-        logger.debug('Transition', current.value)
-        this.setState(current)
+    logger = Logger.create()
+    socket = io('/', {
+        autoConnect: false
     })
-    socket = SideEffects.socket()
+    state = initialState
 
     componentDidMount() {
-        this.service = configureEvents(this.socket, this.service)
-        this.service.start()
+        this.socket.on('message', (message: Message) => {
+            this.logger.debug('Received message', message)
+
+            switch (message.type) {
+                case 'playback':
+                    return this.setState({
+                        currentTrack: Option.of(message.data)
+                    })
+                case 'info':
+                    return this.setState({
+                        infoMessages: this.state.infoMessages.concat([
+                            message.data
+                        ])
+                    })
+                case 'volume':
+                    return this.setState({
+                        volume: message.data
+                    })
+            }
+        })
+        this.socket.open()
     }
 
     componentWillUnmount() {
-        this.socket.disconnect()
-        this.service.stop()
+        this.socket.close()
     }
 
     render() {
-        return this.state.matches('connecting') ? (
-            <div>
-                <p>Connecting</p>
-            </div>
-        ) : (
-            <div>Ready</div>
-        )
+        if (this.socket.disconnected || this.state.currentTrack.isNone()) {
+            return (
+                <div>
+                    <h1>Connecting</h1>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <h1>Ready</h1>
+                    <Playback currentTrack={this.state.currentTrack.get()} />
+                </div>
+            )
+        }
     }
 }

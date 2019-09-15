@@ -8,6 +8,7 @@ import { TrackInfo, Volume, Action } from '../Models'
 
 class StateWrapper {
     state: State = init()
+    sockets: Array<net.Socket> = []
 
     get(): State {
         return this.state
@@ -16,6 +17,15 @@ class StateWrapper {
     set(next: State): State {
         this.state = next
         return this.state
+    }
+
+    addSocket(socket: net.Socket): Array<net.Socket> {
+        this.sockets = this.sockets.concat([socket])
+        return this.listSockets()
+    }
+
+    listSockets(): Array<net.Socket> {
+        return this.sockets
     }
 }
 
@@ -50,6 +60,9 @@ const onConnection = (stateWrapper: StateWrapper, logger: Logger.Logger) => (
             mockTrackInfoResponse(stateWrapper.get().currentTrack)
         ].join('\r\n')
     )
+
+    // TODO: Remove socket when connection is closed
+    stateWrapper.addSocket(socket)
 
     socket.on('data', data => {
         const state = stateWrapper.get()
@@ -92,8 +105,10 @@ export const createServer = (host: string, port: number): net.Server => {
                 ? state.currentTrack.secondsPlayed + 1
                 : state.currentTrack.secondsPlayed
 
+        const trackEnded = state.currentTrack.trackLength <= nextSecondsPlayed
+
         stateWrapper.set(
-            state.currentTrack.trackLength <= nextSecondsPlayed
+            trackEnded
                 ? update(state, 'next')
                 : {
                       ...state,
@@ -103,6 +118,16 @@ export const createServer = (host: string, port: number): net.Server => {
                       }
                   }
         )
+
+        if (trackEnded) {
+            stateWrapper
+                .listSockets()
+                .forEach(socket =>
+                    socket.write(
+                        mockTrackInfoResponse(stateWrapper.get().currentTrack)
+                    )
+                )
+        }
     }, 1000)
 
     server.on('close', () => clearInterval(tick))

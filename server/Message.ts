@@ -88,7 +88,8 @@ function parseMessage(raw: string): Result<Message> {
                 ? success({
                       type: 'volume',
                       data: {
-                          volume: vol.get()
+                          type: 'audible',
+                          volume: Number(vol.get())
                       }
                   })
                 : parseMessageFailure
