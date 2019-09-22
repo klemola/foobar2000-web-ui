@@ -1,7 +1,13 @@
 import { Vector, HashMap, Option } from 'prelude-ts'
 import { Result, Failure } from 'runtypes'
 
-import { Message, TrackInfo, InfoMessage, StatusType } from './Models'
+import {
+    Message,
+    TrackInfo,
+    InfoMessage,
+    StatusType,
+    VolumeMessage
+} from './Models'
 import { failure, success, mapSuccess } from './Util'
 
 const statusCodes: HashMap<string, StatusType> = HashMap.of(
@@ -68,6 +74,21 @@ function mapTrackInfoValue(k: keyof TrackInfo, v: string): string | number {
     return trackInfoKeysWithNumberValue.includes(k) ? Number(v) : v
 }
 
+function nextVolume(currentVolumeValue: string): VolumeMessage {
+    return {
+        type: 'volume',
+        data:
+            currentVolumeValue === '-100'
+                ? {
+                      type: 'muted'
+                  }
+                : {
+                      type: 'audible',
+                      volume: Number(currentVolumeValue)
+                  }
+    }
+}
+
 function parseMessage(raw: string): Result<Message> {
     const parseMessageFailure: Failure = failure('Could not parse message')
     const messageCode = raw.substring(0, 3)
@@ -85,13 +106,7 @@ function parseMessage(raw: string): Result<Message> {
                 .last()
 
             return vol.isSome()
-                ? success({
-                      type: 'volume',
-                      data: {
-                          type: 'audible',
-                          volume: Number(vol.get())
-                      }
-                  })
+                ? success(nextVolume(vol.get()))
                 : parseMessageFailure
 
         case 'playing':

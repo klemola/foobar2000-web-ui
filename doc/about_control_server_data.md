@@ -24,3 +24,5 @@ Changes in volume look like this:
 ```
 222|-1.58|
 ```
+
+When volume is muted, `-100` is the volume message value.

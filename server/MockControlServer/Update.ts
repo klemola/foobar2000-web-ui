@@ -50,20 +50,17 @@ const updatePlayback = (
 
 const updateVolume = (currentVolume: Volume, action: VolumeAction): Volume => {
     const volumeLevel =
-        currentVolume.type === 'muted'
-            ? currentVolume.previousVolume
-            : currentVolume.volume
+        currentVolume.type === 'muted' ? -100 : currentVolume.volume
 
     switch (action) {
         case 'vol mute':
-            return currentVolume.type === 'muted'
+            return currentVolume.type === 'audible'
                 ? {
-                      type: 'audible',
-                      volume: volumeLevel
+                      type: 'muted'
                   }
                 : {
-                      type: 'muted',
-                      previousVolume: volumeLevel
+                      type: 'audible',
+                      volume: volumeLevel
                   }
         case 'vol up':
             return {

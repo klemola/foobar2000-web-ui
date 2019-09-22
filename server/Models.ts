@@ -126,8 +126,7 @@ export const TrackInfo = Record({
 export type TrackInfo = Static<typeof TrackInfo>
 
 export const Muted = Record({
-    type: Literal('muted'),
-    previousVolume: Number
+    type: Literal('muted')
 })
 
 export type Muted = Static<typeof Muted>

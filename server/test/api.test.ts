@@ -9,13 +9,20 @@ import { createServer } from '../MockControlServer'
 import * as Server from '../Server'
 import * as ControlServer from '../ControlServer'
 import { mockTrack1 } from './fixtures'
-import { TrackInfo, Context, Env } from '../Models'
+import {
+    Context,
+    Env,
+    Message,
+    PlaybackMessage,
+    VolumeMessage
+} from '../Models'
 import config from '../config'
 import * as Logger from '../Logger'
 
 const ioOptions = {
     transports: ['websocket'],
     forceNew: true,
+    autoConnect: false,
     reconnection: false
 }
 const testControlServerPort = 6666
@@ -72,13 +79,33 @@ describe('API', () => {
             ioOptions
         )
 
-        ioClient.on('foobarStatus', (data: TrackInfo) => {
-            assert.ok(data.state === mockTrack1.state)
-            assert.ok(data.track === mockTrack1.track)
+        const messages: Message[] = []
+
+        ioClient.on('message', (message: Message) => {
+            messages.push(message)
+        })
+
+        setTimeout(() => {
+            const playbackMessage = messages.find(m => m.type === 'playback')
+            const volumeMessage = messages.find(m => m.type === 'volume')
+
+            assert.ok(
+                playbackMessage &&
+                    playbackMessage.type === 'playback' &&
+                    playbackMessage.data.state === mockTrack1.state &&
+                    playbackMessage.data.track === mockTrack1.track
+            )
+            assert.ok(
+                volumeMessage &&
+                    volumeMessage.type === 'volume' &&
+                    volumeMessage.data.type === 'audible'
+            )
 
             ioClient.disconnect()
             done()
-        })
+        }, 100)
+
+        ioClient.connect()
     })
 
     // TODO improve test
@@ -88,19 +115,22 @@ describe('API', () => {
             ioOptions
         )
 
-        const receivedData: any[] = []
+        const messages: PlaybackMessage[] = []
 
-        ioClient.on('foobarStatus', (data: any) => {
-            receivedData.push(data)
+        ioClient.on('message', (message: Message) => {
+            if (message.type === 'playback') {
+                messages.push(message)
+            }
         })
 
+        ioClient.connect()
         ioClient.emit('foobarCommand', 'stop')
 
         setTimeout(() => {
-            const playbackMessage = receivedData[2]
+            const playbackMessage = messages[1]
 
-            assert.ok(receivedData.length === 4)
-            assert.ok(playbackMessage.status && playbackMessage.status === 112)
+            assert.ok(messages.length === 2)
+            assert.ok(playbackMessage.data.status === 112)
 
             ioClient.disconnect()
             done()
@@ -114,19 +144,22 @@ describe('API', () => {
             ioOptions
         )
 
-        const receivedData: any[] = []
+        const messages: VolumeMessage[] = []
 
-        ioClient.on('foobarStatus', (data: any) => {
-            receivedData.push(data)
+        ioClient.on('message', (message: Message) => {
+            if (message.type === 'volume') {
+                messages.push(message)
+            }
         })
 
+        ioClient.connect()
         ioClient.emit('foobarCommand', 'vol mute')
 
         setTimeout(() => {
-            const volMessage = receivedData[3]
+            const volumeMessage = messages[1]
 
-            assert.ok(receivedData.length === 4)
-            assert.ok(volMessage.volume && volMessage.volume === 'muted')
+            assert.ok(messages.length === 2)
+            assert.ok(volumeMessage.data.type === 'muted')
 
             ioClient.disconnect()
             done()

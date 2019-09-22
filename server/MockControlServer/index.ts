@@ -47,7 +47,7 @@ const mockTrackInfoResponse = (t: TrackInfo): string =>
     ].join('|')
 
 const mockVolumeResponse = Volume.match(
-    muted => `222|muted|`,
+    muted => `222|-100|`,
     audible => `222|${audible.volume.toFixed(2)}|`
 )
 

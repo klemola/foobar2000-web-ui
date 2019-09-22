@@ -95,4 +95,17 @@ describe('Message', () => {
         assert.equal(messages.length, 1)
         assert.deepEqual(volumeMessage.data, mockStatus)
     })
+
+    it('should parse a volume message when muted', () => {
+        const message = '222|-100|'
+        const mockStatus: Volume = {
+            type: 'muted'
+        }
+
+        const messages = Message.parseControlData(message)
+        const volumeMessage = VolumeMessage.check(messages[0])
+
+        assert.equal(messages.length, 1)
+        assert.deepEqual(volumeMessage.data, mockStatus)
+    })
 })
