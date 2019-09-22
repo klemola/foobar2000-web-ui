@@ -47,7 +47,7 @@ export function connect(port: number, logger: Logger): Promise<Net.Socket> {
 export function sendCommand(ctx: Context, command: string) {
     try {
         ctx.client.write(`${command}\r\n`)
-        ctx.logger.info(`Control server command sent for action ${command}`)
+        ctx.logger.debug(`Control server command sent for action ${command}`)
     } catch (error) {
         ctx.logger.warn('Could not reach control server')
 

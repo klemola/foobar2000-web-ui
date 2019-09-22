@@ -29,6 +29,7 @@ Foobar.launch(config, logger)
         Server.configureStatic(context, app)
         Server.configureWebsockets(context, io)
 
+        setInterval(() => Foobar.queryTrackInfo(context, io), 1000)
         server.listen(config.webServerPort)
         logger.debug('Initialization complete')
         logger.info(`Server listening on port ${config.webServerPort}`)
@@ -39,7 +40,7 @@ Foobar.launch(config, logger)
         }
 
         logger.error(
-            'Could not initialize server and/or connect to control server. Make sure configuration is correct.'
+            'Could not initialize server and/or connect to control server. Make sure the configuration is correct.'
         )
         process.exit(1)
     })

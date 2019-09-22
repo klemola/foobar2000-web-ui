@@ -2,9 +2,8 @@ import { h, Component } from 'preact'
 import io from 'socket.io-client'
 import { Option } from 'prelude-ts'
 
-import * as Logger from './Logger'
 import Playback from './Playback'
-import { Message, TrackInfo, Volume } from '../server/Models'
+import { Message, TrackInfo, Volume, PlaybackAction } from '../server/Models'
 
 interface AppState {
     currentTrack: Option<TrackInfo>
@@ -23,7 +22,6 @@ const initialState: AppState = {
 }
 
 export default class App extends Component<{}, AppState> {
-    logger = Logger.create()
     socket = io('/', {
         autoConnect: false
     })
@@ -31,8 +29,6 @@ export default class App extends Component<{}, AppState> {
 
     componentDidMount() {
         this.socket.on('message', (message: Message) => {
-            this.logger.debug('Received message', message)
-
             switch (message.type) {
                 case 'playback':
                     return this.setState({
@@ -57,6 +53,10 @@ export default class App extends Component<{}, AppState> {
         this.socket.close()
     }
 
+    onPlaybackChange = (action: PlaybackAction) => {
+        this.socket.emit('foobarCommand', action)
+    }
+
     render() {
         if (this.socket.disconnected || this.state.currentTrack.isNone()) {
             return (
@@ -68,7 +68,10 @@ export default class App extends Component<{}, AppState> {
             return (
                 <div>
                     <h1>Ready</h1>
-                    <Playback currentTrack={this.state.currentTrack.get()} />
+                    <Playback
+                        currentTrack={this.state.currentTrack.get()}
+                        onPlaybackChange={this.onPlaybackChange}
+                    />
                 </div>
             )
         }

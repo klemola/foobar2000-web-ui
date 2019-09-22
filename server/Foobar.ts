@@ -53,7 +53,7 @@ export function sendCommand(
     io: SocketIO.Server,
     command: Action | 'launchFoobar'
 ) {
-    ctx.logger.info('Command received', { command })
+    ctx.logger.debug('Command received', { command })
 
     if (command === 'launchFoobar') {
         return launch(ctx.config, ctx.logger)
@@ -74,7 +74,7 @@ export function onData(ctx: Context, io: SocketIO.Server) {
     return function controlDataHandler(data: Buffer) {
         const messages = Message.parseControlData(data.toString('utf-8'))
 
-        ctx.logger.debug('Received data from control server', messages)
+        ctx.logger.debug('Received message(s) from control server', messages)
 
         messages.forEach(message => {
             io.sockets.emit('message', message)
