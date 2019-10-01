@@ -1,22 +1,22 @@
 import { h, Component } from 'preact'
 
-import { TrackInfo, PlaybackAction } from '../server/Models'
+import { TrackInfo, Action } from '../server/Models'
 
 interface Props {
     currentTrack: TrackInfo
-    onPlaybackChange: (action: PlaybackAction) => void
+    onFoobarCommand: (action: Action) => Action
 }
 
 export default class Playback extends Component<Props, {}> {
     render() {
-        const { currentTrack, onPlaybackChange } = this.props
+        const { currentTrack, onFoobarCommand } = this.props
 
         return (
-            <div>
-                <div>
+            <div className="playback">
+                <div className="playback__controls">
                     <button
                         onClick={() =>
-                            onPlaybackChange(
+                            onFoobarCommand(
                                 currentTrack.state === 'playing'
                                     ? 'pause'
                                     : 'play'
@@ -25,17 +25,17 @@ export default class Playback extends Component<Props, {}> {
                     >
                         Play/Pause
                     </button>
-                    <button onClick={() => onPlaybackChange('stop')}>
+                    <button onClick={() => onFoobarCommand('stop')}>
                         Stop
                     </button>
-                    <button onClick={() => onPlaybackChange('prev')}>
+                    <button onClick={() => onFoobarCommand('prev')}>
                         Prev
                     </button>
-                    <button onClick={() => onPlaybackChange('next')}>
+                    <button onClick={() => onFoobarCommand('next')}>
                         Next
                     </button>
                 </div>
-                <div>
+                <div className="playback__current-track">
                     {currentTrack.state === 'stopped' ? (
                         <div>Stopped.</div>
                     ) : (

@@ -2,9 +2,11 @@ import { h, Component } from 'preact'
 import io from 'socket.io-client'
 import { Option } from 'prelude-ts'
 
+import { Message, TrackInfo, Volume, Action } from '../server/Models'
 import Playback from './Playback'
-import { Message, TrackInfo, Volume, PlaybackAction } from '../server/Models'
+import VolumeControl from './VolumeControl'
 
+// TODO: refactor into an union type (and remove infoMessages)
 interface AppState {
     currentTrack: Option<TrackInfo>
     volume: Volume
@@ -53,27 +55,30 @@ export default class App extends Component<{}, AppState> {
         this.socket.close()
     }
 
-    onPlaybackChange = (action: PlaybackAction) => {
+    onFoobarCommand = (action: Action): Action => {
         this.socket.emit('foobarCommand', action)
+        return action
     }
 
     render() {
-        if (this.socket.disconnected || this.state.currentTrack.isNone()) {
-            return (
-                <div>
+        return (
+            <div className="app">
+                {this.socket.disconnected ||
+                this.state.currentTrack.isNone() ? (
                     <h1>Connecting</h1>
-                </div>
-            )
-        } else {
-            return (
-                <div>
-                    <h1>Ready</h1>
-                    <Playback
-                        currentTrack={this.state.currentTrack.get()}
-                        onPlaybackChange={this.onPlaybackChange}
-                    />
-                </div>
-            )
-        }
+                ) : (
+                    <div>
+                        <VolumeControl
+                            currentVolume={this.state.volume}
+                            onFoobarCommand={this.onFoobarCommand}
+                        />
+                        <Playback
+                            currentTrack={this.state.currentTrack.get()}
+                            onFoobarCommand={this.onFoobarCommand}
+                        />
+                    </div>
+                )}
+            </div>
+        )
     }
 }
