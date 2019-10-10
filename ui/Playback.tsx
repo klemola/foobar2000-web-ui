@@ -1,53 +1,59 @@
-import { h, Component } from 'preact'
+import { h, FunctionalComponent } from 'preact'
 
 import { TrackInfo, Action } from '../server/Models'
+import TrackDetails from './TrackDetails'
 
 interface Props {
     currentTrack: TrackInfo
     onFoobarCommand: (action: Action) => Action
 }
 
-export default class Playback extends Component<Props, {}> {
-    render() {
-        const { currentTrack, onFoobarCommand } = this.props
+const Playback: FunctionalComponent<Props> = (props: Props) => {
+    const { currentTrack, onFoobarCommand } = props
+    const playPauseAction = currentTrack.state === 'playing' ? 'pause' : 'play'
 
-        return (
-            <div className="playback">
-                <div className="playback__controls">
-                    <button
-                        onClick={() =>
-                            onFoobarCommand(
-                                currentTrack.state === 'playing'
-                                    ? 'pause'
-                                    : 'play'
-                            )
-                        }
-                    >
-                        Play/Pause
-                    </button>
-                    <button onClick={() => onFoobarCommand('stop')}>
-                        Stop
-                    </button>
-                    <button onClick={() => onFoobarCommand('prev')}>
-                        Prev
-                    </button>
-                    <button onClick={() => onFoobarCommand('next')}>
-                        Next
-                    </button>
-                </div>
-                <div className="playback__current-track">
-                    {currentTrack.state === 'stopped' ? (
-                        <div>Stopped.</div>
-                    ) : (
-                        <ul>
-                            <li>{currentTrack.artist}</li>
-                            <li>{currentTrack.album}</li>
-                            <li>{currentTrack.track}</li>
-                            <li>{currentTrack.secondsPlayed}</li>
-                        </ul>
-                    )}
-                </div>
+    return (
+        <div className="playback">
+            <TrackDetails
+                className="playback__current-track"
+                track={currentTrack}
+            />
+            <div className="playback__controls--main">
+                <button
+                    class="playback__controls__button"
+                    onClick={() => onFoobarCommand('prev')}
+                >
+                    Prev
+                </button>
+                <button
+                    class="playback__controls__button"
+                    onClick={() => onFoobarCommand(playPauseAction)}
+                >
+                    Play/Pause
+                </button>
+                <button
+                    class="playback__controls__button"
+                    onClick={() => onFoobarCommand('next')}
+                >
+                    Next
+                </button>
             </div>
-        )
-    }
+            <div className="playback__controls--secondary">
+                <button
+                    class="playback__controls__button"
+                    onClick={() => onFoobarCommand('stop')}
+                >
+                    Stop
+                </button>
+                <button
+                    class="playback__controls__button"
+                    onClick={() => onFoobarCommand('rand')}
+                >
+                    Random
+                </button>
+            </div>
+        </div>
+    )
 }
+
+export default Playback

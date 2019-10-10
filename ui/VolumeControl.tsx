@@ -1,4 +1,4 @@
-import { h, Component } from 'preact'
+import { h, FunctionalComponent } from 'preact'
 
 import { Volume, Action } from '../server/Models'
 
@@ -7,29 +7,37 @@ interface Props {
     onFoobarCommand: (action: Action) => Action
 }
 
-export default class VolumeControl extends Component<Props, {}> {
-    render() {
-        const { currentVolume, onFoobarCommand } = this.props
+const VolumeControl: FunctionalComponent<Props> = (props: Props) => {
+    const { currentVolume, onFoobarCommand } = props
+    const volumePresentation = `Volume: ${
+        currentVolume.type === 'audible' ? currentVolume.volume : 'Muted.'
+    } dB`
 
-        return (
-            <div className="volume-control">
-                <div className="volume-control__current-volume">
-                    {currentVolume.type === 'audible'
-                        ? currentVolume.volume
-                        : 'Muted.'}
-                </div>
-                <div className="volume-control__controls">
-                    <button onClick={() => onFoobarCommand('vol mute')}>
-                        Mute/unmute
-                    </button>
-                    <button onClick={() => onFoobarCommand('vol down')}>
-                        Vol-
-                    </button>
-                    <button onClick={() => onFoobarCommand('vol up')}>
-                        Vol+
-                    </button>
-                </div>
+    return (
+        <div className="volume">
+            <div className="volume__value">{volumePresentation}</div>
+            <div className="volume__controls">
+                <button
+                    className="volume__controls__button"
+                    onClick={() => onFoobarCommand('vol down')}
+                >
+                    Vol-
+                </button>
+                <button
+                    className="volume__controls__button"
+                    onClick={() => onFoobarCommand('vol up')}
+                >
+                    Vol+
+                </button>
+                <button
+                    className="volume__controls__button"
+                    onClick={() => onFoobarCommand('vol mute')}
+                >
+                    Mute/unmute
+                </button>
             </div>
-        )
-    }
+        </div>
+    )
 }
+
+export default VolumeControl

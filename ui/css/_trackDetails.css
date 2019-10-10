@@ -1,0 +1,33 @@
+.track-details,
+.track-details--stopped {
+    padding: var(--spacing-xs) var(--spacing-s);
+}
+
+.track-details--stopped {
+    text-align: center;
+    font-weight: var(--font-weight-bold);
+}
+
+.track-details__info {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+.track-details__time {
+    text-align: center;
+}
+
+.track-details__info__track,
+.track-details__info__artist,
+.track-details__info__album {
+    padding: var(--spacing-xs) var(--spacing-s);
+}
+
+.track-details__info__track {
+    font-weight: var(--font-weight-bold);
+}
+
+.track-details__info__artist {
+    color: var(--color-highlight);
+}
