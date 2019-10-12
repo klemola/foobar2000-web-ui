@@ -3217,6 +3217,11 @@ mocha@6.1.4:
     yargs-parser "13.0.0"
     yargs-unparser "1.5.0"
 
+modern-css-reset@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/modern-css-reset/-/modern-css-reset-1.0.4.tgz#4a1fff644cd0b314b048db23e16bccb9b7411caf"
+  integrity sha512-HspLib3vUdgdGNV9JcBrQXlqiWB/tGr9oMaSiqGR7+J1kQmJbxlZzp/3ufDR3lZLwDlWDuMh2VtvSY+Aa0xNow==
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"

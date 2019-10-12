@@ -1,6 +1,7 @@
 import { h, FunctionalComponent } from 'preact'
 
 import { Volume, Action } from '../server/Models'
+import { formatVolume } from './format'
 
 interface Props {
     currentVolume: Volume
@@ -9,9 +10,7 @@ interface Props {
 
 const VolumeControl: FunctionalComponent<Props> = (props: Props) => {
     const { currentVolume, onFoobarCommand } = props
-    const volumePresentation = `Volume: ${
-        currentVolume.type === 'audible' ? currentVolume.volume : 'Muted.'
-    } dB`
+    const volumePresentation = `Volume: ${formatVolume(currentVolume)}`
 
     return (
         <div className="volume">
@@ -33,7 +32,7 @@ const VolumeControl: FunctionalComponent<Props> = (props: Props) => {
                     className="volume__controls__button"
                     onClick={() => onFoobarCommand('vol mute')}
                 >
-                    Mute/unmute
+                    {currentVolume.type === 'audible' ? 'mute' : 'unmute'}
                 </button>
             </div>
         </div>

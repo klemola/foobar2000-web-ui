@@ -16,7 +16,7 @@ const Playback: FunctionalComponent<Props> = (props: Props) => {
         <div className="playback">
             <TrackDetails
                 className="playback__current-track"
-                track={currentTrack}
+                trackInfo={currentTrack}
             />
             <div className="playback__controls--main">
                 <button
@@ -29,7 +29,7 @@ const Playback: FunctionalComponent<Props> = (props: Props) => {
                     class="playback__controls__button"
                     onClick={() => onFoobarCommand(playPauseAction)}
                 >
-                    Play/Pause
+                    {playPauseAction}
                 </button>
                 <button
                     class="playback__controls__button"

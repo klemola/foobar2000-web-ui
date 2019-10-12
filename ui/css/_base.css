@@ -87,9 +87,10 @@ button {
     background: var(--color-light);
     color: var(--color-dark);
     padding: var(--spacing-xxs) var(--spacing-xs);
-    border: 1px solid var(--color-light);
+    border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     cursor: pointer;
+    user-select: none;
 }
 
 button:hover,

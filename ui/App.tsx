@@ -61,10 +61,10 @@ export default class App extends Component<{}, AppState> {
                 {!this.state.connected || this.state.currentTrack.isNone() ? (
                     <div className="app__init">
                         <h1>Foobar2000 Web UI</h1>
-                        <p>Connecting</p>
+                        <h2>Connecting</h2>
                     </div>
                 ) : (
-                    <div className="app__main">
+                    <div className="app__wrapper">
                         <Playback
                             currentTrack={this.state.currentTrack.get()}
                             onFoobarCommand={this.onFoobarCommand}

@@ -1,6 +1,11 @@
+/*
+    TODO: center content and figure out the min height so that 'stopped' presentation is proportional to the regular presentation
+*/
+
 .track-details,
 .track-details--stopped {
-    padding: var(--spacing-xs) var(--spacing-s);
+    padding: var(--spacing-s);
+    font-size: var(--font-size-h3);
 }
 
 .track-details--stopped {
@@ -21,7 +26,7 @@
 .track-details__info__track,
 .track-details__info__artist,
 .track-details__info__album {
-    padding: var(--spacing-xs) var(--spacing-s);
+    padding: var(--spacing-xs) var(--spacing-s) 0;
 }
 
 .track-details__info__track {
@@ -30,4 +35,9 @@
 
 .track-details__info__artist {
     color: var(--color-highlight);
+}
+
+.track-details__info__track__number {
+    color: var(--color-text-muted);
+    margin-right: var(--spacing-xs);
 }
