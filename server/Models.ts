@@ -11,9 +11,9 @@ import {
     Null
 } from 'runtypes'
 import { Socket } from 'net'
-
-import { Logger } from 'Logger'
 import { ChildProcessWithoutNullStreams } from 'child_process'
+
+import { Logger } from './Logger'
 
 export const Env = Union(
     Literal('production'),
@@ -35,7 +35,8 @@ export const StatusType = Union(
 export type StatusType = Static<typeof StatusType>
 
 export const PlaybackAction = Union(
-    Literal('playpause'),
+    Literal('play'),
+    Literal('pause'),
     Literal('stop'),
     Literal('prev'),
     Literal('next'),
@@ -44,7 +45,8 @@ export const PlaybackAction = Union(
 
 export type PlaybackAction = Static<typeof PlaybackAction>
 export const playbackActions: readonly PlaybackAction[] = [
-    'playpause',
+    'play',
+    'pause',
     'stop',
     'prev',
     'next',
@@ -52,17 +54,23 @@ export const playbackActions: readonly PlaybackAction[] = [
 ]
 
 export const VolumeAction = Union(
-    Literal('mute'),
-    Literal('voldown'),
-    Literal('volup')
+    Literal('vol mute'),
+    Literal('vol down'),
+    Literal('vol up')
 )
 
 export type VolumeAction = Static<typeof VolumeAction>
 export const volumeActions: readonly VolumeAction[] = [
-    'mute',
-    'voldown',
-    'volup'
+    'vol mute',
+    'vol down',
+    'vol up'
 ]
+
+export const MetaAction = Union(Literal('trackinfo'))
+export type MetaAction = Static<typeof MetaAction>
+
+export const Action = Union(PlaybackAction, VolumeAction, MetaAction)
+export type Action = Static<typeof Action>
 
 export const Config = Record({
     appTitle: String,
@@ -93,6 +101,13 @@ const Context = Record({
 
 export type Context = Static<typeof Context>
 
+export const PlaybackState = Union(
+    Literal('playing'),
+    Literal('paused'),
+    Literal('stopped')
+)
+export type PlaybackState = Static<typeof PlaybackState>
+
 export const TrackInfo = Record({
     status: Number,
     secondsPlayed: Number,
@@ -105,16 +120,27 @@ export const TrackInfo = Record({
     trackNumber: String,
     track: String,
     trackLength: Number,
-    state: String
+    state: PlaybackState
 })
 
 export type TrackInfo = Static<typeof TrackInfo>
 
-export const VolumeInfo = Record({
-    volume: String
+export const Muted = Record({
+    type: Literal('muted')
 })
 
-export type VolumeInfo = Static<typeof VolumeInfo>
+export type Muted = Static<typeof Muted>
+
+export const Audible = Record({
+    type: Literal('audible'),
+    volume: Number
+})
+
+export type Audible = Static<typeof Audible>
+
+export const Volume = Union(Muted, Audible)
+
+export type Volume = Static<typeof Volume>
 
 export const InfoMessage = Record({
     type: Literal('info'),
@@ -132,7 +158,7 @@ export type PlaybackMessage = Static<typeof PlaybackMessage>
 
 export const VolumeMessage = Record({
     type: Literal('volume'),
-    data: VolumeInfo
+    data: Volume
 })
 
 export type VolumeMessage = Static<typeof VolumeMessage>

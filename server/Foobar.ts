@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import * as child_process from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -5,12 +7,12 @@ import * as os from 'os'
 
 import * as Message from './Message'
 import * as ControlServer from './ControlServer'
-import { Context, Config, FB2KInstance } from './Models'
+import { Context, Config, FB2KInstance, Action } from './Models'
 import { Logger } from 'Logger'
 
 export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
     if (os.platform() !== 'win32') {
-        const MockControlServer = require('./test/MockControlServer')
+        const MockControlServer = require('./MockControlServer')
         MockControlServer.createServer('127.0.0.1', config.controlServerPort)
 
         return new Promise(resolve => resolve(null))
@@ -41,16 +43,17 @@ export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
     )
 }
 
-export function queryTrackInfo(ctx: Context) {
-    return ControlServer.sendCommand(ctx, 'trackinfo')
+export function queryTrackInfo(ctx: Context, io: SocketIO.Server) {
+    return sendCommand(ctx, io, 'trackinfo')
 }
 
+// TODO move launchFoobar logic out of this module
 export function sendCommand(
     ctx: Context,
     io: SocketIO.Server,
-    command: string
+    command: Action | 'launchFoobar'
 ) {
-    ctx.logger.info('Command received', { command })
+    ctx.logger.debug('Command received', { command })
 
     if (command === 'launchFoobar') {
         return launch(ctx.config, ctx.logger)
@@ -64,33 +67,21 @@ export function sendCommand(
             })
     }
 
-    if (command === 'mute') {
-        return ControlServer.sendCommand(ctx, 'vol mute')
-    }
-
-    if (command.indexOf('vol') !== -1) {
-        return ControlServer.sendCommand(ctx, `vol ${command.substring(3)}`)
-    }
-
-    return child_process.exec(`foobar2000.exe /${command}`, {
-        cwd: ctx.config.foobarPath
-    })
+    return ControlServer.sendCommand(ctx, command)
 }
 
 export function onData(ctx: Context, io: SocketIO.Server) {
     return function controlDataHandler(data: Buffer) {
-        const messages = Message.parseControlData(data.toString('utf-8'))
+        const dataStr = data.toString('utf-8')
+        const messages = Message.parseControlData(dataStr)
 
-        ctx.logger.debug('Received data from control server', messages)
+        ctx.logger.debug('Received message(s) from control server', {
+            raw: dataStr,
+            messages
+        })
 
         messages.forEach(message => {
-            if (message.type === 'playback' || message.type === 'volume') {
-                io.sockets.emit('foobarStatus', message.data)
-            }
-
-            if (message.type === 'info') {
-                io.sockets.emit('info', message.data)
-            }
+            io.sockets.emit('message', message)
         })
     }
 }

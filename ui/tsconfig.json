@@ -2,11 +2,13 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "baseUrl": "./",
-        "outFile": "../build/static/ui.js",
         "target": "es5",
-        "module": "system",
-        "jsx": "preserve"
+        "module": "es6",
+        "lib": ["dom", "dom.iterable", "esnext", "es2015.iterable"],
+        "resolveJsonModule": true,
+        "jsx": "react",
+        "jsxFactory": "h"
     },
-    "include": ["./*.js"],
-    "exclude": ["./vendor"]
+    "include": ["./**/*.tsx", "./**/*.ts"],
+    "exclude": ["node_modules"]
 }

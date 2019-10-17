@@ -3,5 +3,4 @@ npm-debug.log
 *.log
 .DS_Store
 .vscode
-yarn.lock
 build/

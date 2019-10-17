@@ -1,0 +1,119 @@
+.app {
+    width: 100%;
+    height: 100%;
+}
+
+.app__init {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.app__wrapper {
+    width: 100vw;
+    max-width: var(--app-max-width);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-s);
+}
+
+.playback {
+    display: flex;
+    flex-direction: column;
+}
+
+.playback__current-track {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-height: 50vh;
+}
+
+.playback__controls--main,
+.playback__controls--secondary {
+    display: flex;
+}
+
+.playback__controls--main {
+    padding: var(--spacing-s) var(--spacing-s) 0;
+}
+
+.playback__controls--secondary {
+    padding: var(--spacing-s);
+}
+
+.playback__controls__button,
+.volume__controls__button {
+    margin: var(--spacing-xs);
+    text-transform: capitalize;
+}
+
+.playback__controls__button:first-of-type,
+.volume__controls__button:first-of-type {
+    margin-left: 0;
+}
+
+.playback__controls__button:last-of-type,
+.volume__controls__button:last-of-type {
+    margin-right: 0;
+}
+
+.playback__controls__button {
+    flex: 1;
+}
+
+.volume {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: var(--color-bg-box);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.volume__value,
+.volume__controls {
+    display: flex;
+    padding: var(--spacing-xs) var(--spacing-s);
+    align-items: center;
+}
+
+.volume__value {
+    flex: 1;
+}
+
+.volume__controls {
+    flex: 2;
+}
+
+.volume__controls__button {
+    flex: 1;
+}
+
+@media (max-width: 480px) {
+    .app__wrapper {
+        height: 100vh;
+        max-height: 100vh;
+        max-width: 100vw;
+        overflow: hidden;
+    }
+
+    .playback {
+        flex: 1;
+    }
+
+    .volume {
+        width: 100vw;
+        margin-left: calc(0px - var(--spacing-s));
+        margin-bottom: calc(0px - var(--spacing-s));
+        padding-bottom: var(--spacing-m);
+        border-radius: 0;
+        border-width: 1px 0 0 0;
+    }
+}

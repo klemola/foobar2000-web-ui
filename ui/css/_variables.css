@@ -1,0 +1,56 @@
+:root {
+    /* Colors */
+    --color-dark: #000;
+    --color-semidark: #333;
+    --color-neutral: #666;
+    --color-semilight: #a9a9a9;
+    --color-light: #f9f9f9;
+    --color-primary: var(--color-light);
+    --color-primary-active: var(--color-semilight);
+    --color-secondary: var(--color-dark);
+    --color-secondary-active: var(--color-semi-dark);
+    --color-highlight: #00ccff;
+    --color-higlight-active: #19a1c4;
+
+    --color-text: var(--color-primary);
+    --color-text-placeholder: var(--color-text);
+    --color-text-inverse: var(--color-dark);
+    --color-text-tooltip: var(--color-dark);
+    --color-text-muted: var(--color-neutral);
+
+    --color-bg-app: var(--color-dark);
+    --color-bg-box: var(--color-semidark);
+    --color-border: var(--color-neutral);
+
+    /* Text */
+    --default-font: 'HelveticaNeue', 'Helvetica Neue', 'Helvetica',
+        'TeXGyreHerosRegular', 'Tahoma', 'Geneva', 'Arial', sans-serif;
+    --font-family-heading: var(--default-font);
+    --font-family-body: var(--default-font);
+    --font-size-text-small: 0.8em;
+    --line-height-text-small: 1em;
+    --font-size-text: 1em;
+    --line-height-text: 1.4;
+    --font-size-h4: 1em;
+    --line-height-h4: 1.4;
+    --font-size-h3: 1.306em;
+    --line-height-h3: 1;
+    --font-size-h2: 1.618em;
+    --line-height-h2: 1;
+    --font-size-h1: 2.118em;
+    --line-height-h1: 1;
+    --font-weight-bold: 800;
+    --font-weight-semibold: 600;
+    --font-weight-book: 500;
+    --font-weight-regular: 400;
+
+    /* Sizing */
+    --spacing-xxs: 0.25rem;
+    --spacing-xs: 0.5rem;
+    --spacing-s: 1rem;
+    --spacing-m: 2rem;
+    --spacing-l: 3rem;
+    --border-radius: 5px;
+    --app-max-width: 35em;
+    --app-padding: var(--spacing-s);
+}

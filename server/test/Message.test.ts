@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { assert } from 'chai'
 
 import * as Message from '../Message'
@@ -5,7 +7,8 @@ import {
     TrackInfo,
     InfoMessage,
     PlaybackMessage,
-    VolumeMessage
+    VolumeMessage,
+    Volume
 } from '../Models'
 
 describe('Message', () => {
@@ -81,8 +84,22 @@ describe('Message', () => {
 
     it('should parse a volume message', () => {
         const message = '222|-1.58|'
-        const mockStatus = {
-            volume: '-1.58'
+        const mockStatus: Volume = {
+            type: 'audible',
+            volume: -1.58
+        }
+
+        const messages = Message.parseControlData(message)
+        const volumeMessage = VolumeMessage.check(messages[0])
+
+        assert.equal(messages.length, 1)
+        assert.deepEqual(volumeMessage.data, mockStatus)
+    })
+
+    it('should parse a volume message when muted', () => {
+        const message = '222|-100.00|'
+        const mockStatus: Volume = {
+            type: 'muted'
         }
 
         const messages = Message.parseControlData(message)

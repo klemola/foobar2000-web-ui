@@ -1,5 +1,11 @@
 # Foobar2000 Web UI
 
+## Notice
+
+> The codebase is being updated to meet 2019 standards. While the goal is too keep the master branch bug-free, I can't guarantee that everything works. Some minor features might be missing from the new version, and will likely be re-instated later.
+>
+> The new version requires a recent version of NodeJS and a modern browser. NodeJS will later be bundled with the application (the application will be self-contained and can be installed without Git). The content below has not been updated yet.
+
 Foobar2000 Web UI application consists of two parts:
 
 -   A Node.js server that controls foobar2000 music player using [native CLI commands](http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Commandline_Guide) and [foo_controlserver component](https://code.google.com/p/foo-controlserver/) (a tcp/ip server for foobar2000)

@@ -1,19 +1,28 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any */
+
 import { assert } from 'chai'
 import * as net from 'net'
 import { describe } from 'mocha'
 import SocketIOClient from 'socket.io-client'
 
-import { createServer } from './MockControlServer'
+import { createServer } from '../MockControlServer'
 import * as Server from '../Server'
 import * as ControlServer from '../ControlServer'
 import { mockTrack1 } from './fixtures'
-import { TrackInfo, Context, Message, Env } from '../Models'
+import {
+    Context,
+    Env,
+    Message,
+    PlaybackMessage,
+    VolumeMessage
+} from '../Models'
 import config from '../config'
 import * as Logger from '../Logger'
 
 const ioOptions = {
     transports: ['websocket'],
     forceNew: true,
+    autoConnect: false,
     reconnection: false
 }
 const testControlServerPort = 6666
@@ -70,31 +79,88 @@ describe('API', () => {
             ioOptions
         )
 
-        ioClient.on('foobarStatus', (data: TrackInfo) => {
-            assert.ok(data.state === mockTrack1.state)
-            assert.ok(data.track === mockTrack1.track)
+        const messages: Message[] = []
+
+        ioClient.on('message', (message: Message) => {
+            messages.push(message)
+        })
+
+        setTimeout(() => {
+            const playbackMessage = messages.find(m => m.type === 'playback')
+            const volumeMessage = messages.find(m => m.type === 'volume')
+
+            assert.ok(
+                playbackMessage &&
+                    playbackMessage.type === 'playback' &&
+                    playbackMessage.data.state === mockTrack1.state &&
+                    playbackMessage.data.track === mockTrack1.track
+            )
+            assert.ok(
+                volumeMessage &&
+                    volumeMessage.type === 'volume' &&
+                    volumeMessage.data.type === 'audible'
+            )
 
             ioClient.disconnect()
             done()
-        })
+        }, 100)
+
+        ioClient.connect()
     })
 
+    // TODO improve test
+    it('should send foobar2000 playback info when a playback action is triggered', done => {
+        const ioClient = SocketIOClient(
+            `http://127.0.0.1:${testServerPort}/`,
+            ioOptions
+        )
+
+        const messages: PlaybackMessage[] = []
+
+        ioClient.on('message', (message: Message) => {
+            if (message.type === 'playback') {
+                messages.push(message)
+            }
+        })
+
+        ioClient.connect()
+        ioClient.emit('foobarCommand', 'stop')
+
+        setTimeout(() => {
+            const playbackMessage = messages[1]
+
+            assert.ok(messages.length === 2)
+            assert.ok(playbackMessage.data.status === 112)
+
+            ioClient.disconnect()
+            done()
+        }, 100)
+    })
+
+    // TODO improve test
     it('should send foobar2000 status info when volume is changed', done => {
         const ioClient = SocketIOClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
         )
 
-        const receivedData: Message[] = []
+        const messages: VolumeMessage[] = []
 
-        ioClient.on('foobarStatus', (data: any) => {
-            receivedData.push(data)
+        ioClient.on('message', (message: Message) => {
+            if (message.type === 'volume') {
+                messages.push(message)
+            }
         })
 
+        ioClient.connect()
         ioClient.emit('foobarCommand', 'vol mute')
 
         setTimeout(() => {
-            assert.ok(receivedData.length === 2)
+            const volumeMessage = messages[1]
+
+            assert.ok(messages.length === 2)
+            assert.ok(volumeMessage.data.type === 'muted')
+
             ioClient.disconnect()
             done()
         }, 100)
