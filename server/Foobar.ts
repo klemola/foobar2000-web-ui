@@ -72,9 +72,13 @@ export function sendCommand(
 
 export function onData(ctx: Context, io: SocketIO.Server) {
     return function controlDataHandler(data: Buffer) {
-        const messages = Message.parseControlData(data.toString('utf-8'))
+        const dataStr = data.toString('utf-8')
+        const messages = Message.parseControlData(dataStr)
 
-        ctx.logger.debug('Received message(s) from control server', messages)
+        ctx.logger.debug('Received message(s) from control server', {
+            raw: dataStr,
+            messages
+        })
 
         messages.forEach(message => {
             io.sockets.emit('message', message)

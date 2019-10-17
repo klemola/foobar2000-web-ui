@@ -77,15 +77,14 @@ function mapTrackInfoValue(k: keyof TrackInfo, v: string): string | number {
 function nextVolume(currentVolumeValue: string): VolumeMessage {
     return {
         type: 'volume',
-        data:
-            currentVolumeValue === '-100'
-                ? {
-                      type: 'muted'
-                  }
-                : {
-                      type: 'audible',
-                      volume: Number(currentVolumeValue)
-                  }
+        data: currentVolumeValue.startsWith('-100')
+            ? {
+                  type: 'muted'
+              }
+            : {
+                  type: 'audible',
+                  volume: Number(currentVolumeValue)
+              }
     }
 }
 

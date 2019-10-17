@@ -49,6 +49,7 @@ export function configureWebsockets(ctx: Context, io: socketio.Server) {
             Foobar.sendCommand(ctx, io, command)
         )
 
+        // TODO: query current volume
         Foobar.queryTrackInfo(ctx, io)
     })
 

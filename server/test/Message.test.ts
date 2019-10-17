@@ -97,7 +97,7 @@ describe('Message', () => {
     })
 
     it('should parse a volume message when muted', () => {
-        const message = '222|-100|'
+        const message = '222|-100.00|'
         const mockStatus: Volume = {
             type: 'muted'
         }

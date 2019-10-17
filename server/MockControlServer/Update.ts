@@ -12,7 +12,15 @@ import {
 export interface State {
     currentTrack: TrackInfo
     currentVolume: Volume
+    previousVolume: Volume
     sockets: Array<Socket>
+}
+
+const MAX_VOLUME = 0
+const MUTED_VOLUME = -100
+const initialVolume: Volume = {
+    type: 'audible',
+    volume: 0.0
 }
 
 const updatePlayback = (
@@ -48,9 +56,17 @@ const updatePlayback = (
     }
 }
 
-const updateVolume = (currentVolume: Volume, action: VolumeAction): Volume => {
+const updateVolume = (
+    currentVolume: Volume,
+    previousVolume: Volume,
+    action: VolumeAction
+): Volume => {
+    const previousVolumeLevel =
+        previousVolume.type === 'audible' ? previousVolume.volume : MUTED_VOLUME
     const volumeLevel =
-        currentVolume.type === 'muted' ? -100 : currentVolume.volume
+        currentVolume.type === 'muted'
+            ? previousVolumeLevel
+            : currentVolume.volume
 
     switch (action) {
         case 'vol mute':
@@ -65,22 +81,21 @@ const updateVolume = (currentVolume: Volume, action: VolumeAction): Volume => {
         case 'vol up':
             return {
                 type: 'audible',
-                volume: volumeLevel < 0 ? volumeLevel + 1 : 0
+                volume: volumeLevel < MAX_VOLUME ? volumeLevel + 1 : MAX_VOLUME
             }
         case 'vol down':
             return {
                 type: 'audible',
-                volume: volumeLevel - 1
+                volume:
+                    volumeLevel > MUTED_VOLUME ? volumeLevel - 1 : MUTED_VOLUME
             }
     }
 }
 
 export const init = (): State => ({
     currentTrack: { ...mockTrack1 },
-    currentVolume: {
-        type: 'audible',
-        volume: 0.0
-    },
+    currentVolume: initialVolume,
+    previousVolume: initialVolume,
     sockets: []
 })
 
@@ -103,7 +118,12 @@ export const update = (state: State, action: Action): State => {
         case 'vol down':
             return {
                 ...state,
-                currentVolume: updateVolume(state.currentVolume, action)
+                currentVolume: updateVolume(
+                    state.currentVolume,
+                    state.previousVolume,
+                    action
+                ),
+                previousVolume: state.currentVolume
             }
     }
 }
