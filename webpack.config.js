@@ -52,7 +52,10 @@ const webpackConfig = {
         new ForkTsCheckerWebpackPlugin(),
         new HtmlWebpackPlugin({
             title: 'Foobar 2000 Web UI',
-            meta: { viewport: 'width=device-width, initial-scale=1' }
+            meta: {
+                viewport: 'width=device-width, initial-scale=1',
+                'apple-mobile-web-app-capable': 'yes'
+            }
         }),
         new MiniCssExtractPlugin({
             filename: 'styles.css',

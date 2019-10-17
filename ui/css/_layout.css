@@ -30,6 +30,9 @@
 .playback__current-track {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-height: 50vh;
 }
 
 .playback__controls--main,
@@ -103,11 +106,6 @@
 
     .playback {
         flex: 1;
-    }
-
-    .playback__current-track {
-        flex: 1;
-        justify-content: center;
     }
 
     .volume {

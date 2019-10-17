@@ -21,6 +21,7 @@
 
 .track-details__time {
     text-align: center;
+    padding: var(--spacing-s);
 }
 
 .track-details__info__track,

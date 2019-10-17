@@ -19,7 +19,6 @@ const TrackDetails: FunctionalComponent<Props> = (props: Props) => {
         <div className={`track-details--stopped ${className}`}>Stopped.</div>
     ) : (
         <div className={`track-details ${className}`}>
-            <div className="track-details__time">{trackDuration}</div>
             <ul className="track-details__info">
                 <li className="track-details__info__artist">
                     {trackInfo.artist}
@@ -34,6 +33,7 @@ const TrackDetails: FunctionalComponent<Props> = (props: Props) => {
                     <span>{trackInfo.track}</span>
                 </li>
             </ul>
+            <div className="track-details__time">{trackDuration}</div>
         </div>
     )
 }
