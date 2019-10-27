@@ -2,15 +2,20 @@ import { h, Component } from 'preact'
 import io from 'socket.io-client'
 import { Option } from 'prelude-ts'
 
-import { Message, TrackInfo, Volume, Action } from '../server/Models'
+import {
+    Message,
+    TrackInfo,
+    Volume as VolumeType,
+    Action
+} from '../server/Models'
 import Playback from './Playback'
-import VolumeControl from './VolumeControl'
+import Volume from './Volume'
 
 // TODO: refactor into an union type
 interface AppState {
     connected: boolean
     currentTrack: Option<TrackInfo>
-    volume: Volume
+    volume: VolumeType
 }
 
 const initialState: AppState = {
@@ -69,7 +74,7 @@ export default class App extends Component<{}, AppState> {
                             currentTrack={this.state.currentTrack.get()}
                             onFoobarCommand={this.onFoobarCommand}
                         />
-                        <VolumeControl
+                        <Volume
                             currentVolume={this.state.volume}
                             onFoobarCommand={this.onFoobarCommand}
                         />

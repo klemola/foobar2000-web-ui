@@ -84,8 +84,8 @@ li {
 }
 
 button {
-    background: var(--color-light);
-    color: var(--color-dark);
+    background: var(--color-bg-box);
+    color: var(--color-primary);
     padding: var(--spacing-xxs) var(--spacing-xs);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
@@ -95,9 +95,5 @@ button {
 
 button:hover,
 button:active {
-    background: var(--color-primary-active);
-}
-
-button:active {
-    box-shadow: inset 0px -1px 3px 0px rgba(0, 0, 0, 0.3);
+    color: var(--color-primary-active);
 }

@@ -1,0 +1,36 @@
+.volume {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: var(--color-bg-box);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.volume__value,
+.volume__controls {
+    display: flex;
+    padding: var(--spacing-xs) var(--spacing-s);
+    align-items: center;
+}
+
+.volume__value {
+    flex: 1;
+    user-select: none;
+}
+
+.volume__controls {
+    width: 240px;
+    max-width: 240px;
+}
+
+@media (max-width: 480px) {
+    .volume {
+        width: 100vw;
+        margin-left: calc(0px - var(--spacing-s));
+        margin-bottom: calc(0px - var(--spacing-s));
+        padding-bottom: var(--spacing-m);
+        border-radius: 0;
+        border-width: 1px 0 0 0;
+    }
+}

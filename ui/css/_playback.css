@@ -1,0 +1,28 @@
+.playback {
+    display: flex;
+    flex-direction: column;
+}
+
+.playback__current-track {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-height: 50vh;
+}
+
+.playback__controls--main,
+.playback__controls--secondary {
+    display: flex;
+    padding: var(--spacing-s);
+}
+
+.playback__controls--secondary__spacer {
+    flex: 1;
+}
+
+@media (max-width: 480px) {
+    .playback {
+        flex: 1;
+    }
+}

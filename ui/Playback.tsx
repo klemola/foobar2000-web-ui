@@ -2,6 +2,7 @@ import { h, FunctionalComponent } from 'preact'
 
 import { TrackInfo, Action } from '../server/Models'
 import TrackDetails from './TrackDetails'
+import * as Icon from './Icon'
 
 interface Props {
     currentTrack: TrackInfo
@@ -20,36 +21,41 @@ const Playback: FunctionalComponent<Props> = (props: Props) => {
             />
             <div className="playback__controls--main">
                 <button
-                    class="playback__controls__button"
+                    class="control-button"
                     onClick={() => onFoobarCommand('prev')}
                 >
-                    Prev
+                    <Icon.Backward />
                 </button>
                 <button
-                    class="playback__controls__button"
+                    class="control-button--large"
                     onClick={() => onFoobarCommand(playPauseAction)}
                 >
-                    {playPauseAction}
+                    {currentTrack.state === 'playing' ? (
+                        <Icon.Pause />
+                    ) : (
+                        <Icon.Play />
+                    )}
                 </button>
                 <button
-                    class="playback__controls__button"
+                    class="control-button"
                     onClick={() => onFoobarCommand('next')}
                 >
-                    Next
+                    <Icon.Forward />
                 </button>
             </div>
             <div className="playback__controls--secondary">
                 <button
-                    class="playback__controls__button"
+                    class="control-button--small"
                     onClick={() => onFoobarCommand('stop')}
                 >
-                    Stop
+                    <Icon.Stop />
                 </button>
+                <div className="playback__controls--secondary__spacer" />
                 <button
-                    class="playback__controls__button"
+                    class="control-button--small"
                     onClick={() => onFoobarCommand('rand')}
                 >
-                    Random
+                    <Icon.Random />
                 </button>
             </div>
         </div>

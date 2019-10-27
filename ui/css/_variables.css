@@ -1,16 +1,14 @@
 :root {
     /* Colors */
     --color-dark: #000;
-    --color-semidark: #333;
+    --color-semidark: #3a3a3a;
     --color-neutral: #666;
-    --color-semilight: #a9a9a9;
-    --color-light: #f9f9f9;
+    --color-light: #eaeaea;
     --color-primary: var(--color-light);
-    --color-primary-active: var(--color-semilight);
+    --color-primary-active: #ffd900;
     --color-secondary: var(--color-dark);
     --color-secondary-active: var(--color-semi-dark);
     --color-highlight: #00ccff;
-    --color-higlight-active: #19a1c4;
 
     --color-text: var(--color-primary);
     --color-text-placeholder: var(--color-text);
@@ -53,4 +51,7 @@
     --border-radius: 5px;
     --app-max-width: 35em;
     --app-padding: var(--spacing-s);
+    --size-button-small: 1.6rem;
+    --size-button-medium: 2rem;
+    --size-button-large: 3.2rem;
 }

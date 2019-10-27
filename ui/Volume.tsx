@@ -2,6 +2,7 @@ import { h, FunctionalComponent } from 'preact'
 
 import { Volume, Action } from '../server/Models'
 import { formatVolume } from './format'
+import * as Icon from './Icon'
 
 interface Props {
     currentVolume: Volume
@@ -17,22 +18,26 @@ const VolumeControl: FunctionalComponent<Props> = (props: Props) => {
             <div className="volume__value">{volumePresentation}</div>
             <div className="volume__controls">
                 <button
-                    className="volume__controls__button"
-                    onClick={() => onFoobarCommand('vol down')}
-                >
-                    Vol-
-                </button>
-                <button
-                    className="volume__controls__button"
-                    onClick={() => onFoobarCommand('vol up')}
-                >
-                    Vol+
-                </button>
-                <button
-                    className="volume__controls__button"
+                    className={
+                        currentVolume.type === 'audible'
+                            ? 'control-button'
+                            : 'control-button--active'
+                    }
                     onClick={() => onFoobarCommand('vol mute')}
                 >
-                    {currentVolume.type === 'audible' ? 'mute' : 'unmute'}
+                    <Icon.VolumeMute />
+                </button>
+                <button
+                    className="control-button"
+                    onClick={() => onFoobarCommand('vol down')}
+                >
+                    <Icon.VolumeDown />
+                </button>
+                <button
+                    className="control-button"
+                    onClick={() => onFoobarCommand('vol up')}
+                >
+                    <Icon.VolumeUp />
                 </button>
             </div>
         </div>

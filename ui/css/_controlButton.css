@@ -1,0 +1,60 @@
+.control-button,
+.control-button--active,
+.control-button--small,
+.control-button--small--active,
+.control-button--large,
+.control-button--large--active {
+    flex: 1;
+    margin: var(--spacing-xs);
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.control-button:first-of-type,
+.control-button--active:first-of-type,
+.control-button--small:first-of-type,
+.control-button--small--active:first-of-type,
+.control-button--large:first-of-type,
+.control-button--large--active:first-of-type {
+    margin-left: 0;
+}
+
+.control-button:last-of-type,
+.control-button--active:last-of-type,
+.control-button--small:last-of-type,
+.control-button--small--active:last-of-type,
+.control-button--large:last-of-type,
+.control-button--large--active:last-of-type {
+    margin-right: 0;
+}
+
+.control-button svg,
+.control-button--active svg {
+    height: var(--size-button-medium);
+}
+
+.control-button--small svg,
+.control-button--small--active svg {
+    height: var(--size-button-small);
+}
+
+.control-button--large svg,
+.control-button--large--active svg {
+    height: var(--size-button-large);
+}
+
+.control-button svg,
+.control-button--small svg,
+.control-button--large svg {
+    fill: var(--color-primary);
+}
+
+.control-button:hover svg,
+.control-button--active svg,
+.control-button--small:hover svg,
+.control-button--small--active svg,
+.control-button--large:hover svg,
+.control-button--large--active svg {
+    fill: var(--color-primary-active);
+}
