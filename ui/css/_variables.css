@@ -2,6 +2,7 @@
     /* Colors */
     --color-dark: #000;
     --color-semidark: #3a3a3a;
+    --color-semidark-alt: #222;
     --color-neutral: #666;
     --color-light: #eaeaea;
     --color-primary: var(--color-light);

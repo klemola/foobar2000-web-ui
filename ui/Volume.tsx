@@ -21,7 +21,7 @@ const VolumeControl: FunctionalComponent<Props> = (props: Props) => {
                     className={
                         currentVolume.type === 'audible'
                             ? 'control-button'
-                            : 'control-button--active'
+                            : 'control-button--activated'
                     }
                     onClick={() => onFoobarCommand('vol mute')}
                 >

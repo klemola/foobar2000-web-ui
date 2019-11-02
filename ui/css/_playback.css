@@ -8,7 +8,7 @@
     flex-direction: column;
     justify-content: center;
     flex: 1;
-    min-height: 50vh;
+    min-height: calc(var(--vh, 1vh) * 50);
 }
 
 .playback__controls--main,
