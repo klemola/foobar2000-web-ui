@@ -1,7 +1,3 @@
-/*
-    TODO: center content and figure out the min height so that 'stopped' presentation is proportional to the regular presentation
-*/
-
 .track-details,
 .track-details--stopped {
     padding: var(--spacing-s);
@@ -41,4 +37,9 @@
 .track-details__info__track__number {
     color: var(--color-text-muted);
     margin-right: var(--spacing-xs);
+}
+
+.track-details__time,
+.track-details__info__track__number {
+    user-select: none;
 }

@@ -1,7 +1,9 @@
 import { h, FunctionalComponent } from 'preact'
+import classnames from 'classnames'
 
 import { TrackInfo, Action } from '../server/Models'
 import TrackDetails from './TrackDetails'
+import * as Icon from './Icon'
 
 interface Props {
     currentTrack: TrackInfo
@@ -10,6 +12,8 @@ interface Props {
 
 const Playback: FunctionalComponent<Props> = (props: Props) => {
     const { currentTrack, onFoobarCommand } = props
+    const isPlaying = currentTrack.state === 'playing'
+    const isStopped = currentTrack.state === 'stopped'
     const playPauseAction = currentTrack.state === 'playing' ? 'pause' : 'play'
 
     return (
@@ -20,36 +24,40 @@ const Playback: FunctionalComponent<Props> = (props: Props) => {
             />
             <div className="playback__controls--main">
                 <button
-                    class="playback__controls__button"
+                    class="control-button"
                     onClick={() => onFoobarCommand('prev')}
                 >
-                    Prev
+                    <Icon.Backward />
                 </button>
                 <button
-                    class="playback__controls__button"
+                    class="control-button--large"
                     onClick={() => onFoobarCommand(playPauseAction)}
                 >
-                    {playPauseAction}
+                    {isPlaying ? <Icon.Pause /> : <Icon.Play />}
                 </button>
                 <button
-                    class="playback__controls__button"
+                    class="control-button"
                     onClick={() => onFoobarCommand('next')}
                 >
-                    Next
+                    <Icon.Forward />
                 </button>
             </div>
             <div className="playback__controls--secondary">
                 <button
-                    class="playback__controls__button"
-                    onClick={() => onFoobarCommand('stop')}
+                    className={classnames({
+                        'control-button--small': !isStopped,
+                        'control-button--small--activated': isStopped
+                    })}
+                    onClick={() => onFoobarCommand(isStopped ? 'play' : 'stop')}
                 >
-                    Stop
+                    <Icon.Stop />
                 </button>
+                <div className="playback__controls--secondary__spacer" />
                 <button
-                    class="playback__controls__button"
+                    class="control-button--small"
                     onClick={() => onFoobarCommand('rand')}
                 >
-                    Random
+                    <Icon.Random />
                 </button>
             </div>
         </div>

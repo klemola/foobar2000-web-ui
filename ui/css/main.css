@@ -1,4 +1,7 @@
 @import './_variables.css';
 @import './_base.css';
 @import './_layout.css';
+@import './_playback.css';
+@import './_volume.css';
 @import './_trackDetails.css';
+@import './_controlButton.css';

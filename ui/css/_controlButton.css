@@ -1,0 +1,93 @@
+.control-button,
+.control-button--activated,
+.control-button--small,
+.control-button--small--activated,
+.control-button--large,
+.control-button--large--activated {
+    flex: 1;
+    margin: var(--spacing-xs);
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.control-button:first-of-type,
+.control-button--activated:first-of-type,
+.control-button--small:first-of-type,
+.control-button--small--activated:first-of-type,
+.control-button--large:first-of-type,
+.control-button--large--activated:first-of-type {
+    margin-left: 0;
+}
+
+.control-button:last-of-type,
+.control-button--activated:last-of-type,
+.control-button--small:last-of-type,
+.control-button--small--activated:last-of-type,
+.control-button--large:last-of-type,
+.control-button--large--activated:last-of-type {
+    margin-right: 0;
+}
+
+.control-button svg,
+.control-button--activated svg {
+    height: var(--size-button-medium);
+}
+
+.control-button--small svg,
+.control-button--small--activated svg {
+    height: var(--size-button-small);
+}
+
+.control-button--large svg,
+.control-button--large--activated svg {
+    height: var(--size-button-large);
+}
+
+.control-button svg,
+.control-button--small svg,
+.control-button--large svg {
+    fill: var(--color-primary);
+}
+
+.control-button--activated svg,
+.control-button--small--activated svg,
+.control-button--large--activated svg {
+    fill: var(--color-primary-active);
+}
+
+.control-button:disabled,
+.control-button--activated:disabled,
+.control-button--small:disabled,
+.control-button--small--activated:disabled,
+.control-button--large:disabled,
+.control-button--large--activated:disabled {
+    background: none;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.control-button:disabled svg,
+.control-button--activated:disabled svg,
+.control-button--small:disabled svg,
+.control-button--small--activated:disabled svg,
+.control-button--large:disabled svg,
+.control-button--large--activated:disabled svg {
+    fill: var(--color-text-muted);
+}
+
+@media (max-width: 480px) {
+    .control-button:active svg,
+    .control-button--small:active svg,
+    .control-button--large:active svg {
+        fill: var(--color-primary-active);
+    }
+}
+
+@media (min-width: 481px) {
+    .control-button:hover svg,
+    .control-button--small:hover svg,
+    .control-button--large:hover svg {
+        fill: var(--color-primary-active);
+    }
+}
