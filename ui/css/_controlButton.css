@@ -56,6 +56,26 @@
     fill: var(--color-primary-active);
 }
 
+.control-button:disabled,
+.control-button--activated:disabled,
+.control-button--small:disabled,
+.control-button--small--activated:disabled,
+.control-button--large:disabled,
+.control-button--large--activated:disabled {
+    background: none;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.control-button:disabled svg,
+.control-button--activated:disabled svg,
+.control-button--small:disabled svg,
+.control-button--small--activated:disabled svg,
+.control-button--large:disabled svg,
+.control-button--large--activated:disabled svg {
+    fill: var(--color-text-muted);
+}
+
 @media (max-width: 480px) {
     .control-button:active svg,
     .control-button--small:active svg,

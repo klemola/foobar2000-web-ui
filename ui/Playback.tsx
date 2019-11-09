@@ -1,4 +1,5 @@
 import { h, FunctionalComponent } from 'preact'
+import classnames from 'classnames'
 
 import { TrackInfo, Action } from '../server/Models'
 import TrackDetails from './TrackDetails'
@@ -11,6 +12,8 @@ interface Props {
 
 const Playback: FunctionalComponent<Props> = (props: Props) => {
     const { currentTrack, onFoobarCommand } = props
+    const isPlaying = currentTrack.state === 'playing'
+    const isStopped = currentTrack.state === 'stopped'
     const playPauseAction = currentTrack.state === 'playing' ? 'pause' : 'play'
 
     return (
@@ -30,11 +33,7 @@ const Playback: FunctionalComponent<Props> = (props: Props) => {
                     class="control-button--large"
                     onClick={() => onFoobarCommand(playPauseAction)}
                 >
-                    {currentTrack.state === 'playing' ? (
-                        <Icon.Pause />
-                    ) : (
-                        <Icon.Play />
-                    )}
+                    {isPlaying ? <Icon.Pause /> : <Icon.Play />}
                 </button>
                 <button
                     class="control-button"
@@ -45,8 +44,11 @@ const Playback: FunctionalComponent<Props> = (props: Props) => {
             </div>
             <div className="playback__controls--secondary">
                 <button
-                    class="control-button--small"
-                    onClick={() => onFoobarCommand('stop')}
+                    className={classnames({
+                        'control-button--small': !isStopped,
+                        'control-button--small--activated': isStopped
+                    })}
+                    onClick={() => onFoobarCommand(isStopped ? 'play' : 'stop')}
                 >
                     <Icon.Stop />
                 </button>

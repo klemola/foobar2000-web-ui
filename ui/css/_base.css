@@ -97,3 +97,8 @@ button:hover,
 button:active {
     color: var(--color-primary-active);
 }
+
+button:disabled {
+    background: var(--color-semidark-dim);
+    color: var(--color-text-muted);
+}

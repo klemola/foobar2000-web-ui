@@ -14,4 +14,7 @@ const setRealVH = () => {
 window.addEventListener('resize', setRealVH)
 window.addEventListener('load', setRealVH)
 
+// Briefly "activates" buttons on tap
+document.addEventListener('touchstart', function() {}, false)
+
 render(<App />, document.body)

@@ -1,25 +1,26 @@
 :root {
     /* Colors */
     --color-dark: #000;
-    --color-semidark: #3a3a3a;
-    --color-semidark-alt: #222;
-    --color-neutral: #666;
+    --color-semidark: #2a2a2a;
+    --color-semidark-dim: #1a1a1a;
+    --color-neutral: #444;
     --color-light: #eaeaea;
+    --color-light-dim: #9a9a9a;
     --color-primary: var(--color-light);
     --color-primary-active: #ffd900;
     --color-secondary: var(--color-dark);
-    --color-secondary-active: var(--color-semi-dark);
+    --color-secondary-active: var(--color-semidark);
     --color-highlight: #00ccff;
 
     --color-text: var(--color-primary);
     --color-text-placeholder: var(--color-text);
     --color-text-inverse: var(--color-dark);
     --color-text-tooltip: var(--color-dark);
-    --color-text-muted: var(--color-neutral);
+    --color-text-muted: var(--color-light-dim);
 
     --color-bg-app: var(--color-dark);
-    --color-bg-box: var(--color-semidark);
-    --color-border: var(--color-neutral);
+    --color-bg-box: var(--color-semidark-dim);
+    --color-border: var(--color-semidark);
 
     /* Text */
     --default-font: 'HelveticaNeue', 'Helvetica Neue', 'Helvetica',
