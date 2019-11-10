@@ -1,16 +1,21 @@
 name: Validate
 
-on: [push, pull_request]
+on:
+    pull_request:
+        branches:
+            - "*"
+    push:
+        branches:
+            - master
 
 jobs:
-  test:
+    test:
+        runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-      - run: yarn
-      - run: yarn test
+        steps:
+            - uses: actions/checkout@v1
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: "12.x"
+            - run: yarn
+            - run: yarn test
