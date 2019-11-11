@@ -2,7 +2,7 @@ import * as net from 'net'
 import { Vector } from 'prelude-ts'
 
 import * as Logger from '../Logger'
-import { init, update, State } from './update'
+import { init, update, State } from './Update'
 import { initialMsg } from '../test/fixtures'
 import { TrackInfo, Volume, Action } from '../Models'
 
