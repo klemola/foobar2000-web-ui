@@ -14,12 +14,10 @@
         "ui",
         "server"
     ],
-    "bin": "build/main.js",
     "scripts": {
         "build-ui": "webpack --mode production --config webpack.config.js",
         "build-server": "tsc -p server/tsconfig.json",
         "build": "yarn build-server && yarn build-ui",
-        "package": "yarn build && pkg build/main.js --targets \"node12-win-x64\" --output=\"foobar2000-web-ui.exe\"",
         "start": "yarn build && node build/main.js",
         "test-server": "mocha --exit ./build/**/*.test.js",
         "test": "yarn build && yarn test-server",
@@ -59,7 +57,6 @@
         "html-webpack-plugin": "3.2.0",
         "mini-css-extract-plugin": "0.8.0",
         "mocha": "6.1.4",
-        "pkg": "^4.4.0",
         "prettier": "1.17.0",
         "ts-loader": "6.2.0",
         "typescript": "3.6.3",
@@ -72,10 +69,5 @@
     },
     "engines": {
         "node": ">=12.1.0"
-    },
-    "pkg": {
-        "assets": [
-            "build/static/*"
-        ]
     }
 }

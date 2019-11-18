@@ -1,0 +1,11 @@
+{
+    "name": "foobar2000-web-ui-release",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "package": "node index.js"
+    },
+    "dependencies": {
+        "pkg": "4.4.0"
+    }
+}
