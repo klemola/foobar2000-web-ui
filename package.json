@@ -2,7 +2,7 @@
     "name": "foobar2000-web-ui",
     "version": "0.1.0",
     "author": "Matias Klemola <matias.klemola@gmail.com>",
-    "description": "Control foobar2000 from the web.",
+    "description": "Control foobar2000 from a browser.",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -11,6 +11,7 @@
     "keywords": [
         "foobar2000",
         "remote control",
+        "ui",
         "server"
     ],
     "scripts": {
