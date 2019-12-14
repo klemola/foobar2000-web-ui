@@ -1,4 +1,5 @@
 import http from 'http'
+import path from 'path'
 import express from 'express'
 import * as bodyparser from 'body-parser'
 import socketio from 'socket.io'
@@ -27,12 +28,14 @@ export function create() {
 }
 
 export function configureStatic(ctx: Context, app: express.Application) {
+    const staticDir = path.join(__dirname, 'static')
+
     app.use(bodyparser.json())
-    app.use(express.static(`${__dirname}/static`))
+    app.use(express.static(staticDir))
 
     app.locals.pretty = true
 
-    app.get('/', (req, res) => res.sendFile('index.html'))
+    app.get('/', (req, res) => res.sendFile(path.join(staticDir, 'index.html')))
 }
 
 export function configureWebsockets(ctx: Context, io: socketio.Server) {

@@ -1,7 +1,6 @@
 import {
     Number,
     String,
-    Boolean,
     Literal,
     Record,
     Union,
@@ -73,13 +72,9 @@ export const Action = Union(PlaybackAction, VolumeAction, MetaAction)
 export type Action = Static<typeof Action>
 
 export const Config = Record({
-    appTitle: String,
-    localIPGuess: String,
-    guessIP: Boolean,
     foobarPath: String,
     controlServerPort: Number,
-    webServerPort: Number,
-    serverExternalIP: String,
+    webserverPort: Number,
     controlServerMessageSeparator: String,
     environment: Env
 })

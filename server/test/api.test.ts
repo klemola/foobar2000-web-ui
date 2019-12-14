@@ -14,9 +14,9 @@ import {
     Env,
     Message,
     PlaybackMessage,
-    VolumeMessage
+    VolumeMessage,
+    Config
 } from '../Models'
-import config from '../config'
 import * as Logger from '../Logger'
 
 const ioOptions = {
@@ -27,40 +27,40 @@ const ioOptions = {
 }
 const testControlServerPort = 6666
 const testServerPort = 9999
+const environment: Env = 'test'
+const config: Config = {
+    foobarPath: 'C:/tmp',
+    webserverPort: testServerPort,
+    controlServerPort: testControlServerPort,
+    controlServerMessageSeparator: '|',
+    environment
+}
 
 describe('API', () => {
     let mockControlServer: net.Server
     let testServer: any
     let ioInstance: SocketIO.Server
-    let environment: Env = 'test'
 
     before(done => {
-        const _config = {
-            ...config,
-            controlServerPort: testControlServerPort,
-            environment
-        }
-        const logger = Logger.create(_config.environment)
+        const logger = Logger.create(config.environment)
         mockControlServer = createServer('127.0.0.1', testControlServerPort)
 
-        ControlServer.connect(_config.controlServerPort, logger).then(
-            client => {
-                const context: Context = {
-                    config: _config,
-                    logger,
-                    client,
-                    instance: null
-                }
-
-                const { server, io } = Server.create()
-                Server.configureWebsockets(context, io)
-
-                ioInstance = io
-                testServer = server
-                testServer.listen(testServerPort)
-                done()
+        ControlServer.connect(config.controlServerPort, logger).then(client => {
+            const context: Context = {
+                config: config,
+                logger,
+                client,
+                instance: null
             }
-        )
+
+            const { server, io } = Server.create()
+            Server.configureWebsockets(context, io)
+
+            ioInstance = io
+            testServer = server
+            testServer.listen(testServerPort)
+            done()
+        })
     })
 
     after(() => {

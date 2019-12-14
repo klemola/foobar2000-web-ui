@@ -31,16 +31,10 @@ export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
         detached: true
     })
 
-    fb2kInstance.on('close', (code: number, signal: string) =>
-        logger.warn('Foobar2000 instance closed.', {
-            code,
-            signal
-        })
-    )
-
-    return ControlServer.probe(config.controlServerPort).then(
-        () => fb2kInstance
-    )
+    return ControlServer.probe(config.controlServerPort).then(() => {
+        logger.info('Control server detected')
+        return fb2kInstance
+    })
 }
 
 export function queryTrackInfo(ctx: Context, io: SocketIO.Server) {

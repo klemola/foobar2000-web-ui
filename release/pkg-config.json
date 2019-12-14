@@ -1,0 +1,4 @@
+{
+    "scripts": "main.js",
+    "assets": "../build/static/**/*"
+}

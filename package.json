@@ -18,7 +18,7 @@
         "build-ui": "webpack --mode production --config webpack.config.js",
         "build-server": "tsc -p server/tsconfig.json",
         "build": "yarn build-server && yarn build-ui",
-        "start": "yarn build && node build/main.js",
+        "start": "cross-env-shell NODE_ENV=development \"yarn build && node build/main.js\"",
         "test-server": "mocha --exit ./build/**/*.test.js",
         "test": "yarn build && yarn test-server",
         "format": "prettier --write server/**/*.ts ui/**/*.ts",
@@ -34,7 +34,8 @@
         "runtypes": "4.0.2",
         "socket.io": "2.2.0",
         "socket.io-client": "2.2.0",
-        "winston": "3.2.1"
+        "winston": "3.2.1",
+        "winston-daily-rotate-file": "4.4.0"
     },
     "devDependencies": {
         "@types/body-parser": "^1.17.0",
@@ -49,6 +50,7 @@
         "@typescript-eslint/eslint-plugin": "2.3.2",
         "@typescript-eslint/parser": "2.3.2",
         "chai": "4.2.0",
+        "cross-env": "6.0.3",
         "css-loader": "3.1.0",
         "eslint": "6.1.0",
         "eslint-config-prettier": "6.0.0",

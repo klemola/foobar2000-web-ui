@@ -6,38 +6,47 @@ import { Logger } from 'Logger'
 const connectionError = new Error('Could not connect to control server')
 
 export function probe(port: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const sock = new Net.Socket()
+    const sock = new Net.Socket()
+    let retriesLeft = 3
 
-        sock.setTimeout(30 * 1000)
+    sock.setTimeout(5000)
+
+    return new Promise((resolve, reject) => {
+        const tryConnect = () => {
+            retriesLeft = retriesLeft - 1
+
+            if (retriesLeft === 0) {
+                return reject(connectionError)
+            }
+
+            return setTimeout(() => sock.connect(port, '127.0.0.1'), 1000)
+        }
 
         sock.on('connect', () => {
             sock.destroy()
             return resolve()
         })
 
-        sock.on('error', () => reject(connectionError))
+        sock.on('error', tryConnect)
+        sock.on('timeout', () => tryConnect)
 
-        sock.on('timeout', () => reject(connectionError))
-
-        sock.connect(port, '127.0.0.1')
+        tryConnect()
     })
 }
 
 export function connect(port: number, logger: Logger): Promise<Net.Socket> {
+    const onConnectionError = (socket: Net.Socket) => (e: Error) => {
+        logger.warn('Error in control server connection', e)
+        socket.destroy()
+        process.exit(1)
+    }
+
     return new Promise(resolve => {
         const client: Net.Socket = Net.connect({ port }, () => {
             client.setKeepAlive(true, 10000)
 
-            client.on('end', () => {
-                // TODO: reconnect automatically
-                logger.info('Control server closed connection')
-            })
-
-            client.on('error', e => {
-                logger.warn('Error in control server connection')
-                logger.error(e)
-            })
+            client.on('end', onConnectionError(client))
+            client.on('error', onConnectionError(client))
 
             return resolve(client)
         })
