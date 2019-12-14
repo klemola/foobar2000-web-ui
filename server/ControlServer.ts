@@ -35,19 +35,18 @@ export function probe(port: number): Promise<void> {
 }
 
 export function connect(port: number, logger: Logger): Promise<Net.Socket> {
+    const onConnectionError = (socket: Net.Socket) => (e: Error) => {
+        logger.warn('Error in control server connection', e)
+        socket.destroy()
+        process.exit(1)
+    }
+
     return new Promise(resolve => {
         const client: Net.Socket = Net.connect({ port }, () => {
             client.setKeepAlive(true, 10000)
 
-            client.on('end', () => {
-                // TODO: reconnect automatically
-                logger.info('Control server closed connection')
-            })
-
-            client.on('error', e => {
-                logger.warn('Error in control server connection')
-                logger.error(e)
-            })
+            client.on('end', onConnectionError(client))
+            client.on('error', onConnectionError(client))
 
             return resolve(client)
         })
