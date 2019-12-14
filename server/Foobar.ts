@@ -38,9 +38,10 @@ export function launch(config: Config, logger: Logger): Promise<FB2KInstance> {
         })
     )
 
-    return ControlServer.probe(config.controlServerPort).then(
-        () => fb2kInstance
-    )
+    return ControlServer.probe(config.controlServerPort).then(() => {
+        logger.info('Control server probe successful')
+        return fb2kInstance
+    })
 }
 
 export function queryTrackInfo(ctx: Context, io: SocketIO.Server) {
