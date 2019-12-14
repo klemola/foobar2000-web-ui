@@ -18,7 +18,7 @@
         "build-ui": "webpack --mode production --config webpack.config.js",
         "build-server": "tsc -p server/tsconfig.json",
         "build": "yarn build-server && yarn build-ui",
-        "start": "yarn build && node build/main.js",
+        "start": "yarn build && NODE_ENV=development node build/main.js",
         "test-server": "mocha --exit ./build/**/*.test.js",
         "test": "yarn build && yarn test-server",
         "format": "prettier --write server/**/*.ts ui/**/*.ts",
