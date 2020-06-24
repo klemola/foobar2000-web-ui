@@ -8,7 +8,7 @@ import {
     InfoMessage,
     PlaybackMessage,
     VolumeMessage,
-    Volume
+    Volume,
 } from '../Models'
 
 describe('Message', () => {
@@ -17,7 +17,7 @@ describe('Message', () => {
             '999|Connected to foobar2000 Control Server v1.0.1|',
             '999|Accepted client from 127.0.0.1|',
             '999|There are currently 2/10 clients connected|',
-            "999|Type '?' or 'help' for command information|"
+            "999|Type '?' or 'help' for command information|",
         ]
         const message = lines.join('\r\n')
         const expectedMessage = lines.join('\n')
@@ -43,7 +43,7 @@ describe('Message', () => {
             trackNumber: '01',
             track: 'Bronchitis (entire)',
             trackLength: 745,
-            state: 'playing'
+            state: 'playing',
         }
         const messages = Message.parseControlData(message)
         const playbackMessage = PlaybackMessage.check(messages[0])
@@ -86,7 +86,7 @@ describe('Message', () => {
         const message = '222|-1.58|'
         const mockStatus: Volume = {
             type: 'audible',
-            volume: -1.58
+            volume: -1.58,
         }
 
         const messages = Message.parseControlData(message)
@@ -99,7 +99,7 @@ describe('Message', () => {
     it('should parse a volume message when muted', () => {
         const message = '222|-100.00|'
         const mockStatus: Volume = {
-            type: 'muted'
+            type: 'muted',
         }
 
         const messages = Message.parseControlData(message)

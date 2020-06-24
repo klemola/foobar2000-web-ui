@@ -15,7 +15,7 @@ import {
     Message,
     PlaybackMessage,
     VolumeMessage,
-    Config
+    Config,
 } from '../Models'
 import * as Logger from '../Logger'
 
@@ -23,7 +23,7 @@ const ioOptions = {
     transports: ['websocket'],
     forceNew: true,
     autoConnect: false,
-    reconnection: false
+    reconnection: false,
 }
 const testControlServerPort = 6666
 const testServerPort = 9999
@@ -33,7 +33,7 @@ const config: Config = {
     webserverPort: testServerPort,
     controlServerPort: testControlServerPort,
     controlServerMessageSeparator: '|',
-    environment
+    environment,
 }
 
 describe('API', () => {
@@ -41,26 +41,28 @@ describe('API', () => {
     let testServer: any
     let ioInstance: SocketIO.Server
 
-    before(done => {
+    before((done) => {
         const logger = Logger.create(config.environment)
         mockControlServer = createServer('127.0.0.1', testControlServerPort)
 
-        ControlServer.connect(config.controlServerPort, logger).then(client => {
-            const context: Context = {
-                config: config,
-                logger,
-                client,
-                instance: null
+        ControlServer.connect(config.controlServerPort, logger).then(
+            (client) => {
+                const context: Context = {
+                    config: config,
+                    logger,
+                    client,
+                    instance: null,
+                }
+
+                const { server, io } = Server.create()
+                Server.configureWebsockets(context, io)
+
+                ioInstance = io
+                testServer = server
+                testServer.listen(testServerPort)
+                done()
             }
-
-            const { server, io } = Server.create()
-            Server.configureWebsockets(context, io)
-
-            ioInstance = io
-            testServer = server
-            testServer.listen(testServerPort)
-            done()
-        })
+        )
     })
 
     after(() => {
@@ -68,12 +70,12 @@ describe('API', () => {
         testServer.close()
     })
 
-    it('should initialize', done => {
+    it('should initialize', (done) => {
         assert.ok(ioInstance !== null)
         done()
     })
 
-    it('should send foobar2000 status info upon connecting ', done => {
+    it('should send foobar2000 status info upon connecting ', (done) => {
         const ioClient = SocketIOClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
@@ -86,8 +88,8 @@ describe('API', () => {
         })
 
         setTimeout(() => {
-            const playbackMessage = messages.find(m => m.type === 'playback')
-            const volumeMessage = messages.find(m => m.type === 'volume')
+            const playbackMessage = messages.find((m) => m.type === 'playback')
+            const volumeMessage = messages.find((m) => m.type === 'volume')
 
             assert.ok(
                 playbackMessage &&
@@ -109,7 +111,7 @@ describe('API', () => {
     })
 
     // TODO improve test
-    it('should send foobar2000 playback info when a playback action is triggered', done => {
+    it('should send foobar2000 playback info when a playback action is triggered', (done) => {
         const ioClient = SocketIOClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
@@ -138,7 +140,7 @@ describe('API', () => {
     })
 
     // TODO improve test
-    it('should send foobar2000 status info when volume is changed', done => {
+    it('should send foobar2000 status info when volume is changed', (done) => {
         const ioClient = SocketIOClient(
             `http://127.0.0.1:${testServerPort}/`,
             ioOptions
