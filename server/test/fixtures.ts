@@ -12,7 +12,7 @@ export const mockTrack1: TrackInfo = {
     trackNumber: '01',
     track: 'Mock Track #1',
     trackLength: 120,
-    state: 'playing'
+    state: 'playing',
 }
 
 export const mockTrack2: TrackInfo = {
@@ -27,7 +27,7 @@ export const mockTrack2: TrackInfo = {
     trackNumber: '02',
     track: 'Mock Track #2',
     trackLength: 30,
-    state: 'playing'
+    state: 'playing',
 }
 
 export const initialMsg = `999|Connected to foobar2000 Control Server v1.0.1|\r

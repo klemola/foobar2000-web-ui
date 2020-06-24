@@ -43,12 +43,12 @@ const mockTrackInfoResponse = (t: TrackInfo): string =>
         t.genre,
         t.trackNumber,
         t.track,
-        t.trackLength
+        t.trackLength,
     ].join('|')
 
 const mockVolumeResponse = Volume.match(
-    muted => `222|-100.00|`,
-    audible => `222|${audible.volume.toFixed(2)}|`
+    (muted) => `222|-100.00|`,
+    (audible) => `222|${audible.volume.toFixed(2)}|`
 )
 
 const onConnection = (stateWrapper: StateWrapper, logger: Logger.Logger) => (
@@ -57,14 +57,14 @@ const onConnection = (stateWrapper: StateWrapper, logger: Logger.Logger) => (
     socket.write(
         [
             initialMsg,
-            mockTrackInfoResponse(stateWrapper.get().currentTrack)
+            mockTrackInfoResponse(stateWrapper.get().currentTrack),
         ].join('\r\n')
     )
 
     // TODO: Remove socket when connection is closed
     stateWrapper.addSocket(socket)
 
-    socket.on('data', data => {
+    socket.on('data', (data) => {
         const state = stateWrapper.get()
         const stringData = Vector.ofIterable(data.toString())
             // get rid of CRLF
@@ -77,17 +77,17 @@ const onConnection = (stateWrapper: StateWrapper, logger: Logger.Logger) => (
             socket.write(
                 [
                     mockTrackInfoResponse(nextState.currentTrack),
-                    mockVolumeResponse(nextState.currentVolume)
+                    mockVolumeResponse(nextState.currentVolume),
                 ].join('\r\n')
             )
 
             return logger.debug('Received command', {
                 action: stringData,
-                state: nextState
+                state: nextState,
             })
         } else {
             return logger.warn('Unknown command', {
-                action: stringData
+                action: stringData,
             })
         }
     })
@@ -114,15 +114,15 @@ export const createServer = (host: string, port: number): net.Server => {
                       ...state,
                       currentTrack: {
                           ...state.currentTrack,
-                          secondsPlayed: nextSecondsPlayed
-                      }
+                          secondsPlayed: nextSecondsPlayed,
+                      },
                   }
         )
 
         if (trackEnded) {
             stateWrapper
                 .listSockets()
-                .forEach(socket =>
+                .forEach((socket) =>
                     socket.write(
                         mockTrackInfoResponse(stateWrapper.get().currentTrack)
                     )

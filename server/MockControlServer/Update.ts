@@ -6,7 +6,7 @@ import {
     VolumeAction,
     Volume,
     PlaybackAction,
-    Action
+    Action,
 } from '../Models'
 
 export interface State {
@@ -20,7 +20,7 @@ const MAX_VOLUME = 0
 const MUTED_VOLUME = -100
 const initialVolume: Volume = {
     type: 'audible',
-    volume: 0.0
+    volume: 0.0,
 }
 
 const updatePlayback = (
@@ -32,20 +32,20 @@ const updatePlayback = (
             return {
                 ...currentTrack,
                 state: 'playing',
-                status: 111
+                status: 111,
             }
         case 'pause':
             return {
                 ...currentTrack,
                 state: 'paused',
-                status: 113
+                status: 113,
             }
         case 'stop':
             return {
                 ...currentTrack,
                 secondsPlayed: 0,
                 state: 'stopped',
-                status: 112
+                status: 112,
             }
         case 'prev':
         case 'next':
@@ -72,22 +72,22 @@ const updateVolume = (
         case 'vol mute':
             return currentVolume.type === 'audible'
                 ? {
-                      type: 'muted'
+                      type: 'muted',
                   }
                 : {
                       type: 'audible',
-                      volume: volumeLevel
+                      volume: volumeLevel,
                   }
         case 'vol up':
             return {
                 type: 'audible',
-                volume: volumeLevel < MAX_VOLUME ? volumeLevel + 1 : MAX_VOLUME
+                volume: volumeLevel < MAX_VOLUME ? volumeLevel + 1 : MAX_VOLUME,
             }
         case 'vol down':
             return {
                 type: 'audible',
                 volume:
-                    volumeLevel > MUTED_VOLUME ? volumeLevel - 1 : MUTED_VOLUME
+                    volumeLevel > MUTED_VOLUME ? volumeLevel - 1 : MUTED_VOLUME,
             }
     }
 }
@@ -96,7 +96,7 @@ export const init = (): State => ({
     currentTrack: { ...mockTrack1 },
     currentVolume: initialVolume,
     previousVolume: initialVolume,
-    sockets: []
+    sockets: [],
 })
 
 export const update = (state: State, action: Action): State => {
@@ -111,7 +111,7 @@ export const update = (state: State, action: Action): State => {
         case 'rand':
             return {
                 ...state,
-                currentTrack: updatePlayback(state.currentTrack, action)
+                currentTrack: updatePlayback(state.currentTrack, action),
             }
         case 'vol mute':
         case 'vol up':
@@ -123,7 +123,7 @@ export const update = (state: State, action: Action): State => {
                     state.previousVolume,
                     action
                 ),
-                previousVolume: state.currentVolume
+                previousVolume: state.currentVolume,
             }
     }
 }
