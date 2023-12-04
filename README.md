@@ -44,7 +44,7 @@ Since foobar2000 is only available for Windows, other operating systems are not 
 -   clone this repository
 -   (optional) open config.js in an editor and make necessary changes
 -   navigate to the directory of this project using terminal (cmd.exe) or PowerShell
--   run command `nmp install`
+-   run command `npm install`
 
 ## Starting the server
 
